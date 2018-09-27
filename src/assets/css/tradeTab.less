@@ -1,0 +1,81 @@
+.tctrade-page-content {
+
+    .trade-tab-nav,.order-tab-nav  {
+        //- tab栏字体大小
+        .el-tabs__item {
+            font-size: 18px; 
+            color: #2a303c;
+        }
+        //- tab栏选中后字体的颜色
+        .is-active {
+            color: #1d96e3;
+        }
+        .el-tabs__active-bar {
+            background: #1d96e3;
+        }
+        
+        .el-tabs__nav-wrap::after {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0;
+            height: 0;
+            background-color: transparent;
+            z-index: 0; 
+        }
+    } 
+
+    .order-tab-nav {
+      font-size: 16px;
+      .el-tabs__item {
+        font-size: 16px !important; 
+        color: #2a303c;
+      }
+    }
+    .el-table__header-wrapper {
+      background-color: #f6f9fb; 
+    }
+    //- table 数据列表去掉边框
+    .el-table td,
+    .el-table th.is-leaf {
+        border: none;
+    }
+    // 表头背景颜色
+    .el-table th {
+       background-color: #f6f9fb; 
+  }
+
+  .el-button--small {
+    font-size: 14px;
+  }
+}
+
+
+//- 流通受让-弹窗
+.trade-popup {
+  //- 表单
+    .el-form-item {
+      margin-bottom: 0;
+    }
+    .el-form--label-top .el-form-item__label {
+      padding: 0;
+    }
+    .el-input__inner {
+      height: 42px;
+      background: #fafafa;
+    }
+    .el-button {
+      // padding: 12px 30px;
+      width: 150px;
+    }
+    .el-button--primary {
+      margin-left: 121px;
+    }
+    //- 窗口
+    .el-dialog__header {
+      padding: 0;
+    }
+    .el-dialog__body {
+      padding: 0;
+    }
+}

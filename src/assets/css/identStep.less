@@ -1,0 +1,60 @@
+.ident-content {
+
+  //- 进度条
+    .el-progress-bar {
+        padding-right: 0;
+    }
+    .el-progress-bar__outer {
+        height: 4px !important;
+        background: #ccc;
+    }
+    .el-progress.is-exception .el-progress-bar__inner {
+        background: #1d96e3;
+    } 
+    
+    
+    // 输入框表单
+    .input {
+        margin-bottom: 14px;
+        position: relative;
+    }
+    .el-input {
+        width: 49%;
+    }
+    .el-input__inner {
+        height: 40px;
+    }
+   
+    .el-form-item__label {
+        color: #2a303c;
+        font-size: 14px;
+    }
+
+    //- 单选框
+    .el-radio__inner {
+        height: 20px;
+        width: 20px;
+        border: 1px solid #dbdde6;
+    }
+    .el-radio__input.is-checked .el-radio__inner {
+        border-color: #dbdde6;
+        background: #fff;
+    }
+    .el-radio__inner::after {
+        height: 10px;
+        width: 10px;
+        background: #1d96e3;
+    }
+
+    //- 复选框
+    .read-checkbox {
+      .el-form-item__content {
+          margin-left: 230px !important;
+      }
+  }
+  .el-checkbox__label {
+      border-bottom: 1px solid #2a303c;
+      line-height: 11px;
+      padding-left: 5px;
+  }
+}

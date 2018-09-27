@@ -1,0 +1,24 @@
+//- 选中 复选框的边框和背景
+.el-checkbox__input.is-checked .el-checkbox__inner,
+.el-checkbox__input.is-indeterminate .el-checkbox__inner {
+    background-color: #1d96e3;
+    border-color: #1d96e3;
+}
+
+//- 选中后文字颜色
+.el-checkbox__input.is-checked+.el-checkbox__label {
+    color: #2a303c;
+}
+
+//- 鼠标经过的边框颜色
+.el-checkbox__inner:hover {
+    border-color: #dcdfe6;
+}
+
+.el-checkbox__input.is-focus .el-checkbox__inner {
+    border-color: #dcdfe6;
+}
+
+.el-checkbox {
+    color: #2a303c;
+}

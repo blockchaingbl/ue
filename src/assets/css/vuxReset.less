@@ -1,0 +1,1188 @@
+
+
+
+
+@themecolor: #2e3d6c;
+
+//@themecolor: red;
+
+
+/*头部主题色*/
+body .vux-header{
+  background-color:@themecolor;
+  
+}
+#app >.app-body .vux-header.machine_header {
+  padding: 0;
+  height: 2.875rem;
+  &::after{
+    content: " ";
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    right: 0;
+    height: 1px;
+    border-top: 1px solid #ddd;
+    color: #ddd;
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0;
+    -webkit-transform: scaleY(0.5);
+    transform: scaleY(0.5);
+  }
+  .vux-header-title-area,.overwrite-title-demo{
+    height: 100%;
+  }
+  .overwrite-title-demo{
+    position: relative;
+    .weui-tabbar{
+      background: none;
+      &::before{
+        display: none;
+      }
+      .weui-tabbar__item.vux-tabbar-simple{
+        height: 2.875rem;
+        line-height: 2.875rem;
+        .weui-tabbar__label{
+          line-height: 2.875rem;
+          color: #9eade6;
+          font-size: 0.9375rem;
+        }
+      }
+      .weui-tabbar__item.weui-bar__item_on {
+        // position: relative;
+        // &::after{
+        //   position: absolute;
+        //   bottom: 0;
+        //   left: 50%;
+        //   transform: translateX(-50%);
+        //   height: 0.125rem;
+        //   width: 2.375rem;
+        //   background: #00b7ee;
+        //   display: block;
+        //   content: '';
+        // }
+        .weui-tabbar__label{
+          color: #fff;
+          span{
+            display: inline-block;
+            position: relative;
+            //&::after{
+            //  content: '';
+            //  display: block;
+            //  position: absolute;
+            //  left: 50%;
+            //  transform: translateX(-50%);
+            //  bottom: 0;
+            //  height: 2px;
+            //  width: 2.375rem;
+            //  background: #734fea;
+            //}
+          }
+        }
+      }
+    }
+  }
+}
+#app .app-body .vux-header{
+  background-color:@themecolor;
+}
+#app > .vux-header{
+  position: absolute;
+  right: 0;
+  left: 0;
+  top: 0;
+  z-index: 10;
+  height: 46px;
+  background-color:@themecolor;
+}
+.vux-header .vux-header-right{
+  i{
+      color: #fff;
+  }
+}
+#app >.app-body .vux-header.inter_wallet_header {
+  background-color:#fff;
+  .vux-header-title{
+    color: #363840;
+  }
+  .left-arrow{
+    &::before{
+      color: #363840;
+    }
+  }
+  &::after{
+    content: " ";
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    right: 0;
+    height: 1px;
+    border-top: 1px solid #c7c8ce;
+    color: #c7c8ce;
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0;
+    -webkit-transform: scaleY(0.5);
+    transform: scaleY(0.5);
+  }
+}
+#app .vux-header.market-header{
+  &::after{
+    content: " ";
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    right: 0;
+    height: 1px;
+    border-top: 1px solid #3b4e88;
+    color: #3b4e88;
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0;
+    -webkit-transform: scaleY(0.5);
+    transform: scaleY(0.5);
+  }
+}
+.inter_wallet_header .vux-header-right{
+  i{
+      color: #363840;
+  }
+}
+/*头部主题色*/
+
+.weui-tabbar.app_nav {
+	.weui-tabbar__item{
+		padding-top: 0.5rem;
+	}
+	.weui-tabbar__icon{
+      width: 1.75rem;
+      height: auto;
+    }
+    i.weui-tabbar__icon, .weui-tabbar__icon > i{
+      font-size: 1.75rem;
+      line-height: 1.75rem;
+      color: #9eabca;
+    }
+    .weui-tabbar__label{
+      line-height: 1rem;
+      font-size: 0.75rem;
+      text-align: center;
+      color: #9eabca;
+    }
+	.weui-tabbar__item.weui-bar__item_on .weui-tabbar__icon, .weui-tabbar__item.weui-bar__item_on .weui-tabbar__icon > i, .weui-tabbar__item.weui-bar__item_on .weui-tabbar__label{
+		color: #5871ff;
+  }
+  .weui-tabbar__item.weui-bar__item_on .weui-tabbar__icon > i.icon-hy{
+    &::after{
+        content:"\e613";
+    }
+  }
+}
+.weui-btn_primary{
+	&:after{
+		display: none;
+	}
+}
+
+#app .weui-search-bar__cancel-btn{
+      color: #6970e9;
+    text-decoration: none;
+}
+.page-login {
+  .weui-cells{
+    margin-top: 0;
+    &::before{
+      display: none;
+    }
+    &::after{
+      display: none;
+    }
+  }
+  .weui-vcode,.input-possword{
+    &::after{
+      left: 15px;
+      border-color: #D9D9D9;
+    }
+  }
+  .weui-cell__ft button.weui-btn{
+    height: 2rem;
+  }
+  button.weui-btn{
+    height: 2.625rem;
+    border-radius: 2.625rem;
+  }
+  .weui-input{
+    height: 2rem;
+  }
+}
+.security{
+  .weui-cells{
+    margin-top: 0;
+    &::before{
+      display: none;
+    }
+    &::after{
+      left: 15px;
+    }
+  }
+  .confirm_poss{
+    &::after{
+      display: none;
+    }
+  }
+  .weui-cell{
+    button.weui-btn{
+      border-radius: 1.75rem;
+      height: 1.75rem;
+    }
+  }
+  button.weui-btn{
+    border-radius: 2.625rem;
+    height: 2.625rem;
+  }
+}
+.vux-popup-right{
+  .weui-cells__title{
+    font-size: 1.125rem;
+    color: #363840;
+    font-weight: bold;
+  }
+  .vux-radio-icon{
+    vertical-align: text-top;
+    width: 1.125rem;
+    height: auto;
+  }
+  .weui-cells{
+    line-height: 3.125rem;
+    .weui-check__label{
+      padding: 0 0.9375rem;
+    }
+  }
+  .weui-cells:after{
+    left: 2.5rem;
+  }
+}
+
+.wallbar{
+    .weui-tabbar__label{
+        color:#fff;
+    }
+    .tbleft{
+      background: #1ea0c2;
+    }
+    .tbright{
+      background: #1d62c1;
+    }
+}
+#wallet_detail{
+  .tx_list_block{
+    .weui-cells{
+      padding: 0;
+      margin-top: 0;
+      &::after{
+        display: none;
+      }
+      .tx_list{
+        &:last-child{
+          border-bottom: none;
+        }
+        .vux-cell-primary{
+          width: 50%;
+        }
+        .weui-cell_access{
+          .weui-cell__ft{
+            padding: 0;
+            margin-left: 0.875rem;
+            width: 5rem;
+            &::after{
+              display: none;
+            }
+          }
+        }
+      }
+    }
+  }
+
+}
+.vux-popup-dialog {
+  
+  .weui-cells{
+    padding: 0;
+    margin-top: 0;
+    .tx_list{
+      
+      .weui-cell_access{
+        .weui-cell__ft{
+          &::after{
+            display: none;
+          }
+        }
+      }
+    }
+  }
+  .tx_detail-people{
+    background-color: #fff;
+    padding-left: 0.9375rem;
+    margin: 0.625rem 0;
+    .weui-cells__title{
+      margin: 0;
+      padding: 0;
+      font-size: 0.875rem;
+      color: #363840;
+      margin-bottom: 0.625rem;
+    }
+    .weui-cells{
+      margin: 0;
+      padding: 0;
+      &::before{
+        display: none;
+      }
+      &::after{
+        display: none;
+      }
+      .weui-cell{
+        padding: 0;
+        p{
+          line-height: 1rem;
+        }
+        .wallet_address{
+          font-size: 0.8125rem;
+          font-family: arial;
+          line-height: 1rem;
+          color: #999;
+        }
+      }
+    }
+  }
+  .tx_detail_block{
+    .vux-label,.weui-cell__ft{
+      font-size: 0.875rem;
+    }
+  }
+}
+body .vux-header .vux-header-title{
+  color: #fff;
+}
+body .vux-header .vux-header-left .left-arrow:before{
+  content: '\e70a';
+  font-family: "iconfont" !important;
+  transform: none;
+  width: auto;
+  height: auto;
+  top: 4px;
+  border:none;
+  font-size: 1.125rem;
+  color: #fff;
+}
+#app .vux-header .vux-header-left .left-arrow:before{
+  content: '\e70a';
+  font-family: "iconfont" !important;
+  transform: none;
+  width: auto;
+  height: auto;
+  top: 4px;
+  border:none;
+  font-size: 1.125rem;
+  color: #fff;
+}
+.userwallet .weui-btn_primary:not(.weui-btn_disabled):active{
+  background:none;
+  color: #4887f6;
+}
+#wallet_recieve{
+  .weui-cells{
+    font-size: 0.875rem;
+  }
+}
+#wallet_manage_item{
+  .weui-cells{
+    font-size: 0.875rem;
+    margin-top: 0;
+    &::before{
+      display: none;
+    }
+    &::after{
+      display:none;
+    }
+  }
+  .delete_box{
+    .delete_wallet{
+      border-radius: 99px;
+      overflow: inherit;
+      background: #fff;
+      &::after{
+        border-radius: 99px;
+      }
+    }
+  }
+}
+.vux-popup-right{
+  .right_item{ font-size:.8rem;}
+  .rbt{
+      height: 2.375rem;
+      &:last-child{
+          color: #1d62c1;
+          &::after{
+              border-color: #7fabe7;
+              border-radius: 99px;
+              width: 199%;
+          }
+      }
+  }
+}
+
+body .weui-cells{
+  font-size: 0.875rem;
+}
+.vux-confirm {
+  .weui-dialog__hd{
+    padding: 1.25rem 1.6rem 0.625rem;
+  }
+  .weui-dialog__bd{
+    min-height: 0;
+  }
+  .weui-dialog__title{
+    font-size: 1rem;
+  }
+  .vux-prompt-msgbox{
+    font-size: 0.875rem;
+    height: 2rem;
+  }
+  .weui-dialog__ft{
+    font-size: 1rem;
+    line-height: 2.75rem;
+  }
+}
+.wallbar{
+  .vux-tabbar-simple .weui-tabbar__label{
+    font-size: 1rem;
+  }
+}
+.wallbargn{
+  .vux-tabbar-simple .weui-tabbar__label{
+    height: 3.5rem;
+    line-height: 3.5rem;
+  }
+}
+.page-friends{
+  .vux-tab-container{
+    background-color: #2e3d6c;
+    overflow: inherit;
+    .vux-tab{
+      background: none;
+      &::after{
+        display: none;
+      }
+    }
+    .vux-tab-item{
+      font-size: 1rem;
+      color: #c0caeb;
+      background:none;
+    }
+    .vux-tab-item.vux-tab-selected{
+      color: #fff;
+      font-weight: bold;
+      border: none;
+    }
+    .vux-tab-ink-bar{
+      display: none!important;
+    }
+  }
+}
+.loadmore{
+  margin-top: 1rem;
+}
+.friends-search{
+  .weui-search-bar__box .weui-search-bar__input{
+    line-height: 1.75rem;
+    height: 1.75rem;
+    padding: 0;
+  }
+  .weui-search-bar{
+    &::before{
+      display: none;
+    }
+  }
+}
+
+.weui-cell__ft{
+  word-break:break-all;
+}
+.vux-cell-primary{
+  min-width: 4rem;
+}
+#wallet_send{
+  min-height: 100%;
+  background: #fff;
+  padding-bottom: 1px;
+  .weui-cells{
+    margin-top: 0;
+    &::before{
+      display:none;
+    }
+    
+    &::after{
+      left: 15px;
+    }
+  }
+  .weui-label{
+    color: #888;
+  }
+  .recieve-price{
+    .weui-input{
+      font-weight: bold;
+    }
+  }
+  .range-handle{
+    background-color: #1d62c1;
+    width: 1.375rem;
+    height: 1.375rem;
+    top: -0.6875rem!important;
+  }
+  .cost-input{
+    .vux-range-input-box{
+      margin-left: 30px!important;
+    }
+    .weui-cell{
+      &::before{
+        display: none;
+      }
+    }
+  }
+  .senior{
+    .vux-x-textarea{
+      &::after{
+        content: " ";
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        height: 1px;
+        border-top: 1px solid #D9D9D9;
+        color: #D9D9D9;
+        -webkit-transform-origin: 0 0;
+        transform-origin: 0 0;
+        -webkit-transform: scaleY(0.5);
+        transform: scaleY(0.5);
+        left: 15px;
+      }
+    }
+  }
+  .senior_btn{
+    margin-top: 0.625rem;
+    .weui-cells{
+        background: none;
+        &::before{
+            display:none;
+        }
+        &::after{
+            display:none;
+        }
+        .recieve_input{
+          justify-content: flex-end;
+        }
+        .weui-cell__bd{
+          flex: 0;
+        }
+    }
+  }
+}
+.password_input{
+  margin-bottom: 0.625rem;
+  
+}
+#wallet_international_send{
+  input::-webkit-input-placeholder{
+    color: #bbc0c5;
+  }
+  .pay_rece_input{
+    .weui-cell{
+      padding: 10px 0;
+      border-bottom: 1px solid #eaeaea;
+    }
+  }
+  &:last-child{
+    .weui-cell{
+      border-bottom: none;
+    }
+  }
+}
+.wallbar_inter{
+  height: 3rem;
+  margin: 0 -0.625rem;
+  padding: 0.625rem;
+  background: #fff;
+  align-items: center;
+    .weui-tabbar__label{
+        color:#fff;
+    }
+    .tbleft{
+      background: #5871ff;
+    }
+    .tbright{
+      background: #ff6678;
+      margin-left: 0.625rem;
+    }
+    .weui-tabbar__item.vux-tabbar-simple{
+      height: 2rem;
+      line-height: 2rem;
+      border-radius: 1rem;
+      p{
+        line-height: 2rem;
+        font-size: 0.9375rem;
+      }
+    }
+}
+#wallet_international_detail{
+  .tx_list_block{
+    .weui-cells{
+      padding: 0;
+      margin-top: 0;
+      &::before{
+        display: none;
+      }
+      &::after{
+        display: none;
+      }
+      .tx_list{
+        &:last-child{
+          border-bottom: none;
+        }
+        .vux-cell-primary{
+          width: 50%;
+        }
+        .weui-cell_access{
+          .weui-cell__ft{
+            padding: 0;
+            margin-left: 0.875rem;
+            width: 5rem;
+            &::after{
+              display: none;
+            }
+          }
+        }
+      }
+    }
+  }
+
+}
+#wallet_international_recieve{
+  .weui-cells{
+    font-size: 0.875rem;
+  }
+}
+#wallet_international_manage{
+  .weui-cells{
+    margin-top: 0;
+  }
+}
+#wallet_international_manage_item{
+  .weui-cells{
+    font-size: 0.875rem;
+    &::before{
+      display: none;
+    }
+    &::after{
+      display:none;
+    }
+  }
+  .delete_box{
+    .delete_wallet{
+      border-radius: 99px;
+      overflow: inherit;
+      background: #fff;
+      &::after{
+        border-radius: 99px;
+      }
+    }
+  }
+}
+#wallet_international_send{
+  min-height: 100%;
+  background: #fff;
+  padding-bottom: 1px;
+  .weui-cells{
+    margin-top: 0;
+    &::before{
+      display:none;
+    }
+    
+    &::after{
+      left: 15px;
+    }
+  }
+  .weui-label{
+    color: #888;
+  }
+  .recieve-price{
+    .weui-input{
+      font-weight: bold;
+    }
+  }
+  .range-handle{
+    background-color: #2f82ff;
+    width: 1.375rem;
+    height: 1.375rem;
+    top: -0.6875rem!important;
+  }
+  .cost-input{
+    .vux-range-input-box{
+      margin-left: 30px!important;
+    }
+    .weui-cell{
+      &::before{
+        display: none;
+      }
+    }
+  }
+  .senior{
+    .vux-x-textarea{
+      &::after{
+        content: " ";
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        height: 1px;
+        border-top: 1px solid #D9D9D9;
+        color: #D9D9D9;
+        -webkit-transform-origin: 0 0;
+        transform-origin: 0 0;
+        -webkit-transform: scaleY(0.5);
+        transform: scaleY(0.5);
+        left: 15px;
+      }
+    }
+  }
+  .senior_btn{
+    background: #fff;
+    .weui-cells{
+        background: none;
+        &::before{
+            display:none;
+        }
+        &::after{
+            display:none;
+        }
+        .recieve_input{
+          justify-content: flex-end;
+        }
+        .weui-cell__bd{
+          flex: 0;
+        }
+    }
+  }
+  input::-webkit-input-placeholder{
+    color: #bbc0c5;
+  }
+  .pay_rece_input{
+    .weui-cell{
+      padding: 10px 0;
+      border-bottom: 1px solid #eaeaea;
+    }
+  }
+  &:last-child{
+    .weui-cell{
+      border-bottom: none;
+    }
+  }
+  .send-assets-box{
+    .weui-cells{
+      &::after{
+        display: none;
+      }
+    }
+  }
+}
+
+.page-tokenlist-inter{
+  .item-decs{
+    .vux-x-switch.weui-cell_switch{
+      padding: 0;
+    }
+    .weui-cells{
+        background: none;
+        &::before{
+            display:none;
+        }
+        &::after{
+            display:none;
+        }
+        .recieve_input{
+          justify-content: flex-end;
+        }
+        .weui-cell__bd{
+          flex: 0;
+        }
+    }
+    .weui-cells{
+      width: 2.875rem;
+      height: 1.75rem;
+    }
+    .weui-switch{
+      width: 2.875rem;
+      height: 1.75rem;
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+    .weui-switch:after, .weui-switch-cp__box:after{
+      width: 1.625rem;
+      height: 1.625rem;
+    }
+    .weui-switch:checked:after{
+      transform: translateX(18px);
+    }
+    .weui-switch:before, .weui-switch-cp__box:before{
+      width: 2.75rem;
+      height: 1.625rem;
+    }
+    .weui-switch:checked:before{
+      transform: scale(0);
+    }
+  }
+}
+#wallet_create,#wallet_international_create{
+  .weui-cells {
+    margin: 0;
+    &::before{
+      display: none;
+    }
+    &::after{
+      display: none;
+    }
+    .vux-x-input .vux-input-icon{
+      font-size: 18px;
+    }
+    .weui-cell__ft .vux-input-icon.weui-icon-warn:before, .vux-input-icon.weui-icon-success:before{
+      font-size: 18px;
+    }
+  }
+}
+.wallet-inter-pop{
+  .vux-header{
+    background: #fff;
+    &::after{
+      content: " ";
+      position: absolute;
+      left: 0;
+      bottom: -1px;
+      right: 0;
+      height: 1px;
+      border-top: 1px solid #c7c8ce;
+      color: #c7c8ce;
+      -webkit-transform-origin: 0 0;
+      transform-origin: 0 0;
+      -webkit-transform: scaleY(0.5);
+      transform: scaleY(0.5);
+    }
+    .vux-header-title{
+      color: #363840;
+    }
+    .vux-header-right i{
+      color: #363840;
+    }
+  }
+}
+.weui-cell__ft .weui-icon-success{
+  font-size: 18px;
+}
+.candy-radio{
+  .weui-cells_radio{
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    padding: 0.625rem 0.9375rem;
+  }
+  .weui-cell{
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    border: 1px solid #C7C7C7;
+    border-radius: 4px;
+    margin-right: 0.625rem;
+  }
+}
+.grant-bottom{
+  .vux-cell-primary{
+    flex: 0;
+    min-width: 0;
+  }
+}
+.candy-succ-btn{
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0.625rem 0.625rem;
+  .weui-btn{
+    line-height: 2.25rem;
+    font-size: 1rem;
+  }
+  .weui-btn + .weui-btn{
+    margin-left: 0.625rem;
+    margin-top: 0;
+    background: #fc8c92;
+  }
+}
+#articleIndex{
+  .vux-slider > .vux-indicator > a > .vux-icon-dot, .vux-slider .vux-indicator-right > a > .vux-icon-dot{
+    width: 7px;
+    height: 7px;
+  }
+  .vux-slider > .vux-indicator > a > .vux-icon-dot.active, .vux-slider .vux-indicator-right > a > .vux-icon-dot.active{
+    background-color: #00b7ee;
+  }
+  .weui-cells__title{
+    font-size: 0.75rem;
+    color: #999;
+    font-weight: bold;
+    margin: 0;
+    padding: 0 0.75rem;
+    line-height: 1.875rem;
+  }
+  .vux-swiper{
+    height: 48vw !important;
+  }
+}
+.numb-assets,.candy-numb{
+  .weui-input{
+    font-size: 1.25rem;
+    &::-webkit-input-placeholder{
+      color: #babfc4;
+    }
+  }
+}
+.page-grant,.deals-push-box{
+  .weui-cells{
+    margin: 0;
+    &::after{
+      display: none;
+    }
+    &::before{
+      display: none;
+    }
+    .vux-cell-value {
+      color: #363840;
+    }
+    .weui-cell{
+      &::before{
+        display: none;
+      }
+      &::after{
+        display: none;
+      }
+    }
+    .weui-cell_access .weui-cell__ft:after{
+      transform: rotate(135deg);
+      border-color: #363840;
+      top: 4px;
+      margin-top: 0;
+      right: 0;
+    }
+  }
+  .vux-1px-b{
+    &::after{
+      left: 15px;
+    }
+  }
+  .vux-label{
+    font-size: 0.8125rem;
+    color: #363840;
+  }
+  .weui-cells__title{
+    font-size: 0.8125rem;
+    color: #363840;
+    margin: 0;
+    padding: 0.625rem 15px 0.125rem;
+  }
+  .numb-assets{
+    .weui-input{
+      font-size: 1.25rem;
+      &::-webkit-input-placeholder{
+        color: #babfc4;
+      }
+    }
+  }
+  .candy-numb{
+    .weui-input{
+      font-size: 0.9375rem;
+      &::-webkit-input-placeholder{
+        color: #babfc4;
+      }
+    }
+  }
+  .weui-input{
+    &::-webkit-input-placeholder{
+            color: #babfc4;
+          }
+        }
+  .numb-assets{
+    .weui-cell__ft {
+      color: #004498;
+      font-size: 0.8125rem;
+    }
+  }
+  .lock-time{
+    .weui-switch{
+      width: 2.875rem;
+      height: 1.75rem;
+    }
+    .weui-switch:before{
+      width: 2.75rem;
+      height: 1.625rem;
+    }
+    .weui-switch:after{
+      width: 1.625rem;
+      height: 1.625rem;
+    }
+    .weui-switch:checked:after{
+      transform: translateX(18px);
+    }
+    .weui-input{
+       &::-webkit-input-placeholder{
+        color: #ffc4c4;
+      }
+    }
+  }
+  .candy-radio{
+    .weui-cells_radio{
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      padding: 0.625rem 0.9375rem;
+    }
+    .weui-cell{
+      -webkit-box-flex: 1;
+      -ms-flex: 1;
+      flex: 1;
+      border: 1px solid #C7C7C7;
+      border-radius: 4px;
+      &:first-child{
+        margin-right: 0.625rem;
+      }
+    }
+  }
+  .grant-bottom{
+    .vux-cell-primary{
+      flex: 0;
+      min-width: 0;
+    }
+  }
+  .lock-select{
+    .vux-x-switch{
+      padding: 0 15px 0 0;
+    }
+  }
+  .vux-x-input.weui-cell{
+    padding: 6px 15px 10px;
+  }
+  .limit-time{
+    .vux-x-input.weui-cell{
+      padding: 10px 15px 10px;
+    }
+  }
+  .assets-type {
+    .weui-cell{
+      padding: 13px 15px;
+    }
+  }
+}
+.page-candy-success{
+  .candy_success_block{
+    .weui-cells{
+      margin: 0;
+      &::before{
+        display: none;
+      }
+      &::after{
+        display: none;
+      }
+    }
+  }
+  .candy-succ-btn{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0.625rem 0.625rem;
+    .weui-btn{
+      line-height: 2.25rem;
+      font-size: 1rem;
+    }
+    .weui-btn + .weui-btn{
+      margin-left: 0.625rem;
+      margin-top: 0;
+      background: #fc8c92;
+    }
+  }
+}
+.grant-coin-slot {
+  text-align: center;
+  padding: 0 0.625rem;
+  color: #888;
+  line-height: 2.25rem;
+}
+.market-index,.market-detail{
+  .vux-1px-b{
+    &::after{
+      border-color: #3b4e88;
+    }
+  }
+}
+.market-detail{
+  .vux-button-group{
+    
+    overflow: hidden;
+    height: 34px;
+  }
+  .vux-button-group > a{
+    background: #2e3d6c;
+    border-right: 2px solid #7988b7;
+    border-top: 2px solid #7988b7;
+    border-bottom: 2px solid #7988b7;
+    font-size: 0.75rem;
+    color: #7988b7;
+    line-height: 30px;
+    height: 100%;
+    &::after{
+      display: none;
+    }
+  }
+  .vux-button-group > a.vux-button-tab-item-first{
+    border-left: 2px solid #7988b7;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+  }
+  .vux-button-group > a.vux-button-group-current{
+    color: #FFF;
+    background: #7988b7;
+    border-right-color: transparent;
+  }
+  .vux-button-group > a.vux-button-tab-item-last{
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+  }
+}
+
+
+.normal-packet,.luck-packet{
+  .packet-group{
+    .weui-cell{
+      padding: 0;
+    }
+    .weui-cells.vux-no-group-title{
+      height: 2.625rem;
+      line-height: 2.625rem;
+      width: 100%;
+      margin-top: 0;
+      color: #22262d;
+      font-size: 0.875rem;
+      padding: 0 0.75rem;
+     
+    }
+  }
+
+}

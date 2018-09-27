@@ -1,0 +1,54 @@
+.el-tabs.user-tabs {
+  .el-tabs__header {
+    margin: 0;
+    .el-tabs__nav-wrap {
+      padding: 0 20px;
+      &::after {
+        height: 1px;
+      }
+    }
+    .el-tabs__item {
+      height: 60px;
+      line-height: 70px;
+      font-size: 16px;
+    }
+  }
+}
+.el-table.user-table {
+  th {
+    background-color: #f6f9fb;
+    color: #999;
+    padding: 8px 0;
+    font-weight: 400;
+    border-bottom: 0;
+  }
+  td {
+    padding: 15px 0;
+  }
+  .cell {
+    padding: 0 20px;
+  }
+}
+
+.trade-account , .finance-record {
+  .input-search {
+    .el-input__inner {
+      height: 33px;
+    }
+  }
+}
+body .el-loading-spinner .path {
+  -webkit-animation: loading-dash 1.5s ease-in-out infinite;
+  animation: loading-dash 1.5s ease-in-out infinite;
+  stroke-dasharray: 90,150;
+  stroke-dashoffset: 0;
+  stroke-width: 2;
+  stroke: #3f72ed;
+  stroke-linecap: round;
+  color: #3f72ed;
+
+}
+
+body .el-loading-spinner .el-loading-text{
+color: #3f72ed;
+}

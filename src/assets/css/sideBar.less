@@ -1,0 +1,61 @@
+.tctrade-page-content {
+    .el-menu-vertical-demo {
+        .el-submenu {
+            .el-submenu__title .el-submenu__icon-arrow {
+                font-size: 14px;
+                font-weight: 600;
+            }
+            .el-icon-arrow-down:before {
+                content: "\E604";
+            }
+            .el-menu--inline {
+                .el-menu-item {
+                    .el-icon-caret-right {
+                        margin-left: 90px;
+                        font-size: 14px;
+                        display: none;
+                    }
+                }
+                .is-active {
+                    .el-icon-caret-right {
+                        display: inline-block;
+                    }
+                }
+            }
+        }
+        .ident .el-icon-arrow-down:before {
+            content: "";
+        }
+        .is-active,
+        .is-opened {
+            .el-submenu__title {
+                background: #1d96e3 !important;
+                .iconfont {
+                    color: #fff;
+                }
+                .main-title {
+                    color: #fff;
+                }
+                i {
+                    color: #fff;
+                }
+            }
+            .el-menu {
+                background: #344c67 !important;
+                .el-menu-item {
+                    background: #344c67 !important;
+                }
+            }
+        }
+        .el-submenu.is-opened>.el-submenu__title .el-submenu__icon-arrow {
+            -webkit-transform: rotateZ(90deg);
+            transform: rotateZ(90deg);
+        }
+    }
+
+
+    //- 分页器
+    .el-pagination.is-background .el-pager li.active {
+        background: #1d96e3;
+    }
+}

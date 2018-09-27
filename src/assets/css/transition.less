@@ -1,0 +1,64 @@
+// 路由过场动画
+.slide-fade-enter, .slide-fade-leave {
+    will-change: transform, opacity
+}
+.slide-fade-enter-active {
+    -webkit-animation: md-page-next-to-current 250ms forwards;
+    animation: md-page-next-to-current 250ms forwards
+}
+.slide-fade-leave-active {
+    -webkit-animation: md-page-current-to-next 100ms forwards;
+    animation: md-page-current-to-next 100ms forwards
+}
+
+@-webkit-keyframes md-page-next-to-current {
+    from {
+        -webkit-transform: translate3d(0, 2.5rem, 0);
+        transform: translate3d(0, 2.5rem, 0);
+        opacity: 0
+    }
+    to {
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+        opacity: 1
+    }
+}
+
+@keyframes md-page-next-to-current {
+    from {
+        -webkit-transform: translate3d(0, 2.5rem, 0);
+        transform: translate3d(0, 2.5rem, 0);
+        opacity: 0
+    }
+    to {
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+        opacity: 1
+    }
+}
+
+@-webkit-keyframes md-page-current-to-next {
+    from {
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+        opacity: 1
+    }
+    to {
+        -webkit-transform: translate3d(0, 2.5rem, 0);
+        transform: translate3d(0, 2.5rem, 0);
+        opacity: 0
+    }
+}
+
+@keyframes md-page-current-to-next {
+    from {
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+        opacity: 1
+    }
+    to {
+        -webkit-transform: translate3d(0, 2.5rem, 0);
+        transform: translate3d(0, 2.5rem, 0);
+        opacity: 0
+    }
+}
