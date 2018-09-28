@@ -22,7 +22,6 @@ $app->group([
     $app->any("queue/sugarback", ['as'=>"sugarback",'uses'=>'SugarController@back']);
     $app->any("queue/otcfree", ['as'=>"otcfree",'uses'=>'OtcunlockController@otcfree']);
     $app->any('queue/exrate',['as'=>'exrate','uses'=>'ExchangeRateController@fetch']);
-    $app->any('queue/calc',['as'=>'exrate','uses'=>'ExchangeRateController@calc']);
 
     $app->any('queue/calc',['as'=>'calc_day_amount','uses'=>'CalcController@calc']);
     $app->any('queue/calc_day_amount',['as'=>'calc_month_amount','uses'=>'CalcController@calc_day_amount']);
