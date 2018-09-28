@@ -1,0 +1,104 @@
+    
+    .m-detailbox .left{
+        /*width: 280px;*/
+        position: relative;
+        padding-left: 0;
+    }
+    .m-detailbox .right {
+        padding-right: 0;
+    }
+    .m-detailbox:after{
+        display: block;
+        content: "";
+        clear: both;
+    }
+    .m-detailbox{
+        padding-bottom: 120px;
+    }
+
+    .m-detailbox .m-list{
+        width: 100%;
+    }
+    .m-gx{
+        width: 100%;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+    .m-gx .tit{
+        height: 60px;
+        line-height: 60px;
+        font-size: 22px;
+        color: #333;
+        text-align: left;
+    }
+    .m-gx .address{
+        display: inline-block;
+        padding: 0 10px;
+        line-height: 40px;
+        color: #d2b184;
+        position: relative;
+        border-top: 2px solid #333;
+        border-bottom: 2px solid #333;
+    }
+    .detailbox-tit{
+        line-height: 30px;
+        color: #b48648;
+        font-size: 20px;
+        font-weight: bold;
+        padding-bottom: 15px;
+    }
+    .detailbox-con{
+        width: 100%;
+        padding-bottom: 60px;
+    }
+    .detailbox-con:after{
+        display: block;
+        content: "";
+        clear: both;
+    }
+
+    .detailbox-con .price-list{
+        padding-left: 0;
+    }
+    .detailbox-con .price-list .price{
+        font-size: 24px;
+        color: #333;
+        padding-right: 5px;
+    }
+    .detailbox-con .price-list .eth{
+        color: #333;
+    }
+    .m-table{
+        width: 100%;
+        padding-top: 5px;
+    }
+    .m-table thead .tc{
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    .m-table .mc{
+        width: 33.33%;
+        color: #333;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .m-table tr{
+    }
+    .m-table td,.m-table th{
+        line-height: 25px;
+        padding: 10px 0;
+        border-top: 1px solid #f1f1f1;
+        border-bottom: 1px solid #f1f1f1;
+    }
+    .m-table td{
+        font-size: 15px;
+    }
+
+.content-info{
+    width: 100%;
+    line-height: 32px;
+}
+.content-info img{
+    max-width: 100%;
+}

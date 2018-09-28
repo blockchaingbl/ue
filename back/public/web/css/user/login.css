@@ -1,0 +1,92 @@
+.login-box{
+    width: 320px;
+    margin: 90px auto 100px;
+}
+.login-box .title{
+    font-size: 26px;
+    color: #222222;
+}
+.login-box .errmsg{
+    visibility: hidden;
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    background: #F8F2E4;
+    color: #F35959;
+    margin-top: 10px;
+    border-radius: 3px;
+}
+.login-box .errmsg .icon{
+    float: left;
+    width: 15px;
+    height: 15px;
+    line-height: 15px;
+    text-align: center;
+    background: #F35959;
+    color: #ffffff;
+    border-radius: 50%;
+    margin: 8px 0 0 8px;
+}
+.login-box .errmsg .msg{
+    float: left;
+    margin-left: 10px;
+}
+.login-box .input-box{
+    position: relative;
+    width: 100%;
+    height: 60px;
+    line-height: 75px;
+    border-bottom: 1px solid #EBD7B8;
+}
+.login-box .focus{
+    border-bottom: 2px solid #D2B184;
+}
+.login-box .input-box .iconfont{
+    position: absolute;
+    top: 0;
+    left: 8px;
+    font-size: 14px;
+    color: #888888;
+}
+.login-box .input-box input{
+    width: 100%;
+    padding: 10px 8px 10px 35px;
+    border: none;
+}
+.login-box .do-btn{
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    color: #ffffff;
+    background: #D2B184;
+    border-radius: 3px;
+    margin-top: 25px;
+    cursor: pointer;
+    font-size: 16px;
+}
+.login-box .txt{
+    width: 100%;
+    text-align: center;
+    margin-top: 30px;
+}
+.login-box .txt a{
+    font-size: 16px;
+    color: #888888;
+}
+.login-box .txt2{
+    width: 180px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    margin: 50px auto 0;
+    border-top: 1px solid #EBD7B8;
+    border-bottom: 1px solid #EBD7B8;
+}
+.login-box .txt2 a{
+    color: #D2B184;
+}
+#eth_account{
+    display: none;
+    font-size: 12px;
+}
