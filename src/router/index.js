@@ -585,6 +585,46 @@ export default new Router({routes:[
             }
         },
         {
+            path: '/finance',
+            name: 'bankCenter',
+            component: resolve => require(['@/views/bank/index'], resolve),
+            meta: {
+                title: '聚宝盆',
+                requireAuth: false,
+                pageType: 'bankCenter'
+            }
+        },
+        {
+            path: '/finance/my_bank',
+            name: 'bankSelf',
+            component: resolve => require(['@/views/bank/my_list'], resolve),
+            meta: {
+                title: '聚宝盆',
+                requireAuth: false,
+                pageType: 'bankSelf'
+            }
+        },
+        {
+            path: '/finance/detail/:production_id',
+            name: 'bankDetail',
+            component: resolve => require(['@/views/bank/detail'], resolve),
+            meta: {
+                title: '套餐详情',
+                requireAuth: false,
+                pageType: 'bankDetail'
+            }
+        },
+        {
+            path: '/finance/current_detail/:production_id',
+            name: 'current_detail',
+            component: resolve => require(['@/views/bank/current_detail'], resolve),
+            meta: {
+                title: '套餐详情',
+                requireAuth: false,
+                pageType: 'current_detail'
+            }
+        },
+        {
             path: '/lock_transfer/distribute',
             name: 'lockTransferDistribute',
             component: resolve => require(['@/views/lock_transfer/distribute'], resolve),
@@ -944,6 +984,26 @@ export default new Router({routes:[
                 title: '社群建设',
                 requireAuth: false,
                 pageType: 'societyApplyNode'
+            }
+        },
+        {
+            path: '/society/calc',
+            name: 'societyCalc',
+            component: resolve => require(['@/views/society/calc'], resolve),
+            meta: {
+                title: '社建建设',
+                requireAuth: false,
+                pageType: 'societyCalc'
+            }
+        },
+        {
+            path: '/society/calc_node',
+            name: 'societyCalcNode',
+            component: resolve => require(['@/views/society/calc_node'], resolve),
+            meta: {
+                title: '行业节点',
+                requireAuth: false,
+                pageType: 'societyCalcNode'
             }
         },
 

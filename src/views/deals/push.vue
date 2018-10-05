@@ -20,6 +20,10 @@
         <div class="push-item input-box">
             <input type="text" class="price" v-model="otc_fee" readonly="true">
         </div>
+        <div class="push-item title">出让保证金 (违约将被燃烧)</div>
+        <div class="push-item input-box">
+            <input type="text" class="price" v-model="otc_freeze_seller" readonly="true">
+        </div>
     </div>
     <div class="candy-senior-opera">
         <group class="lock-time">
@@ -43,7 +47,7 @@
     <box gap="32px 35px 0">
         <x-button type="primary" style="border-radius:99px;" class='push-btn' v-on:click.native="sure_push()">出让</x-button>
     </box>
-</div>   
+</div>
 </template>
 <script>
 import {XNumber,XSwitch} from "vux";
@@ -62,7 +66,8 @@ export default {
             sale_price_max:0,
             lock:false,
             lock_day:'',
-            otc_auth_type:null
+            otc_auth_type:null,
+            otc_freeze_seller:''
         }
     },
     computed:{
@@ -98,6 +103,7 @@ export default {
         }
     },
     mounted () {
+        this.otc_freeze_seller = this.$store.state.init.otc_freeze_seller
         this.getUserinfo();
         this.coin_price = parseFloat(this.$store.state.init.coin_price);
         this.otc_fee_rate = parseFloat(this.$store.state.init.otc_fee_rate);
@@ -128,7 +134,7 @@ export default {
                 if (err.errcode) {
                     this.$vux.toast.text(err.message);
                 }
-                
+
                 console.log(err);
                 //  this.Toast(err || '网络异常，请求失败');
             });
@@ -164,11 +170,11 @@ export default {
                     this.$router.push({path:'/deals/center'});
                 }
             }).catch(err=>{
-                
+
                 if (err.errcode) {
                     this.$vux.toast.text(err.message);
                 }
-                
+
             })
         },
         checkSaleNum:function(value){

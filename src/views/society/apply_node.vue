@@ -30,6 +30,9 @@
                 <group class="candy-numb" title="加入平台预期月营业额">
                     <x-input  v-model="team_number_expect" type="number"   placeholder="请填写数额"  :required="true" ></x-input>
                 </group>
+                <group class="candy-numb" title="已通过审核社群推荐人">
+                    <x-input  v-model="inviter" type="text"   placeholder="请填写推荐人"  :required="true" ></x-input>
+                </group>
             </div>
             <div class="candy-senior-opera">
                 <group class="lock-time">
@@ -86,7 +89,8 @@ import { Datetime, Loading,LoadMore,PopupRadio,XSwitch, TransferDomDirective as 
                 loading:false,
                 finish_month:'1个月',
                 industry_arr:["现从事行业",'需要推荐行业'],
-                industry_type:"现从事行业"
+                industry_type:"现从事行业",
+                inviter:""
             };
         },
         mounted() {
@@ -115,6 +119,7 @@ import { Datetime, Loading,LoadMore,PopupRadio,XSwitch, TransferDomDirective as 
                     this.err_show = res.errcode;
                     this.status_show = res.data.info.status+1;
                     this.industry_type = res.data.info.industry_type
+                    this.inviter = res.data.info.inviter
                     this.$vux.loading.hide()
                 })
                 .catch(error=>{
@@ -141,7 +146,8 @@ import { Datetime, Loading,LoadMore,PopupRadio,XSwitch, TransferDomDirective as 
                     mobile:this.mobile ,
                     team_number:parseInt(this.team_number) ,
                     area:this.area,
-                    industry_type:this.industry_type
+                    industry_type:this.industry_type,
+                    inviter:this.inviter
                 }
                 const _this = this;
                 this.$vux.loading.show({

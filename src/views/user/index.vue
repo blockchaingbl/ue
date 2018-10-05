@@ -91,19 +91,19 @@
                     </div>
                     <div class="item-text">资产流通</div>
                 </div>
-                <router-link class="item flex-box":to="{path:'/society/apply_node'}">
+                <div class="item flex-box" @click="turn_node()">
                     <div class="user_icon">
                         <img src="@/assets/images/user_node.png" alt="">
                     </div>
                     <div class="item-text">行业节点</div>
-                </router-link>
-                <router-link class="item flex-box" :to="{path:'/society/choice'}">
+                </div>
+                <div class="item flex-box" @click="society()">
                     <div class="user_icon">
                         <img src="@/assets/images/user_build.png" alt="">
                     </div>
                     <div class="item-text">社群建设</div>
-                </router-link>
-                <div class="item flex-box" @click="tis_btn">
+                </div>
+                <div class="item flex-box"  @click="jubaopen">
                     <div class="user_icon">
                         <img src="@/assets/images/user_cornucopia.png" alt="">
                     </div>
@@ -145,7 +145,11 @@ export default {
                 type:"avatar",
                 _user_token:this.$store.state.token
             },
-            vc_total:0
+            vc_total:0,
+            loading:true,
+            vc_normal:0,
+            is_node:0,
+            is_society:0
         }
     },
     mounted () {
@@ -172,9 +176,16 @@ export default {
                 this.username=res.data.account_info.username;
                 this.useravatar=res.data.account_info.avatar;
                 this.address = res.data.account_info.address
+                this.vc_normal = res.data.account_info.vc_normal;
                 this.$store.state.init.sugar_auth = res.data.account_info.sugar_auth;
                 this.vc_total =res.data.account_info.vc_total;
+                this.is_society= res.data.account_info.is_society;
+                this.is_node= res.data.account_info.is_node
+                this.$store.state.is_society =  res.data.account_info.is_society;
+                this.$store.state.is_node =  res.data.account_info.is_node;
+                this.loading  = false;
             }).catch(err => {
+                this.loading  = false;
                 if (err.errcode) {
                     this.$vux.toast.text(err.message);
                 }
@@ -297,12 +308,42 @@ export default {
 
         },
         turnToSend(){
-            if(this.vc_total<=this.$store.state.init.transfer_over_limit)
+            if(parseFloat(this.vc_total)<=parseFloat(this.$store.state.init.transfer_over_limit))
             {
                 this.$vux.toast.text(`资产超出${this.$store.state.init.transfer_over_limit}部分才可以转出`);
             }else{
                 this.$router.push({path:'/transfer/to'});
-            }}
+        }},
+        society(){
+            if(this.loading && this.$store.state.is_society)
+            {
+                return false;
+            }
+            if(this.is_society || this.$store.state.is_society){
+                this.$router.push({path:'/society/calc'});
+            }else{
+                this.$router.push({path:'/society/choice'});
+            }
+        },
+        turn_node(){
+            if(this.loading && !this.$store.state.is_node)
+            {
+                return false;
+            }
+            if(this.is_node || this.$store.state.is_node){
+                this.$router.push({path:'/society/calc_node'});
+            }else{
+                this.$router.push({path:'/society/apply_node'});
+            }
+        },
+        jubaopen(){
+            if(parseFloat(this.vc_normal)<=parseFloat(this.$store.state.init.jubaopen))
+            {
+                this.$vux.toast.text(`资产不足`);
+            }else{
+                this.$router.push({path:'/finance'});
+            }
+        }
     }
 }
 </script>

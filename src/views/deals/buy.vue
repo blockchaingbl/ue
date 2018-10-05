@@ -19,7 +19,7 @@
             <div class="decs">{{sellerName}}</div>
         </div>
         <div class="item vux-1px-b flex-box">
-            <div class="title flex-1">行情</div>
+            <div class="title flex-1">应支付</div>
             <div class="decs">
                 <div class="price-box flex-box">
                     <div class="price">&yen; <span>{{(amount*vc_unit_price).toFixed(2) || 0}}</span></div>
@@ -34,9 +34,21 @@
         <div class="item flex-box vux-1px-b" v-show="payment_info.length>0&&!readOnlyFlag">
             <selector @on-change="showPayInfo"  style="width: 100%;"  title="支付方式" :options="payment_info" v-model="chose_payment" direction="rtl"></selector>
         </div>
+        <div class="item flex-box vux-1px-b" v-show="payment_info.length>0&&!readOnlyFlag&&chose_payment_info.is_connect">
+            <div class="title flex-1">联系方式</div>
+            <div class="decs"><a style="color: #4c4c51" :href="call_number">{{chose_payment_info.connect}}</a></div>
+        </div>
         <div class="item flex-box vux-1px-b" v-show="payment_info.length==0 || readOnlyFlag">
             <div class="title flex-1">支付方式</div>
             <div class="decs">{{chose_payment_info.payment_org}}</div>
+        </div>
+        <div class="item flex-box vux-1px-b" v-show="(payment_info.length==0 || readOnlyFlag)&&chose_payment_info.is_connect">
+            <div class="title flex-1">联系方式</div>
+            <div class="decs"><a  style="color: #4c4c51" :href="call_number">{{chose_payment_info.connect}}</a></div>
+        </div>
+        <div class="item flex-box vux-1px-b">
+            <div class="title flex-1">受让保证金（违约将被燃烧）</div>
+            <div class="decs">{{$store.state.init.otc_freeze_buyer}} {{$store.state.init.coin_uint}}</div>
         </div>
         <div class="item flex-box vux-1px-b" v-if="lock_day>0">
             <div class="title flex-1">锁仓时间</div>
@@ -46,10 +58,7 @@
             <div class="title flex-1">每日释放</div>
             <div class="decs">{{amount/lock_day.toFixed(5)}}</div>
         </div>
-        <div class="item item-tis flex-box vux-1px-b">
-            <div class="title">注：</div>
-            <div class="decs flex-1">此处显示对方的转入方式，任意选择一种方式去付款，未付款不能点击我已确认付款，违规操作信用将受到影响</div>
-        </div>
+
         <div class="item flex-box vux-1px-b" v-show="pay_status==1&&chose_payment_info.payment_key == 'bankcard'">
             <div class="title flex-1">卡号</div>
             <div class="decs">{{chose_payment_info.payment_account}}</div>
@@ -61,6 +70,10 @@
         <div class="item flex-box vux-1px-b" v-show="pay_status==1&&chose_payment_info.payment_key == 'bankcard'">
             <div class="title flex-1">转入人</div>
             <div class="decs">{{chose_payment_info.payment_receipt}}</div>
+        </div>
+        <div class="item item-tis flex-box vux-1px-b">
+            <div class="title">注：</div>
+            <div class="decs flex-1">注:此受让订单将冻结一定数额资产，交易成功将全额退回，如未支付点已确定支付，或已支付{{this.$store.state.init.otc_order_overtime}}分钟内未点击我确定已支付，致使交易订单无法生成，冻结保证金将被燃烧掉，并且信用还将受到影响。</div>
         </div>
 
     </div>
@@ -75,7 +88,7 @@
             <x-button type="primary" style="border-radius:99px;" class='buy-btn' :class="{ 'noTime': add }" v-on:click.native="buy()">确认下单</x-button>
         </box>
         <div class="buy-bottom" v-show="pay_status==1">
-            <div class="tis" v-show="confirm_pay==0">请在倒计时时间内完成支付</div>
+            <div class="tis" v-show="confirm_pay==0">请在倒计时时间内完成支付并点击下方我确认已支付</div>
             <div class="count-down" v-show="confirm_pay==0">
                 倒计时 <span>{{minute}}:{{second}}</span>
             </div>
@@ -141,7 +154,7 @@
             pay_status:0,
             order_id : 0,
             confirm_pay:0,
-            buttonName:'未付款视为违规行为，我确认已付款',
+            buttonName:'未支付点击视为违规行为，我确认已支付',
             readOnlyFlag : false,
             buy_flag : 1,
             time_end : false,
@@ -320,6 +333,7 @@
                     this.pay_status = 1;
                     this.order_id = res.data.order_id;
                     this.readOnlyFlag = true;
+                    this.order_sn = res.data.order_sn;
                 }
                 this.click_lock = false;
                this.pay_status=1;
@@ -371,6 +385,11 @@
         onError: function (e) {
             this.$vux.toast.text("复制失败，您可以尝试手动记录");
             //console.log('Failed to copy texts')
+        }
+    },
+    computed:{
+        call_number (){
+            return 'tel:'+this.chose_payment_info.connect
         }
     }
 }

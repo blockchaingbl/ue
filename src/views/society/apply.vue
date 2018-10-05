@@ -33,6 +33,9 @@
                 <popup-radio title="预计完成时间" :options="finish_month_arr" v-model="finish_month">
                     <p slot="popup-header" class="vux-1px-b grant-coin-slot">预计完成时间</p>
                 </popup-radio>
+                <group class="candy-numb" title="已通过审核社群推荐人">
+                    <x-input  v-model="inviter" type="text"   placeholder="请填写推荐人"  :required="true" ></x-input>
+                </group>
             </div>
             <div class="candy-senior-opera">
                 <group class="lock-time">
@@ -89,7 +92,8 @@ import { Datetime, Loading,LoadMore,PopupRadio,XSwitch, TransferDomDirective as 
                 status_show:null,
                 loading:false,
                 finish_month:'1个月',
-                finish_month_arr:['1个月','2个月','3个月']
+                finish_month_arr:['1个月','2个月','3个月'],
+                inviter:''
             };
         },
         mounted() {
@@ -119,6 +123,7 @@ import { Datetime, Loading,LoadMore,PopupRadio,XSwitch, TransferDomDirective as 
                     this.memo = res.data.info.memo;
                     this.err_show = res.errcode;
                     this.status_show = res.data.info.status+1;
+                    this.inviter = res.data.info.inviter
                     this.$vux.loading.hide()
                 })
                 .catch(error=>{
@@ -148,6 +153,7 @@ import { Datetime, Loading,LoadMore,PopupRadio,XSwitch, TransferDomDirective as 
                     finish_month:this.finish_month,
                     source:this.source ,
                     area:this.area,
+                    inviter:this.inviter
                 }
                 const _this = this;
                 this.$http.post('api/app.apply/apply/apply',form).then(res=>{

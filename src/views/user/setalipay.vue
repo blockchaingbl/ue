@@ -35,6 +35,16 @@
         </div>
         <div class="block">
             <group class="alipay-item no-line">
+                <x-switch title="是否显示联系方式" v-model="is_connect"></x-switch>
+            </group>
+        </div>
+        <div class="block">
+            <group class="alipay-item no-line">
+                <x-input type="text" title='联系方式' text-align="right" v-model="connect" placeholder="请输入您的联系方式"></x-input>
+            </group>
+        </div>
+        <div class="block">
+            <group class="alipay-item no-line">
                 <x-input type="password" title='资产密码' text-align="right" v-model="security" placeholder="请输入您的资产密码"></x-input>
             </group>
         </div>
@@ -47,11 +57,12 @@
 </div> 
 </template>
 <script>
-import { md5 } from 'vux'
+import { md5,XSwitch } from 'vux'
 import VueCoreImageUpload from 'vue-core-image-upload'
 export default {
   components: {
-      'vue-core-image-upload': VueCoreImageUpload
+      'vue-core-image-upload': VueCoreImageUpload,
+      XSwitch
   },
   data () {
     return {
@@ -65,7 +76,9 @@ export default {
             type:"weixin",
             _user_token:this.$store.state.token
         },
-        h5flag:true
+        h5flag:true,
+        is_connect:false,
+        connect:""
     }
   },
   mounted () {
@@ -82,6 +95,8 @@ export default {
                   this.payment_receipt=res.data.bind_info.alipay.payment_receipt;
                   this.payment_account=res.data.bind_info.alipay.payment_account;
                   this.qrcode=res.data.bind_info.alipay.qrcode;
+                  this.is_connect = Boolean(res.data.bind_info.alipay.is_connect);
+                  this.connect = res.data.bind_info.alipay.connect;
               }
           }).catch(err => {
                 if (err.errcode) {
@@ -113,7 +128,9 @@ export default {
               'qrcode':this.qrcode,
               'payment_receipt':this.payment_receipt,
               'payment_account':this.payment_account,
-              'security':md5(this.security)
+              'security':md5(this.security),
+              'is_connect':this.is_connect?1:0,
+              'connect':this.connect
           }).then(res => {
               if(res.errcode=="0"){
                   this.$vux.toast.show({text: '绑定成功'})

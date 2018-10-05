@@ -22,6 +22,16 @@
         </div>
         <div class="block">
             <group class="bank-item no-line">
+                <x-switch title="是否显示联系方式" v-model="is_connect"></x-switch>
+            </group>
+        </div>
+        <div class="block">
+            <group class="bank-item no-line">
+                <x-input type="text" title='联系方式' text-align="right" v-model="connect" placeholder="请输入您的联系方式"></x-input>
+            </group>
+        </div>
+        <div class="block">
+            <group class="bank-item no-line">
                 <x-input type="password" title='资产密码' text-align="right" v-model="security" placeholder="请输入您的资产密码"></x-input>
             </group>
         </div>
@@ -34,7 +44,7 @@
 </div> 
 </template>
 <script>
-import { Qrcode } from 'vux'
+import { Qrcode ,XSwitch} from 'vux'
 import { Selector } from 'vux'
 import { md5 } from 'vux'
 export default {
@@ -42,6 +52,7 @@ export default {
     //stepone:() => import('@/views/login/inc/stepone'),
     Qrcode,
     Selector,
+  XSwitch
   },
   data () {
     return {
@@ -70,7 +81,9 @@ export default {
         payment_org:"",
         payment_account:"",
         security:"",
-        branch_bank:""
+        branch_bank:"",
+        connect:'',
+        is_connect:false
     }
   },
   mounted () {
@@ -84,6 +97,8 @@ export default {
                 this.payment_account=res.data.bind_info.bankcard.payment_account;
                 this.payment_org=res.data.bind_info.bankcard.payment_org;
                 this.branch_bank = res.data.bind_info.bankcard.branch_bank;
+                this.is_connect = Boolean(res.data.bind_info.bankcard.is_connect);
+                this.connect = res.data.bind_info.bankcard.connect;
             }
         }).catch(err => {
                 if (err.errcode) {
@@ -116,7 +131,9 @@ export default {
             'payment_org':this.payment_org,
             'payment_account':this.payment_account,
             'security':md5(this.security),
-            'branch_bank':this.branch_bank
+            'branch_bank':this.branch_bank,
+            'is_connect':this.is_connect?1:0,
+            'connect':this.connect
         }).then(res => {
             if(res.errcode=="0"){
                 this.$vux.toast.show({text: '绑定成功'})
