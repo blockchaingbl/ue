@@ -4,7 +4,7 @@
 
     <div class="page_header">
         @foreach($lists as $val)
-        <div class="col-md-6" class="clearfix" style="position: relative">
+        <div class="col-md-12" class="clearfix" style="position: relative">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <span class="panel-title">  <img src="{{$val['icon']}}" alt="" style="width: 32px;height: 32px;">
@@ -34,14 +34,20 @@
                             @endif
                         </p>
                         <p>
+                            <strong>今日释放总量:{{$val['free_total']}}</strong>
+                        </p>
+                        <p>
                             <a class="btn btn-success" onclick="open_log('income_log','{{$val['coin_type']}}',this)">收入</a>
                             <a class="btn btn-danger" onclick="open_log('expend_log','{{$val['coin_type']}}',this)">支出</a>
                             <a class="btn btn-primary" onclick="open_log('freeze_log','{{$val['coin_type']}}',this)">冻结</a>
-                            @if(config('app.sugar') || config('app.lock_transfer'))
                             <a class="btn btn-warning" onclick="open_log('free_log','{{$val['coin_type']}}',this)">释放</a>
-                            @endif
+
+                        </p>
+                        <p>
+                            <a class="btn btn-default" href="lock_transfer.log">锁仓转账</a>
                             @if($val['coin_type']==0)
-                            <a class="btn btn-default" onclick="open_incharge()">兑换锁仓</a>
+                                <a class="btn btn-default" onclick="open_incharge()">兑换锁仓</a>
+                                <a class="btn btn-default" href="{{url('incharge.export')}}">兑换锁仓导出</a>
                             @endif
                         </p>
                     </div>

@@ -32,6 +32,12 @@
                         </div>
                         <div class="col-md-2" style="display:block; float: left; padding-left:0px;">
                             <div class="input-group">
+                                <span class="input-group-addon">挂靠</span>
+                                <input type="text" class="form-control" name="attachedname" placeholder="输入挂靠者用户名/手机号" />
+                            </div>
+                        </div>
+                        <div class="col-md-2" style="display:block; float: left; padding-left:0px;">
+                            <div class="input-group">
                                 <span class="input-group-addon">时间</span>
                                 <input type="text" class="form-control" id="create_time" name="create_time" placeholder="选择注册时间" />
                             </div>
@@ -51,6 +57,19 @@
                         </div>
                         <div class="col-md-2" style="display:block; float: left; padding-left:0px;">
                             <div class="input-group">
+                                <span class="input-group-addon">会星员级</span>
+                                <select class="form-control" name="star">
+                                    <option value="">所有</option>
+                                    <option value="1">1星</option>
+                                    <option value="2">2星</option>
+                                    <option value="3">3星</option>
+                                    <option value="4">4星</option>
+                                    <option value="5">5星</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2" style="display:block; float: left; padding-left:0px;">
+                            <div class="input-group">
                                 <span class="input-group-addon">账号状态</span>
                                 <select class="form-control" name="status">
                                     <option value="">所有</option>
@@ -62,6 +81,7 @@
                         <div class="col-md-3" style="display:block; float: left;">
                             <button type="button" class="btn btn-primary" v-on:click="clearSearch()">清 除</button>
                             <button type="button" class="btn btn-primary" v-on:click="toSearch()">查 询</button>
+                            <button type="button" class="btn btn-primary" v-on:click="export_user()">导 出</button>
                         </div>
                     </div>
                 </form>
@@ -78,6 +98,7 @@
                     <th rel="sort" sort_key="vc_freeze">冻结金额</th>
                     <th rel="sort" sort_key="cp_total">算力</th>
                     <th>推荐人</th>
+                    <th>挂靠</th>
                     <th rel="sort" sort_key="create_time">注册时间</th>
                     <th>账号状态</th>
                     <td>会员等级</td>
@@ -99,6 +120,10 @@
                     <td>@{{ item.cp_total }}</td>
                     <td>
                         <span v-if="item.ref_name">@{{ item.ref_name }}</span>
+                        <span style="color:#cccccc;" v-else>无</span>
+                    </td>
+                    <td>
+                        <span v-if="item.attachedname">@{{ item.attachedname }}</span>
                         <span style="color:#cccccc;" v-else>无</span>
                     </td>
                     <td>@{{ item.create_time }}</td>
@@ -258,6 +283,17 @@
                                     <span class="input-group-addon">天数</span>
                                     <input type="text" class="form-control" placeholder="请输入天数" v-model="limit_day" style="width:150px;">
                                 </div>
+                                <div class="input-group" style="margin-top: 20px;">
+                                    <span class="input-group-addon" id="is_limit_per_day">是否限制每日出让额</span>
+                                    <select class="form-control"  style="width:150px;" v-model="is_limit_per_day">
+                                        <option value="0">否</option>
+                                        <option value="1">是</option>
+                                    </select>
+                                </div>
+                                <div id="limit_per_day" class="input-group"  v-show="is_limit_per_day==1" style="margin-top: 20px;" >
+                                    <span class="input-group-addon">每日出让限制额度</span>
+                                    <input type="number" class="form-control" placeholder="每日出让限制额度"  v-model="limit_per_day" style="width:150px;">
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -289,7 +325,9 @@
                 limit_day:'',
                 otc_auth:0,
                 user_id : 0,
-                page:1
+                page:1,
+                is_limit_per_day:0,
+                limit_per_day:0
             },
             updated(){
                 this.bindBageEvent();
@@ -579,16 +617,20 @@
                     this.otc_auth_type = x.otc_auth_type;
                     this.limit_day = x.limit_day;
                     this.user_id = x.id;
+                    this.is_limit_per_day = x.is_limit_per_day;
+                    this.limit_per_day = x.limit_per_day
                     $('#otc_auth').modal('show')
                 },
                 submitOtcAuth(){
+                    const _this = this
                     let formData = {
                         otc_auth:this.otc_auth,
                         otc_auth_type:this.otc_auth_type,
                         limit_day:this.limit_day,
-                        user_id:this.user_id
+                        user_id:this.user_id,
+                        is_limit_per_day:this.is_limit_per_day,
+                        limit_per_day:this.limit_per_day
                     }
-                    const _this = this
 
                     $.ajax({
                         url:'{{url('user.otcauth')}}',
@@ -607,6 +649,9 @@
                             layer.msg('设置失败');
                         }
                     })
+                },
+                export_user(){
+                    location.href = '{{url('user.export')}}'
                 }
             }
         });

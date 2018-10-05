@@ -43,6 +43,7 @@
                     <div class="col-md-4" style="display:block; float: left;">
                         <button type="button" class="btn btn-primary" onclick="clearSearch()">清 除</button>
                         <button type="submit" class="btn btn-primary">查 询</button>
+                        <button type="button" class="btn btn-primary" onclick="export_log()">导 出</button>
                     </div>
                 </div>
             </form>
@@ -69,7 +70,7 @@
                     <td>{{$item->from_user->mobile}}</td>
                     <td>{{$item->to_user->mobile}}</td>
                     <td>{{$item->amount}}</td>
-                    <td>{{$item->sugar_fee.'  '.db_config('COIN_UNIT')}}</td>
+                    <td>{{$item->lock_transfer_fee.'  '.db_config('COIN_UNIT')}}</td>
                     <td>{{$item->free_day}}</td>
                     <td>{{$item->amount-$item->less_amount}}</td>
                     <td>{{$item->amount/$item->lock_time}}</td>
@@ -133,5 +134,9 @@
                 $('#time_type').val('{{$param['time_type']}}')
                 $('#coin_type').val('{{$param['coin_type']}}')
             })
+            function export_log() {
+                var url = '{{url('lock_transfer.export')}}'+'?coin_type='+'{{$param['coin_type']}}';
+                location.href =  url;
+            }
         </script>
 @stop

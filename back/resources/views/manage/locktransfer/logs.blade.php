@@ -94,5 +94,8 @@
                 $('#time_type').val('{{$param['time_type']}}')
                 $('#coin_type').val('{{$param['coin_type']}}')
             })
+            function export_log() {
+                location.href='{{url('incharge.export')}}'
+            }
         </script>
 @stop

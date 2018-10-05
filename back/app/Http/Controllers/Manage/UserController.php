@@ -16,6 +16,7 @@ use App\Http\Models\Web\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends AuthBaseController
 {
@@ -41,8 +42,8 @@ class UserController extends AuthBaseController
         {
             $sort_key = "id";
         }
-        $list = User::leftJoin("user as ref","ref.id","=","user.pid")
-            ->select("user.*","ref.username as ref_name")
+        $list = User::leftJoin("user as ref","ref.id","=","user.pid")->LeftJoin('user as attach','attach.id','=','user.attached')
+            ->select("user.*","ref.username as ref_name",'attach.username as attachedname')
             ->where(function($query) use($param){
                 if($param["username"])
                 {
@@ -57,6 +58,16 @@ class UserController extends AuthBaseController
                         $pids[] = $pid->id;
                     }
                     $query->whereIn("user.pid",$pids)->whereRaw("fanwe_user.pid is not null");
+                }
+                if($param['attachedname'])
+                {
+                    $pids = [];
+                    $pid_data = User::where("username",$param['attachedname'])->orWhere("mobile",$param['attachedname'])->get();
+                    foreach($pid_data as $pid)
+                    {
+                        $pids[] = $pid->id;
+                    }
+                    $query->whereIn("user.attached",$pids)->whereRaw("fanwe_user.attached is not null");
                 }
                 if($param['create_time'])
                 {
@@ -92,6 +103,9 @@ class UserController extends AuthBaseController
                 }
                 if($param['level']!==''){
                     $query->where('user.level',$param['level']);
+                }
+                if($param['star']!==''){
+                    $query->where('user.star',$param['star']);
                 }
             });
         if($param["coin_type"]>0)
@@ -606,12 +620,17 @@ class UserController extends AuthBaseController
         $user->otc_auth = $param['otc_auth'];
         if($user->otc_auth==0)
         {
+            $user->is_limit_per_day = 0;
             $user->otc_auth_type = 0;
             $user->limit_day = 0;
+            $user->limit_per_day = 0;
         }
         else
         {
             $user->otc_auth_type = $param['otc_auth_type'];
+            $user->is_limit_per_day = $param['is_limit_per_day'];
+            $user->limit_per_day = $param['limit_per_day'];
+
             if($param['otc_auth_type']>0&&$param['otc_auth_type']<3)
             {
                 if(!$param['limit_day'])
@@ -632,6 +651,37 @@ class UserController extends AuthBaseController
         else
         {
             return $this->error();
+        }
+    }
+
+    public function export()
+    {
+        set_time_limit(0);
+        $lists = User::with('parent_user','attached_user')->get();
+        $cellData = [['用户名','手机号	','	账户余额','可交易','不可交易','冻结金额','算力','推荐人','挂靠','注册时间','会员等级']];
+        $level_arr= [
+            0=>'普通会员',
+            1=>'A级社群',
+            2=>'A级节点',
+            3=>'裂变脱离',
+            4=>'B级'
+        ];
+        foreach($lists as $item)
+        {
+            $cellData[] = [$item->username,$item->mobile,$item->vc_total,$item->vc_normal,$item->vc_untrade,
+                $item->vc_freeze,$item->cp_total,$item->parent_user->username,$item->attached_user->username,
+                $item->create_time,$level_arr[$item->level]
+            ];
+        }
+        try{
+            Excel::create('会员信息',function($excel) use ($cellData){
+                $excel->sheet('score', function($sheet) use ($cellData){
+                    $sheet->rows($cellData);
+                });
+            })->export('xls');
+            return $this->success();
+        }catch(\Exception $e){
+            Log::warn($e->getMessage());
         }
     }
 

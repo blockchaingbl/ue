@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Models\LockTransferAuth;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class LockTransferController extends AuthBaseController
 {
@@ -269,5 +270,65 @@ class LockTransferController extends AuthBaseController
         }
 
 
+    }
+
+    public function export(Request $request)
+    {
+        set_time_limit(0);
+        $coin_type = intval($request->input('coin_type'));
+        $lists = LockTransferLog::with('from_user','to_user')->where('coin_type',$coin_type)->get();
+        $cellData = [['转账时间','转账人者','接收者','转账数量','转账手续费','剩余释放天数','已释放','每次释放','下次释放时间']];
+        foreach($lists as $item)
+        {
+
+           if($item->lock_time!=0)
+           {
+               $evey_day = $item->amount/$item->lock_time;
+           }else{
+               $evey_day = $item->amount;
+           }
+            $cellData[] = [
+                $item->create_time,$item->from_user->mobile,$item->to_user->mobile,$item->amount,
+                $item->lock_transfer_fee,$item->free_day,$item->amount-$item->less_amount,$evey_day
+                ,date('Y-m-d H:i:s',strtotime($item->last_release_time)+86400)
+            ];
+        }
+        try{
+            Excel::create('锁仓转账',function($excel) use ($cellData){
+                $excel->sheet('score', function($sheet) use ($cellData){
+                    $sheet->rows($cellData);
+                });
+            })->export('xls');
+            return $this->success();
+        }catch(\Exception $e){
+            Log::warn($e->getMessage());
+        }
+    }
+
+    public function export_incharge()
+    {
+        set_time_limit(0);
+        $lists = LockTransferLog::with('to_user')
+        ->where('coin_type',0)
+        ->where('from',0)->get();
+        $cellData = [['充值时间','接收者','数量	','剩余未释放','剩余释放天数']];
+        foreach($lists as $item)
+        {
+            $cellData[] = [
+                $item->create_time,$item->to_user->mobile,$item->amount,
+                $item->amount-$item->less_amount,
+                $item->amount/$item->lock_time
+            ];
+        }
+        try{
+            Excel::create('锁仓兑换',function($excel) use ($cellData){
+                $excel->sheet('score', function($sheet) use ($cellData){
+                    $sheet->rows($cellData);
+                });
+            })->export('xls');
+            return $this->success();
+        }catch(\Exception $e){
+            Log::warn($e->getMessage());
+        }
     }
 }
