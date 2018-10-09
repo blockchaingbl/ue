@@ -44,6 +44,7 @@
             <tr>
                 <th>申请时间</th>
                 <th>申请人用户名</th>
+                <th>申请人推荐人</th>
                 <th>申请人系统手机号</th>
                 <th>姓名</th>
                 <th>手机号码</th>
@@ -64,6 +65,7 @@
                 <tr>
                     <td>{{$item->update_time}}</td>
                     <td>{{$item->user->username}}</td>
+                    <td>@if($item->parent)用户名：{{$item->parent->username}}<br/>手机{{$item->parent->mobile}}@else无推荐人@endif</td>
                     <td>{{$item->user->mobile}}</td>
                     <td>{{$item->name}}</td>
                     <td>{{$item->mobile}}</td>

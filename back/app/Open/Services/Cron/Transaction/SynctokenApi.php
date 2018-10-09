@@ -51,7 +51,7 @@ class SynctokenApi extends FanweEthereumService
                     //正常交易单
                     //确认交易数据
                     $tx_data = $this->ethereum->eth_getTransactionReceipt($tx_item->hash);
-                    if(!$tx_data&&(time() - $tx_item->time_stamp)>3600)
+                    if(!$tx_data&&(time() - $tx_item->time_stamp)>7200)
                     {
                         //一小时内还没有被排队的交易被视为出错
                         $tx_item->is_error = 1;
@@ -228,7 +228,7 @@ class SynctokenApi extends FanweEthereumService
                                 $lockTransferLog->lock_time = $day;
                                 $lockTransferLog->remain_time = $day;
                                 $lockTransferLog->sugar_type = 'day';
-                                $lockTransferLog->lock_end_time = date('Y-m-d H:i:s',strtotime("+150 {$day}"));
+                                $lockTransferLog->lock_end_time = date('Y-m-d H:i:s',strtotime("+{$day} day"));
                                 $lockTransferLog->lock_transfer_fee = 0;
                                 $lockTransferLog->last_release_time = date('Y-m-d H:i:s');
                                 $lockTransferLog->freeze_log_id =$freeze_log_id;

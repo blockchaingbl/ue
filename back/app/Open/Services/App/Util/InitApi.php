@@ -51,7 +51,7 @@ class InitApi extends FanweBaseService
         $this->setData("withdraw_rate",db_config("WITHDRAW_RATE"));
         $this->setData("min_withdraw",db_config("MIN_WITHDRAW"));
         $this->setData("system_notice",db_config("SYSTEM_NOTICE"));
-        $this->setData("min_otc_sale",db_config("MIN_OTC_SALE"));
+        $this->setData("min_otc_sale",floatval(db_config("MIN_OTC_SALE")));
         $this->setData("min_otc_buy",db_config("MIN_OTC_BUY"));
         $this->setData("sign_cp",db_config("SIGN_CP"));
         $this->setData("sign_coin",db_config("SIGN_COIN"));

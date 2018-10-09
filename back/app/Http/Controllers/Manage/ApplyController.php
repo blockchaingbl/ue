@@ -44,6 +44,14 @@ class ApplyController extends AuthBaseController
                 $query->where('update_time','<=',$end_date.' 23:59:59');
             }
         })->orderBy('update_time','desc')->paginate(20);
+        $lists->map(function ($val){
+            if($val->user->pid)
+            {
+                $val->parent = User::find($val->id);
+            }
+            return $val;
+        });
+
         return view('manage.apply.index',['lists'=>$lists,'param'=>$param]);
     }
 
@@ -133,6 +141,13 @@ class ApplyController extends AuthBaseController
                 $query->where('update_time','<=',$end_date.' 23:59:59');
             }
         })->orderBy('update_time','desc')->paginate(20);
+        $lists->map(function ($val){
+            if($val->user->pid)
+            {
+                $val->parent = User::find($val->id);
+            }
+            return $val;
+        });
         return view('manage.apply.node',['lists'=>$lists,'param'=>$param]);
     }
 
@@ -155,7 +170,12 @@ class ApplyController extends AuthBaseController
 
         if($param['status']==1)
         {
-            User::where('id',$param['user_id'])->update(['level'=>2]);
+            $user = User::where('id',$param['user_id'])->first();
+            if($user->level==0)
+            {
+                $user->level =2;
+                $user->save();
+            }
             if($param['lock_transfer']==1)
             {
                 $lock_transfer = LockTransferAuth::where(['user_id'=>$param['user_id']])->first();
