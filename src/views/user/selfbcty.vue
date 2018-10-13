@@ -337,7 +337,7 @@
             getInfo(){
                 this.$http.post('/api/app.user/account/info',{}).then(res => {
                     this.vc_amount=res.data.account_info.vc_amount;
-                    this.vc_total=res.data.account_info.vc_total;
+                    this.vc_total=res.data.account_info.vc_normal;
                     this.vc_freeze=res.data.account_info.vc_freeze;
                 }).catch(err => {
                     if (err.errcode) {

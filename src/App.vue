@@ -3,13 +3,13 @@
 <div id="app">
 <x-header :on-click-back="back" :left-options="{showBack: this.$route.name!='loginIndex' && this.$route.name!='pwdReset' && this.$route.name!='login_auth' 
 && this.$route.name!='login_auth',backText:''}" 
-v-if="this.$route.meta.pageType!='wallet_chain' && this.$route.name!='mineCenter'&& this.$route.name !='taskCenter' 
-&& this.$route.name !='relationsFriends' && this.$route.name != 'dealsCenter' &&this.$route.name !='userCenter' 
-&& this.$route.name !='index' &&this.$route.name !='wallet_international' && this.$route.name !='wallet_international_detail' 
-&& this.$route.name !='wallet_international_recieve' && this.$route.name !='wallet_international_send' && this.$route.name !='wallet_international_create' 
-&& this.$route.name !='wallet_international_import' && this.$route.name !='wallet_international_manage' 
-&& this.$route.name !='wallet_international_manage_item' 
-&& this.$route.name !='candy_success' 
+v-if="this.$route.meta.pageType!='wallet_chain' && this.$route.name!='mineCenter'&& this.$route.name !='taskCenter'
+&& this.$route.name !='relationsFriends' && this.$route.name != 'dealsCenter' &&this.$route.name !='userCenter'
+&& this.$route.name !='index' &&this.$route.name !='wallet_international' && this.$route.name !='wallet_international_detail'
+&& this.$route.name !='wallet_international_recieve' && this.$route.name !='wallet_international_send' && this.$route.name !='wallet_international_create'
+&& this.$route.name !='wallet_international_import' && this.$route.name !='wallet_international_manage'
+&& this.$route.name !='wallet_international_manage_item'
+&& this.$route.name !='candy_success'
 && this.$route.name !='lock_transfer_success'
 && this.$route.name !='redPacketIndex'
 && this.$route.name !='packetList'
@@ -21,6 +21,11 @@ v-if="this.$route.meta.pageType!='wallet_chain' && this.$route.name!='mineCenter
 && this.$route.name !='selfMachine'
 && this.$route.name !='machine_self_detail'
 && this.$route.name !='transferSuccess'
+&& this.$route.name !='bankDetail'
+&& this.$route.name !='current_detail'
+&& this.$route.name !='crowdDetail'
+&& this.$route.name !='CardOrderDetail'
+&& this.$route.name !='creditCardorder'
 "  @click="onClickBack" :class="{'market-header':(this.$route.name =='marketIndex'|| this.$route.name =='marketDetail')}">{{this.$route.meta.title}}
 
     <router-link  slot="right" to="/user/center" class="exalt" v-if="this.$route.name!='loginIndex' && this.$route.name!='pwdReset' && this.$route.name!='login_auth' && this.$route.name!='userSetting'"> 

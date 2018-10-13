@@ -841,7 +841,7 @@ export default new Router({routes:[
             name: 'mineMachine',
             component: resolve => require(['@/views/mine_machine/index'], resolve),
             meta: {
-                title: '矿机商城',
+                title: '淘淘商城',
                 requireAuth: false,
                 pageType: 'mineMachine'
             }
@@ -851,7 +851,7 @@ export default new Router({routes:[
             name: 'selfMachine',
             component: resolve => require(['@/views/mine_machine/self_machine'], resolve),
             meta: {
-                title: '我的矿机',
+                title: '我的淘淘',
                 requireAuth: false,
                 pageType: 'selfMachine'
             }
@@ -861,7 +861,7 @@ export default new Router({routes:[
             name: 'history',
             component: resolve => require(['@/views/mine_machine/history'], resolve),
             meta: {
-                title: '历史矿机',
+                title: '历史淘淘',
                 requireAuth: false,
                 pageType: 'history'
             }
@@ -871,7 +871,7 @@ export default new Router({routes:[
             name: 'machine_detail',
             component: resolve => require(['@/views/mine_machine/machine_detail'], resolve),
             meta: {
-                title: '矿机详情',
+                title: '淘淘详情',
                 requireAuth: false,
                 pageType: 'machine_detail'
             }
@@ -881,7 +881,7 @@ export default new Router({routes:[
             name: 'machine_self_detail',
             component: resolve => require(['@/views/mine_machine/self_detail'], resolve),
             meta: {
-                title: '已购矿机详情',
+                title: '已购淘淘详情',
                 requireAuth: false,
                 pageType: 'machine_self_detail'
             }
@@ -1006,6 +1006,137 @@ export default new Router({routes:[
                 pageType: 'societyCalcNode'
             }
         },
+        {
+            path: '/crowd',
+            name: 'crowdCenter',
+            component: resolve => require(['@/views/crowd/index'], resolve),
+            meta: {
+                title: '众筹列表',
+                requireAuth: false,
+                pageType: 'crowdCenter'
+            }
+        },
+        {
+            path: '/crowd/detail/:crowd_id',
+            name: 'crowdDetail',
+            component: resolve => require(['@/views/crowd/detail'], resolve),
+            meta: {
+                title: '众筹详情',
+                requireAuth: false,
+                pageType: 'crowdDetail'
+            }
+        },
+        {
+            path: '/crowd/my_fund',
+            name: 'my_crowd',
+            component: resolve => require(['@/views/crowd/my_fund'], resolve),
+            meta: {
+                title: '我的众筹',
+                requireAuth: false,
+                pageType: 'my_crowd'
+            }
+        },
+        {
+            path: '/shop/card',
+            name: 'shopCard',
+            component: resolve => require(['@/views/shop/card'], resolve),
+            meta: {
+                title: '我要兑换购物卡',
+                requireAuth: false,
+                pageType: 'my_crowd'
+            }
+        },
+        {
+            path: '/circulate/index',
+            name: 'shopIndex',
+            component: resolve => require(['@/views/shop/choice'], resolve),
+            meta: {
+                title: '资产流通',
+                requireAuth: false,
+                pageType: 'shopIndex'
+            }
+        },
+        {
+            path: '/shop/cardorder',
+            name: 'shopCardOrder',
+            component: resolve => require(['@/views/shop/cardorder'], resolve),
+            meta: {
+                title: '购物卡兑换记录',
+                requireAuth: false,
+                pageType: 'shopCardOrder'
+            }
+        },
+        {
+            path: '/cardorder/detail/:id',
+            name: 'CardOrderDetail',
+            component: resolve => require(['@/views/shop/detail'], resolve),
+            meta: {
+                title: '购物卡兑换详情',
+                requireAuth: false,
+                pageType: 'CardOrderDetail'
+            }
+        },
+        {
+            path: '/credit/choice',
+            name: 'creditChoice',
+            component: resolve => require(['@/views/credit/choice'], resolve),
+            meta: {
+                title: '我的信用',
+                requireAuth: false,
+                pageType: 'creditChoice'
+            }
+        },
+        {
+            path: '/credit/cardorder/:type?',
+            name: 'creditCardorder',
+            component: resolve => require(['@/views/credit/cardorder'], resolve),
+            meta: {
+                title: '油卡',
+                requireAuth: false,
+                pageType: 'creditCardorder'
+            }
+        },
+        {
+            path: '/credit/orders',
+            name: 'creditOrders',
+            component: resolve => require(['@/views/credit/orders'], resolve),
+            meta: {
+                title: '我的授权',
+                requireAuth: false,
+                pageType: 'creditOrders'
+            }
+        },
+        {
+            path: '/credit/apply',
+            name: 'creditApply',
+            component: resolve => require(['@/views/credit/credit_apply'], resolve),
+            meta: {
+                title: '申请额度',
+                requireAuth: false,
+                pageType: 'creditApply'
+            }
+        },
+        {
+            path: '/shop/asset_apply',
+            name: 'asset_apply',
+            component: resolve => require(['@/views/shop/asset_apply'], resolve),
+            meta: {
+                title: '我有资产要变现',
+                requireAuth: false,
+                pageType: 'asset_apply'
+            }
+        },
+        {
+            path: '/shop/asset_back',
+            name: 'asset_back',
+            component: resolve => require(['@/views/shop/asset_back'], resolve),
+            meta: {
+                title: '我有资产要收回',
+                requireAuth: false,
+                pageType: 'asset_back'
+            }
+        },
+
 
 
     ]});

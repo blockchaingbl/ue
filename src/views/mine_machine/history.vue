@@ -5,7 +5,7 @@
             <div class="item" v-for="(item,index) in list"  :key="index">
                 <div class="item-head flex-box vux-1px-b">
                     <div class="item-name flex-1">
-                        <img src="@/assets/images/machine_icon.png" alt="" class="item-icon">3星矿机
+                        <img src="@/assets/images/machine_icon.png" alt="" class="item-icon">3星淘淘
                     </div>
                     <div class="item-price">累计收益：{{item.income}}{{item.coin_unit}}</div>
                 </div>

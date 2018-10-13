@@ -38,7 +38,7 @@
         </div>
     </div>
     <box gap="0 0" class="buy-btn">
-        <!--<x-button type="primary" style="border-radius:0;font-size:0.875rem;height:100%" @click.native="fetch()">收取矿机收益</x-button>-->
+        <!--<x-button type="primary" style="border-radius:0;font-size:0.875rem;height:100%" @click.native="fetch()">收取淘淘收益</x-button>-->
     </box>
 </div>
 </template>

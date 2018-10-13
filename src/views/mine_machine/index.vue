@@ -4,10 +4,10 @@
       <div class="overwrite-title-demo" slot="overwrite-title">
         <tabbar v-model="index">
             <tabbar-item @on-item-click="linktomall" >
-                <span slot="label">矿机商城</span>
+                <span slot="label">淘淘商城</span>
             </tabbar-item>
             <tabbar-item @on-item-click="linktomine" >
-                <span slot="label">我的矿机</span>
+                <span slot="label">我的淘淘</span>
             </tabbar-item>
         </tabbar>
         

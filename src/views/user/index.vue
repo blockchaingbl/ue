@@ -1,6 +1,5 @@
 <template lang="html">
 <div class="page-user-center">
-
         <div class="center-banner">
             <div class="modify" @click="changeName">
                 <i class="iconfont">&#xe6f9;</i>
@@ -9,7 +8,7 @@
                 <img src="@/assets/images/user_setting.png" alt="">
             </router-link>
             <div class="user-info">
-                
+
                     <div class="user-portrait">
                         <img src="@/assets/images/avatar.png" alt="" v-if="useravatar==''">
                         <img v-bind:src="useravatar" v-else>
@@ -49,7 +48,7 @@
                     </div>
                     <div class="item-text">我的钱包</div>
                 </router-link>
-                <div class="item flex-box" @click="tis_btn">
+                <div class="item flex-box" @click="credit">
                     <div class="user_icon">
                         <img src="@/assets/images/user_credit.png" alt="">
                     </div>
@@ -85,12 +84,18 @@
                     </div>
                     <div class="item-text">商&nbsp;&nbsp;城</div>
                 </div>
-                <div class="item flex-box" @click="tis_btn">
+                <router-link class="item flex-box" :to="{path: '/circulate/index'}" >
                     <div class="user_icon">
                         <img src="@/assets/images/user_circulation.png" alt="">
                     </div>
                     <div class="item-text">资产流通</div>
-                </div>
+                </router-link>
+                <!--<div class="item flex-box" @click="tis_btn" >-->
+                    <!--<div class="user_icon">-->
+                        <!--<img src="@/assets/images/user_circulation.png" alt="">-->
+                    <!--</div>-->
+                    <!--<div class="item-text">资产流通</div>-->
+                <!--</div>-->
                 <div class="item flex-box" @click="turn_node()">
                     <div class="user_icon">
                         <img src="@/assets/images/user_node.png" alt="">
@@ -149,7 +154,7 @@ export default {
             loading:true,
             vc_normal:0,
             is_node:0,
-            is_society:0
+            is_society:0,
         }
     },
     mounted () {
@@ -184,6 +189,7 @@ export default {
                 this.$store.state.is_society =  res.data.account_info.is_society;
                 this.$store.state.is_node =  res.data.account_info.is_node;
                 this.loading  = false;
+                this.level = res.data.account_info.level;
             }).catch(err => {
                 this.loading  = false;
                 if (err.errcode) {
@@ -337,11 +343,27 @@ export default {
             }
         },
         jubaopen(){
+            if(this.loading)
+            {
+                return false;
+            }
             if(parseFloat(this.vc_normal)<=parseFloat(this.$store.state.init.jubaopen))
             {
-                this.$vux.toast.text(`资产不足`);
+                this.$vux.toast.text(`资产不足,需要达到${this.$store.state.init.jubaopen}`);
             }else{
                 this.$router.push({path:'/finance'});
+            }
+        },
+        credit(){
+            if(this.loading)
+            {
+                return false;
+            }
+            if(this.level<=0)
+            {
+                this.$vux.toast.text('需要社群身份');
+            }else{
+                this.$router.push({path:'/credit/choice'});
             }
         }
     }

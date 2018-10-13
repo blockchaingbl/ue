@@ -10,7 +10,7 @@
                         <img src="@/assets/images/icon_gem_new.png" alt="" v-else>
                         <span v-if="item.mine_type!=1">{{item.coin_unit}}</span>
                     </div>
-                    <div class="profit-text" v-if="item.mine_type==1">矿机</div>
+                    <div class="profit-text" v-if="item.mine_type==1">淘淘</div>
                     <div class="profit-text" v-else>{{item.amount}}</div>
 
                     <!-- <div class="img-text">ETH</div>
@@ -174,6 +174,10 @@ export default {
     this.getUserInfo();
     this.getCoin();
     this.system_notice = this.$store.state.init.system_notice;
+    const len = this.system_notice.length;
+    let width =  len*15;
+  
+    $('.seamless-warp2').find('.item').css('width',width+'px')
     this.invite_cp = this.$store.state.init.invite_cp;
   },
   methods: {
@@ -302,15 +306,17 @@ export default {
 @import "../../assets/css/style.css";
 @import "../../assets/css/variable.less";
 .mine-center {
-  .seamless-warp2 {
+    .seamless-warp2 {
         overflow: hidden;
         height: 25px;
         width: 100%;
         ul.item {
-            width: 580px;
+            width:1500px;
             li {
                 float: left;
-                margin-right: 10px;
+ 				margin-right: 10px;
+                height: 1.75rem;
+                line-height: 1.75rem;
             }
         }
     }

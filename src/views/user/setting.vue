@@ -17,7 +17,7 @@
                 <cell title="我的糖果" :link="{path:'/candy/trans'}">
                     <i slot="icon" class="iconfont icon_payset" width="20" style="display:block;margin-right: 1rem;">&#xe61a;</i>
                 </cell>
-                <cell title="矿机商城" :link="{path:'/mine_machine'}">
+                <cell title="淘淘商城" :link="{path:'/mine_machine'}">
                     <i slot="icon" class="iconfont icon_assets" width="20" style="display:block;margin-right: 1rem;">&#xe622;</i>
                 </cell>
                 <cell title="关于我们" :link="{path:'/about'}" v-if="$store.state.init.about_open">
