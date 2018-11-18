@@ -2,7 +2,7 @@ import axios from "axios";
 import qs from "qs";
 import { Toast } from "vux";
 import router from "../router";
-import store from '@/vuex/store'
+import store from '@/store/'
 import { setCookie, getCookie, deleteCookie } from "../assets/js/cookieHandle";
 
 axios.cancelTokens = [];
@@ -114,6 +114,7 @@ axios.interceptors.response.use(
     if (res.data && res.data.errcode != 0) {
       if (res.data.errcode == 60001) { // 用户未登录或登录状态信息过期
         deleteCookie("token");
+        localStorage.removeItem('token')
         //this.$vux.toast.text("err.message");
         if(router.currentRoute.meta.pageType!="login_auth")
         {
@@ -188,9 +189,9 @@ axios.interceptors.response.use(
           // });
         }*/
       // }
-      
+
     // }
-      if(error.response.hasOwnProperty('response'))
+      if(error.hasOwnProperty('response'))
       {
           if (error.response.status === 504 || !error.hasOwnProperty('response') || !error.response.hasOwnProperty('status')) {
               router.push({path: "/error/504"});

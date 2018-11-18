@@ -22,16 +22,20 @@
                 </cell>
                 <cell title="关于我们" :link="{path:'/about'}" v-if="$store.state.init.about_open">
                     <i slot="icon" class="iconfont icon_wallet" width="20" style="display:block;margin-right: 1rem;">&#xe62d;</i>
+                    <span v-if="local_about_version < about_version"><badge></badge></span>
                 </cell>
                 <cell title="意见反馈" :link="{path:'/connect'}" v-if="$store.state.init.connect_open">
                     <i slot="icon" class="iconfont icon_accset" width="20" style="display:block;margin-right: 1rem;">&#xe62c;</i>
                 </cell>
                 <cell title="联系我们" :link="{path:'/connect_text'}" v-if="$store.state.init.connect_open">
                     <i slot="icon" class="iconfont icon_payset" width="20" style="display:block;margin-right: 1rem;">&#xe63b;</i>
+                    <span v-if="local_connect_version < connect_version"><badge></badge></span>
                 </cell>
                 <cell title="系统公告" :link="{path:'/notice'}" v-if="$store.state.init.notice_open">
                     <i slot="icon" class="iconfont icon_accset" width="20" style="display:block;margin-right: 1rem;">&#xe638;</i>
+                    <span v-if="local_notice_text_version < notice_text_version"><badge></badge></span>
                 </cell>
+
                 <cell title="帮助中心" is-link @click.native="open">
                     <i slot="icon" class="iconfont icon_accset" width="20" style="display:block;margin-right: 1rem;">&#xe6f5;</i>
                 </cell>
@@ -44,10 +48,10 @@
                 </cell>
             </group>
         </div>
-</div> 
+</div>
 </template>
 <script>
-import {Confirm,Group, XSwitch, XButton, TransferDomDirective as TransferDom } from 'vux'
+import {Confirm,Group, XSwitch, XButton, TransferDomDirective as TransferDom ,Badge} from 'vux'
 import { Flexbox, FlexboxItem, Divider } from 'vux'
 import { setCookie, getCookie, deleteCookie,clearCookie } from "../../assets/js/cookieHandle";
 import VueCoreImageUpload from 'vue-core-image-upload'
@@ -63,6 +67,7 @@ export default {
         Flexbox,
         FlexboxItem,
         Divider,
+        Badge,
         'vue-core-image-upload': VueCoreImageUpload
     },
   data () {
@@ -79,7 +84,14 @@ export default {
             _user_token:this.$store.state.token
         },
         lock_transfer_auth:0,
-        url:"https://shop.bmweixin.com/app/index.php?r=qa&i=20&do=mobile&wxref=mp.weixin.qq.com&c=entry&m=ewei_shopv2#wechat_redirect"
+        about_version:0,
+        connect_version:0,
+        notice_text_version:0,
+        url:"https://shop.bmweixin.com/app/index.php?r=qa&i=20&do=mobile&wxref=mp.weixin.qq.com&c=entry&m=ewei_shopv2#wechat_redirect",
+        local_about_version:parseInt(localStorage.getItem('local_about_version') || 0),
+        local_connect_version:parseInt(localStorage.getItem('local_connect_version') ||0),
+        local_notice_text_version:parseInt(localStorage.getItem('local_notice_text_version') ||0),
+        level:0
     }
   },
   mounted () {
@@ -97,6 +109,11 @@ export default {
                 this.$store.state.sugar_auth = res.data.account_info.sugar_auth;
                 this.$store.state.lock_transfer_auth =  parseInt(res.data.account_info.lock_transfer_auth);
                 this.lock_transfer_auth = parseInt(res.data.account_info.lock_transfer_auth);
+                this.about_version = parseInt(res.data.account_info.about_version);
+                this.connect_version = parseInt(res.data.account_info.connect_version);
+                this.notice_text_version = parseInt(res.data.account_info.notice_text_version);
+                this.level = parseInt(res.data.account_info.level);
+
             }).catch(err => {
                 if (err.errcode) {
                     this.$vux.toast.text(err.message);
@@ -116,15 +133,21 @@ export default {
                 title: '确定要退出吗？',
                 onCancel(){},
                 onConfirm(){
-                    console.log("退出");
-                   // setCookie("token","");
+                    _this.$store.state.nim.disconnect();
+                    _this.$store.state.userUID =null ;
+                      deleteCookie('uid')
+                      deleteCookie('sdktoken')
+                      try{
+                        App.cleanCache("1")
+                        }catch (e) {
+                      }
                     localStorage.removeItem('token');
                     localStorage.clear();
                     clearCookie();
                     setCookie("isSign","");
                     _this.$store.commit("reset_state");
                     _this.$vux.toast.text("退出成功");
-                    _this.$router.push({path:'/login'});
+                    _this.$router.push({name:'loginIndex',params:{reload:1}});
                 }
             })
         },

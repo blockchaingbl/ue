@@ -1007,7 +1007,7 @@ export default new Router({routes:[
             }
         },
         {
-            path: '/crowd',
+            path: '/zc',
             name: 'crowdCenter',
             component: resolve => require(['@/views/crowd/index'], resolve),
             meta: {
@@ -1136,6 +1136,272 @@ export default new Router({routes:[
                 pageType: 'asset_back'
             }
         },
+        {
+          path: '/shop/asset_apply_order',
+          name: 'shopApplyOrder',
+          component: resolve => require(['@/views/shop/asset_apply_order'], resolve),
+          meta: {
+            title: '我申请的资产变现',
+            requireAuth: false,
+            pageType: 'shopApplyOrder'
+          }
+        },
+        {
+          path: '/credit/asset_apply_order',
+          name: 'creditAssetOrder',
+          component: resolve => require(['@/views/credit/asset_apply_order'], resolve),
+          meta: {
+            title: '授权给我的资产变现',
+            requireAuth: false,
+            pageType: 'creditAssetOrder'
+          }
+        },
+        {
+          path: '/shop/asset_back_order',
+          name: 'shopApplyBackOrder',
+          component: resolve => require(['@/views/shop/asset_back_order'], resolve),
+          meta: {
+            title: '我申请的资产收回',
+            requireAuth: false,
+            pageType: 'shopApplyBackOrder'
+          }
+        },
+        {
+          path: '/credit/asset_back_order',
+          name: 'creditAssetBackOrder',
+          component: resolve => require(['@/views/credit/asset_back_order'], resolve),
+          meta: {
+            title: '授权给我的资产收回',
+            requireAuth: false,
+            pageType: 'creditAssetBackOrder'
+          }
+        },
+        {
+          path: '/asset_apply_order/detail/:id',
+          name: 'shopAssetDetail',
+          component: resolve => require(['@/views/shop/asset_detail'], resolve),
+          meta: {
+            title: '资产变现详情',
+            requireAuth: false,
+            pageType: 'shopAssetDetail'
+          }
+        },
+        {
+          path: '/asset_back_order/detail/:id',
+          name: 'shopAssetBackDetail',
+          component: resolve => require(['@/views/shop/asset_back_detail'], resolve),
+          meta: {
+            title: '资产收回详情',
+            requireAuth: false,
+            pageType: 'shopAssetBackDetail'
+          }
+        },
+        {
+            path: '/session',
+            name: 'session',
+            component: resolve => require(['@/views/chat/Session'], resolve),
+            meta: {
+                title: '会话列表',
+                requireAuth: false,
+                pageType: 'session',
+            }
+        },
+        {
+            path: '/contacts',
+            name: 'contacts',
+            component: resolve => require(['@/views/chat/Contacts'], resolve),
+            meta: {
+                title: '通讯录',
+                requireAuth: false,
+                pageType: 'contacts',
+            }
+        },
+
+        // 好友名片-搜索好友/群
+        {
+            path: '/searchuser/:searchType',
+            name: 'searchuser',
+            component: resolve => require(['@/views/chat/SearchUser'], resolve),
+            meta: {
+                title: '搜索好友/群',
+                requireAuth: false,
+                pageType: 'searchuser',
+            }
+        },
+        // 好友名片
+        {
+            path: '/namecard/:userId',
+            name: 'namecard',
+            component: resolve => require(['@/views/chat/NameCard'], resolve),
+            meta: {
+                title: '好友名片',
+                requireAuth: false,
+                hide_head:true
+            }
+        },
+        // 好友名片-设置备注
+        {
+            path: '/namecardremark/:userId',
+            name: 'namecardremark',
+            component: resolve => require(['@/views/chat/NameCardRemark'], resolve),
+            meta: {
+                title: '设置备注',
+                requireAuth: false,
+            }
+        },
+        {
+            path: '/chat/:sessionId',
+            name: 'chat',
+            component: resolve => require(['@/views/chat/Chat'], resolve),
+            meta: {
+                title: '会话列表',
+                requireAuth: false,
+                pageType: 'session',
+                hide_head:true
+            }
+        },
+        // 聊天历史记录
+        {
+            path: '/chathistory/:sessionId',
+            name: 'chathistory',
+            component: resolve => require(['@/views/chat/Chat'], resolve),
+            meta: {
+                title: '历史纪录',
+                requireAuth: false,
+                pageType: 'chathistory',
+                hide_head:true
+            }
+        },
+    // 邀请好友-加入群
+    {
+      path: '/teaminvite/:teamId',
+      name: 'teaminvite',
+      component (resolve) {
+        require(['@/views/chat/TeamInvite'], resolve)
+      },
+      meta: {
+        hide_head:true
+      }
+    },
+    // 群列表
+    {
+      path: '/teamlist/:teamType',
+      name: 'teamlist',
+      component (resolve) {
+        require(['@/views/chat/TeamList'], resolve)
+      },
+      meta: {
+        hide_head:true
+      }
+    },
+    // 群名片
+    {
+      path: '/teamcard/:teamId',
+      name: 'teamcard',
+      component (resolve) {
+        require(['@/views/chat/TeamCard'], resolve)
+      },
+      meta: {
+        hide_head:true
+      }
+    },
+    // 群管理
+    {
+      path: '/teammanage/:teamId',
+      name: 'teammanage',
+      component(resolve) {
+        require(['@/views/chat/TeamManage'], resolve)
+      },
+      meta: {
+        hide_head:true
+      }
+    },
+    // 群设置
+    {
+      path: '/teamsetting',
+      name: 'teamsetting',
+      component(resolve) {
+        require(['@/views/chat/TeamSetting'], resolve)
+      },
+      meta: {
+        hide_head:true
+      }
+    },
+    // 群设置
+    {
+        path: '/society_send',
+        name: 'society_send',
+        component(resolve) {
+            require(['@/views/chat/SocietySend.vue'], resolve)
+        },
+        meta: {
+            hide_head:true
+        }
+    },
+    // 群成员列表
+    {
+      path: '/teammembers/:teamId',
+      name: 'teammembers',
+      component(resolve) {
+        require(['@/views/chat/TeamMembers'], resolve)
+      },
+      meta: {
+        hide_head:true
+      }
+    },
+    // 群成员名片
+    {
+      path: '/teammembercard/:member',
+      name: 'teammembercard',
+      component(resolve) {
+        require(['@/views/chat/TeamMemberCard'], resolve)
+      },
+      meta: {
+        hide_head:true
+      }
+    },
+    // 发送群消息回执页
+    {
+      path: '/teamSendMsgReceipt/:teamId',
+      name: 'TeamSeamMsgReceipt',
+      component(resolve) {
+        require(['@/views/chat/TeamMsgReceiptDetail'], resolve)
+      },
+      meta: {
+        hide_head:true
+      }
+    },
+    // 群消息回执详情页
+    {
+      path: '/msgReceiptDetail/:msgInfo',
+      name: 'msgReceiptDetail',
+      component(resolve) {
+        require(['@/views/chat/TeamSendMsgReceipt'], resolve)
+      },
+      meta: {
+        hide_head:true
+      }
+    },
+    {
+        path: '/sysmsgs',
+        name: 'sysmsgs',
+        component(resolve) {
+            require(['@/views/chat/SysMsgs'], resolve)
+        },
+        meta: {
+            title: '系统消息',
+        }
+    },
+    {
+        path: '/sys_send',
+        name: 'sys_send',
+        component(resolve) {
+            require(['@/views/chat/SysSend'], resolve)
+        },
+        meta: {
+            hide_head:true
+        }
+    },
 
 
 

@@ -18,6 +18,9 @@
                 <group class="candy-numb" title="所在市县">
                     <x-input  v-model="area" type="text"   placeholder="请输入所在市县"  :required="true" ></x-input>
                 </group>
+                <group class="candy-numb" title="申请额度：">
+                    <x-input  v-model="apply_number" type="number"   placeholder="请填入以10万为单位的整数倍"  :required="true" ></x-input>
+                </group>
                 <group class="candy-numb">
                     <popup-radio title="行业" :options="industry_arr" v-model="industry_type">
                         <p slot="popup-header" class="vux-1px-b grant-coin-slot">行业</p>
@@ -90,7 +93,8 @@ import { Datetime, Loading,LoadMore,PopupRadio,XSwitch, TransferDomDirective as 
                 finish_month:'1个月',
                 industry_arr:["现从事行业",'需要推荐行业'],
                 industry_type:"现从事行业",
-                inviter:""
+                inviter:"",
+                apply_number:''
             };
         },
         mounted() {
@@ -120,6 +124,7 @@ import { Datetime, Loading,LoadMore,PopupRadio,XSwitch, TransferDomDirective as 
                     this.status_show = res.data.info.status+1;
                     this.industry_type = res.data.info.industry_type
                     this.inviter = res.data.info.inviter
+                    this.apply_number = res.data.info.apply_number
                     this.$vux.loading.hide()
                 })
                 .catch(error=>{
@@ -147,7 +152,8 @@ import { Datetime, Loading,LoadMore,PopupRadio,XSwitch, TransferDomDirective as 
                     team_number:parseInt(this.team_number) ,
                     area:this.area,
                     industry_type:this.industry_type,
-                    inviter:this.inviter
+                    inviter:this.inviter,
+                    apply_number:this.apply_number
                 }
                 const _this = this;
                 this.$vux.loading.show({
@@ -164,7 +170,7 @@ import { Datetime, Loading,LoadMore,PopupRadio,XSwitch, TransferDomDirective as 
                         this.$vux.toast.text(res.message);
                     }
                     this.lock = false;
-                    
+
                 }).catch(err=>{
                     this.$vux.toast.text(err.message);
                     this.$vux.loading.hide()

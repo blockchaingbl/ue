@@ -10,12 +10,12 @@
         </div>
 
         <group>
-            <x-input title="转入地址"   v-model="recieve_address" class="recieve_input" :required="true" ref="recieve_address">
+            <x-input title="转入地址" :readonly="order"  v-model="recieve_address" class="recieve_input" :required="true" ref="recieve_address">
                 <i class="iconfont" slot="right" v-on:click="open_scan()" v-show="$store.state.init.is_app">&#xe6e1;</i>
             </x-input>
-            <x-input title="转出数额" v-model="recieve_amount" type="number" class="recieve_input recieve-price"  :required="true" ref="recieve_amount"></x-input>
+            <x-input title="转出数额" :readonly="order" v-model="recieve_amount" type="number" class="recieve_input recieve-price"  :required="true" ref="recieve_amount"></x-input>
         </group>
-        
+
         <group>
             <x-input title="钱包密码"  type="password" class="recieve_input" v-model="password"></x-input>
         </group>
@@ -24,16 +24,16 @@
                 <div class="gas-title">矿工费用</div>
                 <cell title=""  primary="content" class=" recieve_input" style="background:#fff">
                     <range v-model="gas_price" :min="1" :max="100"></range>
-                </cell> 
+                </cell>
                 <div class="gas-s">慢</div>
                 <div class="gas-price">gas price: {{gas_price}}</div>
                 <div class="gas-f">快</div>
             </div>
             <div class="senior"   v-show="displayType==1" :class='{active:displayType==1}' style="background:#fff">
                 <x-input title="Gas" type="number" v-model="gas" class="recieve_input"></x-input>
-                <x-textarea placeholder="data(十六进制数据)" class="recieve_input" v-model="data"></x-textarea>
+                <x-textarea placeholder="data(十六进制数据)" class="recieve_input" v-model="data" :readonly="order"></x-textarea>
             </div>
-            
+
         </div>
 
         <group v-if="!api" class="senior_btn">
@@ -45,7 +45,7 @@
         </box>
 
         <popup v-model="tx_detail" v-transfer-dom>
-            <div class="tx_detail">                
+            <div class="tx_detail">
             <div class="txtit">流通核对</div>
                 <group >
                     <cell>
@@ -180,7 +180,8 @@ export default {
       tx_done:false,
       tx_hash:"",
       base_coin:"",
-      block_chain:""
+      block_chain:"",
+      order:false
     };
   },
   mounted() {
@@ -193,7 +194,7 @@ export default {
     if (router.currentRoute.query.gas) this.gas = router.currentRoute.query.gas;
     this.data = router.currentRoute.query.data;
     this.api = router.currentRoute.query.api == 1;
-
+    this.order = Boolean(router.currentRoute.query.order);
     var _this = this;
     if (!this.$store.state.wallet.address) {
       this.$store.commit("loadWallets", function() {
@@ -288,7 +289,19 @@ export default {
       }
     },
     estimateTx: function() {
+        if(this.recieve_address.substr(0,2)!='0x')
+        {
+            AlertModule.show({
+                title: '错误',
+                content: "请输入正确的ETH地址",
+                onShow () {
+                },
+                onHide () {
 
+                }
+            });
+            return;
+        }
         //md5校验
         var password = this.password;
         if(this.$store.state.wallet.wallet_pwd){
@@ -399,6 +412,7 @@ export default {
               loading.close();
               return;
             }
+
             this.gas_estimate = res.data.gas;
             //gas太低使用预估的
             if (res.data.gas > this.gas) this.gas = res.data.gas;
@@ -427,7 +441,18 @@ export default {
           .catch(err => {
             this.$store.state.page_loading = false;
             loading.close();
-            console.log(err);
+            if(err.errcode!=0)
+            {
+              AlertModule.show({
+                title: '错误',
+                content: err.message,
+                onShow () {
+                },
+                onHide () {
+
+                }
+              });
+            }
           });
       }
     },

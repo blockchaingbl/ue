@@ -28,18 +28,18 @@
             </div>
         </div>
         <div class="item vux-1px-b flex-box">
-            <div class="title flex-1">数量 <span v-if="!readOnlyFlag">（可改）</span></div>
+            <div class="red_weight flex-1">数量 <span v-if="!readOnlyFlag">（可改）</span></div>
             <x-input  v-model="amount" :readonly="readOnlyFlag" required placeholder="请输入受让数量" placeholder-align="right" text-align="right" :required="true" :is-type="checkBuyNum"></x-input>
         </div>
         <div class="item flex-box vux-1px-b" v-show="payment_info.length>0&&!readOnlyFlag">
-            <selector @on-change="showPayInfo"  style="width: 100%;"  title="支付方式" :options="payment_info" v-model="chose_payment" direction="rtl"></selector>
+            <selector @on-change="showPayInfo"  style="width: 100%;"  title="支付方式(可改)" :options="payment_info" v-model="chose_payment" direction="rtl"></selector>
         </div>
         <div class="item flex-box vux-1px-b" v-show="payment_info.length>0&&!readOnlyFlag&&chose_payment_info.is_connect">
             <div class="title flex-1">联系方式</div>
             <div class="decs"><a style="color: #4c4c51" :href="call_number">{{chose_payment_info.connect}}</a></div>
         </div>
         <div class="item flex-box vux-1px-b" v-show="payment_info.length==0 || readOnlyFlag">
-            <div class="title flex-1">支付方式</div>
+            <div class="red_weight flex-1">支付方式(可改)</div>
             <div class="decs">{{chose_payment_info.payment_org}}</div>
         </div>
         <div class="item flex-box vux-1px-b" v-show="(payment_info.length==0 || readOnlyFlag)&&chose_payment_info.is_connect">
@@ -71,9 +71,13 @@
             <div class="title flex-1">转入人</div>
             <div class="decs">{{chose_payment_info.payment_receipt}}</div>
         </div>
+        <div class="item flex-box vux-1px-b" v-if="accid" @click="connect()">
+            <div class="title flex-1">在线联系</div>
+            <div class="decs">{{sellerName}}</div>
+        </div>
         <div class="item item-tis flex-box vux-1px-b">
             <div class="title">注：</div>
-            <div class="decs flex-1">注:此受让订单将冻结一定数额资产，交易成功将全额退回，如未支付点已确定支付，或已支付{{this.$store.state.init.otc_order_overtime}}分钟内未点击我确定已支付，致使交易订单无法生成，冻结保证金将被燃烧掉，并且信用还将受到影响。</div>
+            <div class="decs flex-1">注:此受让订单将冻结一定数额资产，交易成功将全额退回，如未支付点已确定支付，或已支付{{this.$store.state.init.otc_order_overtime}}分钟内未点击我确定已支付，致使交易订单无法生成，冻结保证金将被燃烧掉，并且信用还将受到影响。如已确认支付，商家在5小时内未发放资产，请在意见反馈里留言并上传支付凭证，客服会核实发放资产。</div>
         </div>
 
     </div>
@@ -161,7 +165,8 @@
             identity:'',
             order_sn:'',
             lock_day:0,
-            click_lock :false
+            click_lock :false,
+            accid:''
         }
     },
     mounted () {
@@ -186,6 +191,7 @@
                         this.identity = otc_order.identity;
                         this.order_sn = otc_order.order_sn;
                         this.lock_day = otc_order.lock_day
+                        this.accid =otc_order.accid
                         if(type==1){
                             if(otc_order.status>0){
                                 this.confirm_pay = 1;
@@ -207,7 +213,7 @@
                             let  timestamp = Date.parse(new Date())/1000;
                             let diff_time = end_time - timestamp;
                             if(diff_time<0){
-                                this.$vux.toast.text('已超出发GBL时间');
+                                this.$vux.toast.text('已超出发GBL时间，如已收款，请在意见反馈里申请客服协助');
                                 this.time_end = true;
 //                                this.$router.push({path:'/deals/center'});
                             }else{
@@ -244,6 +250,14 @@
                     for (let x in otc.payment){
                         this.payment_info.push({key:x,value:otc.payment[x].payment_org});
                     }
+                  this.payment_info.sort(function (a,b) {
+                       if(a.key=='bankcard') {
+                          return -1;
+                       }else{
+                          return 1;
+                       }
+                  })
+                  console.log( this.payment_info)
                     this.payment = otc.payment;
                     this.chose_payment = this.payment_info[0].key
                 }
@@ -334,6 +348,7 @@
                     this.order_id = res.data.order_id;
                     this.readOnlyFlag = true;
                     this.order_sn = res.data.order_sn;
+                    this.accid = res.data.accid;
                 }
                 this.click_lock = false;
                this.pay_status=1;
@@ -385,6 +400,9 @@
         onError: function (e) {
             this.$vux.toast.text("复制失败，您可以尝试手动记录");
             //console.log('Failed to copy texts')
+        },
+        connect(){
+            this.$router.push({path: '/chat/p2p-'+this.accid})
         }
     },
     computed:{
@@ -408,6 +426,10 @@
             font-size: @fs-normal;
             background-size: 100% 100%;
             padding: 0 0.625rem;
+        }
+        .red_weight{
+            color: red;
+            font-weight: bold;
         }
         .buy-block {
             background: #fff;
@@ -455,6 +477,12 @@
                     }
                     .weui-select{
                         color: #4c4c51;
+                    }
+                    .weui-cell__hd{
+                        .weui-label{
+                            color: red;
+                            font-weight: bold;
+                        }
                     }
                 }
             }

@@ -2,7 +2,7 @@
     <div class="page-grant">
         <div v-if="!loading">
             <div class="candy-senior-opera">
-                <group class="candy-numb" title="挂靠社群" v-if="!attached">
+                <group class="candy-numb" title="挂靠社群" v-if="can">
                     <x-input  v-model="pid_mobile" type="number"   placeholder="请填写社群手机号">
                         <x-button slot="right" type="primary" mini @click.native="attached_send">申请挂靠社群</x-button>
                     </x-input>
@@ -33,7 +33,8 @@ import {Radio } from 'vux'
                 pid_mobile:'',
                 pid:0,
                 attached:0,
-                loading:true
+                loading:true,
+                can:1
             };
         },
         mounted() {
@@ -44,8 +45,8 @@ import {Radio } from 'vux'
                     this.$vux.loading.show({
                         text: ''
                     })
-                    this.$http.post('/api/app.user/account/info',{}).then(res=>{
-                        this.attached = res.data.account_info.attached;
+                    this.$http.post('/api/app.apply/apply/applycheck',{}).then(res=>{
+                        this.can = res.data.can;
                         this.$vux.loading.hide()
                         this.loading = false;
                     })
@@ -67,6 +68,10 @@ import {Radio } from 'vux'
                 this.$http.post('api/app.apply/apply/attached',{pid_mobile:this.pid_mobile}).then(res=>{
                     this.$vux.loading.hide()
                     this.$vux.toast.text(res.message);
+                    if(res.errcode==0)
+                    {
+                      this.can = 0;
+                    }
                 })
                     .catch(error=>{
                         this.$vux.loading.hide()

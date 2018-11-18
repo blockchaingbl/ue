@@ -60,12 +60,13 @@
             找回密码
         </div>
     </div>
-</div>   
+</div>
 </template>
 <script>
 import { Flexbox, FlexboxItem, Divider, Tab, TabItem ,PopupPicker} from 'vux'
 import {Drawer} from 'vux'
 import { mapGetters ,mapActions} from 'vuex';
+import cookie from '../../utils/cookie'
 import { setCookie, getCookie, deleteCookie } from "../../assets/js/cookieHandle";
 export default {
     components: {
@@ -98,6 +99,10 @@ export default {
         }
     },
     mounted () {
+      if(this.$route.params.hasOwnProperty('reload') && this.$route.params.reload==1)
+      {
+        window.location.reload()
+      }
         this.$http.post('api/app.util/init/get_mobile_code',{}).then(res=>{
             this.code_list = res.data.code_list;
         })
@@ -126,7 +131,6 @@ export default {
                         this.countimer=err.data.second;
                         this.counttime(err.data.second);
                     }
-                    //  this.Toast(err || '网络异常，请求失败');
                 });
             }else{
                 this.$refs.mobile.forceShowError = true;
@@ -139,12 +143,13 @@ export default {
             this.form.mobile_code = parseInt(this.mobile_code);
             if (this.$refs.mobile.valid && this.$refs.verifycode.valid) {
                 this.$http.post('/api/app.user/user/login',this.form).then(res => {
-                    console.log(res.errcode);
+
                     if (res.errcode=="0") {
                         //登录成功
                         this.setToken(res.data._user_token);
                         localStorage.setItem('token', JSON.stringify(res.data._user_token));
-                        //setCookie("token",res.data._user_token);
+                        cookie.setCookie('uid', res.data.accid)
+                        cookie.setCookie('sdktoken',res.data.token)
                         this.$router.push({path:'/mine/center'});
                     }
                 }).catch(err => {
@@ -170,16 +175,16 @@ export default {
             if(this.$refs.username.valid&&this.$refs.password.valid&&this.$refs.check_password.valid)
             {
                 this.$http.post('/api/app.user/user/register',this.form).then(res => {
-                    console.log(res);
                     if (res.errcode=="0") {
                         //登录成功
                         this.setToken(res.data._user_token);
                         localStorage.setItem('token', JSON.stringify(res.data._user_token));
+                        cookie.setCookie('uid', res.data.accid)
+                        cookie.setCookie('sdktoken',res.data.token)
                         //setCookie("token",res.data._user_token);
                         this.$router.push({path:'/mine/center'});
                     }
                 }).catch(err => {
-                    console.log(err);
                     if (err.errcode) {
                         this.$vux.toast.text(err.message);
                     }
@@ -211,6 +216,8 @@ export default {
                         this.setToken(res.data._user_token);
                         localStorage.setItem('token', JSON.stringify(res.data._user_token));
                         //setCookie("token",res.data._user_token);
+                        cookie.setCookie('uid', res.data.accid)
+                        cookie.setCookie('sdktoken',res.data.token)
                         this.$router.push({path:'/mine/center'});
                     }
                 }).catch(err => {
@@ -335,5 +342,5 @@ export default {
       padding-left: 0.625rem;
   }
 }
-  
+
 </style>

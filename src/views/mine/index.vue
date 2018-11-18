@@ -1,6 +1,6 @@
 <template lang="html">
     <div class="mine-center">
-      
+
         <div class="mine-banner">
             <img src="@/assets/images/mine_bg_new.jpg" alt="" class="banner-img">
             <div class="banner-centent">
@@ -36,26 +36,33 @@
                     <module-svg></module-svg>
                 </div>
                 <div class="dug-text" v-bind:class="{ active: isdugcoin }">
-                    正在挖矿中...
+                    资产开发中...
                 </div>
-                <audio controls id="audio">
+                <audio  id="audio">
                   <source src="@/assets/images/9897.mp3" >
                 </audio>
+
                 <div class="banner-bottom flex-box">
                     <div class="count-power">
                         <div class="power flex-box">
                             <div class="power-text">算力</div>
                             <div class="power-numb flex-1">{{cp_total}}</div>
                         </div>
-                        <div class="cont-text">算力越高，挖矿越快</div>
+                        <div class="cont-text">算力越高，开发越快</div>
                     </div>
+                    <router-link to="/session" class="msg-session" v-if="auth>0">
+                        <div class="exalt-img2" style="position: relative;">
+                            <img src="@/assets/images/msg-session.png" alt="">
+                            <badge v-if="unread>0" style="position: absolute;right: -0.25rem;top: 2rem;"></badge>
+                        </div>
+                        <div class="exalt-text">消息</div>
+                    </router-link>
                     <router-link to="/task/center" class="exalt">
                         <div class="exalt-img">
                             <img src="@/assets/images/icon_exalt_new.png" alt="">
                         </div>
                         <div class="exalt-text">提升算力</div>
                     </router-link>
-                     
                 </div>
             </div>
         </div>
@@ -83,10 +90,10 @@
             </div>
             <nodata  v-if="list.length<1" :datatip="'暂无数据'"></nodata>
         </div>
-    </div>   
+    </div>
 </template>
 <script>
-import { LoadMore } from "vux";
+import { LoadMore , Badge } from "vux";
 import SVG from "@/views/mine/inc/svg";
 import Nodata from "@/components/nodata";
 import VueMarquee from "@/components/marquee";
@@ -98,7 +105,8 @@ export default {
     "module-svg": SVG,
     "nodata" : Nodata,
     "vue-marquee": VueMarquee,
-    vueSeamless
+    vueSeamless,
+    Badge
   },
   data() {
     return {
@@ -157,6 +165,7 @@ export default {
       _width: "",
       setInterval: "",
       system_noticearr:[this.system_notice,this.system_notice],
+      auth:0,
     };
   },
   computed: {
@@ -167,7 +176,17 @@ export default {
                   step:0.5,
                   switchOffset:0,
               }
-      }
+      },
+        unread()
+        {
+           let count = 0 ;
+           this.$store.state.sessionlist.map(function (val) {
+             count +=val.unread;
+           })
+
+          count+=this.$store.state.customSysMsgUnread;
+          return count
+        }
    },
   mounted() {
     this.getRank();
@@ -175,10 +194,11 @@ export default {
     this.getCoin();
     this.system_notice = this.$store.state.init.system_notice;
     const len = this.system_notice.length;
-    let width =  len*15;
-  
+    let width =  len*13;
+
     $('.seamless-warp2').find('.item').css('width',width+'px')
     this.invite_cp = this.$store.state.init.invite_cp;
+
   },
   methods: {
     getCoin() {
@@ -252,6 +272,7 @@ export default {
             // console.log(res.data);
             _this.vc_amount = res.data.account_info.vc_amount;
             _this.cp_total = res.data.account_info.cp_total;
+            _this.auth = res.data.account_info.chat_auth;
           })
           .catch(err => {
             if (err.errcode) {
@@ -361,7 +382,7 @@ export default {
                 left: 0.625rem;
             }
             & .self-assets {
-                
+
                 background: -webkit-linear-gradient(left, #2881d3, #1d62c1);
                 background: linear-gradient(to right, #2881d3, #1d62c1);
                 height: 2rem;
@@ -464,22 +485,47 @@ export default {
                 }
                 }
                 .exalt {
-                pointer-events: auto;
-                display: block;
-                color: #fff;
+                    pointer-events: auto;
+                    display: block;
+                    color: #fff;
                 }
                 .cont-text{
-                font-size: 0.625rem;
-                text-align: center
+                    font-size: 0.625rem;
+                    text-align: center
                 }
                 .exalt-text {
-                font-size: @fs-middle;
-                text-align: center;
+                    font-size: @fs-middle;
+                    text-align: center;
                 }
                 .exalt-img {
-                width: 2.8125rem;
-                height: 2.8125rem;
-                margin: 0 auto 0.25rem;
+                    width: 2.8125rem;
+                    height: 2.8125rem;
+                    margin: 0 auto 0.25rem;
+                }
+                .exalt-img2 {
+                    height: 3.0625rem;
+                    width: 35px;
+                    padding-top: 1rem;
+                    font-size: 0.875rem;
+                }
+                .msg-session {
+                    margin-left: 4rem;
+                    pointer-events: auto;
+                    display: block;
+                    color: #fff;
+                }
+                .cont-text{
+                    font-size: 0.625rem;
+                    text-align: center
+                }
+                .exalt-text {
+                    font-size: @fs-middle;
+                    text-align: center;
+                }
+                .exalt-img {
+                    width: 2.8125rem;
+                    height: 2.8125rem;
+                    margin: 0 auto 0.25rem;
                 }
             }
             .profit {
@@ -590,6 +636,9 @@ export default {
             #audio {
                 display: none;
             }
+            #audio_msg {
+                display: none;
+            }
         }
     }
     & .rank-box {
@@ -669,7 +718,7 @@ export default {
             }
         }
     }
-    
+
 
     .dc-logo {
         position: fixed;

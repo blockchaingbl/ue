@@ -8,9 +8,11 @@
                 <group class="candy-numb" title="姓名">
                     <x-input  v-model="name" type="text"   :required="true" readonly ></x-input>
                 </group>
-                <group class="candy-numb vux-1px-b" title="电话">
-                    <x-input  v-model="mobile"  :max="11" keyboard="number" readonly type="number"  :required="true" ></x-input>
-                </group>
+                <a :href="'tel:'+mobile" style="color: #363840">
+                    <group class="candy-numb vux-1px-b" title="电话">
+                        <x-input  v-model="mobile"  :max="11" keyboard="number" readonly type="number"  :required="true" ></x-input>
+                    </group>
+                </a>
                 <group class="candy-numb" title="所在市县">
                     <x-input  v-model="area" type="text"    :required="true" readonly></x-input>
                 </group>
@@ -68,101 +70,132 @@
                 <group title="备注：" class="grant-bottom">
                     <x-input readonly v-model="memo" type="text"></x-input>
                 </group>
+                <group v-if="deal_user_id>0">
+                    <cell>
+                        <div style="font-size: 1rem;">
+                            <a :href="'tel:'+deal_user.mobile">协助社群： {{deal_user.mobile}}</a>
+                        </div>
+                    </cell>
+                    <cell @click.native="connect()" v-if="deal_user.accid">
+                        <div style="font-size: 1rem;">
+                            <span>在线联系</span>
+                        </div>
+                    </cell>
+                </group>
+                <group v-if="user_id>0">
+                    <cell>
+                        <div style="font-size: 1rem;">
+                            <a :href="'tel:'+user.mobile">下单人： {{user.mobile}}</a>
+                        </div>
+                    </cell>
+                    <cell @click.native="connect_user()" v-if="user.accid">
+                        <div style="font-size: 1rem;">
+                            <span>在线联系</span>
+                        </div>
+                    </cell>
+                </group>
             </div>
-    </div>
-    <div v-transfer-dom>
-        <loading :show="loading"></loading>
-    </div>
+        </div>
+        <div v-transfer-dom>
+            <loading :show="loading"></loading>
+        </div>
     </div>
 </template>
 <script>
-import { Datetime, Loading,LoadMore,PopupRadio,XSwitch, TransferDomDirective as TransferDom,Popup, PopupHeader } from 'vux'
-    export default {
-        directives: {
-            TransferDom
-        },
-        components: {
-            Datetime,
-            Loading,
-            LoadMore,
-            PopupRadio,
-            XSwitch,
-            Popup,
-            PopupHeader
-        },
-        data() {
-            return {
-                security:'',
-                showDeploy:false,
-                name:'',
-                mobile:'',
-                area:'',
-                card_number:'',
-                shop_card:'天虹',
-                shop_cards:['天虹','永辉','北国','大润发','步步高','沃尔玛'],
-                oil_card_mobile:'',
-                shop_cards_amount:'1000',
-                shop_cards_amounts:[{key:'1000',value:'1000等值GBL'},{key:'3000',value:'3000等值GBL'},{key:'5000',value:'5000等值GBL'},{key:'10000',value:'10000等值GBL'},
-                    {key:'20000',value:'20000等值GBL'}],
-                lock:false,
-                get_ways:['自有加油卡','需要新卡'],
-                get_way:'自有加油卡',
-                card_types:['加油卡','商超购物卡'],
-                card_type:'加油卡',
-                oil_cards:['中石油','中石化'],
-                oil_card:'中石油',
-                loading:true,
-                oil_card_account:'',
-                oil_card_number:'',
-                memo:'',
-                address:'',
-                total_amount:''
-            };
-        },
-        mounted() {
-            this.getDetail();
-        },
-        methods: {
-            getDetail(){
-                const _this = this;
-                this.$http.post('api/app.apply/cardorder/detail',{id:this.$route.params.id}).then(res=>{
-                    if(res.errcode==0)
-                    {
-                       for (let x in res.data.order){
-                           this[x]=res.data.order[x]
-                       }
-                    }else{
-                        this.$vux.toast.text(res.message);
-                    }
-                    this.loading = false;
+  import { Datetime, Loading,LoadMore,PopupRadio,XSwitch, TransferDomDirective as TransferDom,Popup, PopupHeader } from 'vux'
+  export default {
+    directives: {
+      TransferDom
+    },
+    components: {
+      Datetime,
+      Loading,
+      LoadMore,
+      PopupRadio,
+      XSwitch,
+      Popup,
+      PopupHeader
+    },
+    data() {
+      return {
+        security:'',
+        showDeploy:false,
+        name:'',
+        mobile:'',
+        area:'',
+        card_number:'',
+        shop_card:'天虹',
+        shop_cards:['天虹','永辉','北国','大润发','步步高','沃尔玛'],
+        oil_card_mobile:'',
+        shop_cards_amount:'1000',
+        shop_cards_amounts:[{key:'1000',value:'1000等值GBL'},{key:'3000',value:'3000等值GBL'},{key:'5000',value:'5000等值GBL'},{key:'10000',value:'10000等值GBL'},{key:'20000',value:'20000等值GBL'}],
+        lock:false,
+        get_ways:['自有加油卡','需要新卡'],
+        get_way:'自有加油卡',
+        card_types:['加油卡','商超购物卡'],
+        card_type:'加油卡',
+        oil_cards:['中石油','中石化'],
+        oil_card:'中石油',
+        loading:true,
+        oil_card_account:'',
+        oil_card_number:'',
+        memo:'',
+        address:'',
+        total_amount:'',
+        deal_user_id:0,
+        deal_user:{},
+        user_id:{},
+        user:{}
+      };
+    },
+    mounted() {
+      this.getDetail();
+    },
+    methods: {
+      getDetail(){
+        const _this = this;
+        this.$http.post('api/app.apply/cardorder/detail',{id:this.$route.params.id}).then(res=>{
+          if(res.errcode==0)
+          {
+            for (let x in res.data.order){
+              this[x]=res.data.order[x]
+            }
+          }else{
+            this.$vux.toast.text(res.message);
+          }
+          this.loading = false;
 
-                }).catch(err=>{
-                    this.$vux.toast.text(err.message);
-                    this.loading = false;
-                })
-            }
+        }).catch(err=>{
+          this.$vux.toast.text(err.message);
+          this.loading = false;
+        })
+      },
+        connect()
+        {
+            this.$router.push({path: '/chat/p2p-'+this.deal_user.accid})
         },
-        computed:{
-            per_month(){
-                return parseFloat(this.shop_cards_amount)/1000*140;
-            },
-            needToPay(){
-
-            }
-        },
-        watch:{
-            card_type(){
-                if(this.card_type=='加油卡')
-                {
-                    this.get_ways = ['自有加油卡','需要新卡']
-                    this.get_way = '自有加油卡'
-                }else{
-                    this.get_ways = ['电子卡','收货地址']
-                    this.get_way = '电子卡'
-                }
-            }
+          connect_user(){
+            this.$router.push({path: '/chat/p2p-'+this.user.accid})
+          }
+    },
+    computed:{
+      per_month(){
+        return parseFloat(this.shop_cards_amount)/1000*140;
+      }
+    },
+    watch:{
+      card_type(){
+        if(this.card_type=='加油卡')
+        {
+          this.get_ways = ['自有加油卡','需要新卡']
+          this.get_way = '自有加油卡'
+        }else{
+          this.get_ways = ['电子卡','收货地址']
+          this.get_way = '电子卡'
         }
-    };
+      }
+    }
+  };
 </script>
 <style lang="less" scoped>
     @import "../../assets/css/variable.less";
@@ -190,7 +223,7 @@ import { Datetime, Loading,LoadMore,PopupRadio,XSwitch, TransferDomDirective as 
             padding-bottom: 0;
         }
         .grant-bottom{
-            min-height: 6rem;
+            min-height: 4rem;
             background: #fff;
             margin-bottom: 0.625rem;
         }

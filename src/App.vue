@@ -1,8 +1,8 @@
 <template lang="html">
 <!--  v-show="this.$route.name!='mineCenter'" -->
 <div id="app">
-<x-header :on-click-back="back" :left-options="{showBack: this.$route.name!='loginIndex' && this.$route.name!='pwdReset' && this.$route.name!='login_auth' 
-&& this.$route.name!='login_auth',backText:''}" 
+<x-header :on-click-back="back" :left-options="{showBack: this.$route.name!='loginIndex' && this.$route.name!='pwdReset' && this.$route.name!='login_auth'
+&& this.$route.name!='login_auth',backText:''}"
 v-if="this.$route.meta.pageType!='wallet_chain' && this.$route.name!='mineCenter'&& this.$route.name !='taskCenter'
 && this.$route.name !='relationsFriends' && this.$route.name != 'dealsCenter' &&this.$route.name !='userCenter'
 && this.$route.name !='index' &&this.$route.name !='wallet_international' && this.$route.name !='wallet_international_detail'
@@ -26,16 +26,19 @@ v-if="this.$route.meta.pageType!='wallet_chain' && this.$route.name!='mineCenter
 && this.$route.name !='crowdDetail'
 && this.$route.name !='CardOrderDetail'
 && this.$route.name !='creditCardorder'
+&& this.$route.name !='shopAssetDetail'
+&& this.$route.name !='shopAssetBackDetail'
+&& this.$route.meta.hide_head != true
 "  @click="onClickBack" :class="{'market-header':(this.$route.name =='marketIndex'|| this.$route.name =='marketDetail')}">{{this.$route.meta.title}}
 
-    <router-link  slot="right" to="/user/center" class="exalt" v-if="this.$route.name!='loginIndex' && this.$route.name!='pwdReset' && this.$route.name!='login_auth' && this.$route.name!='userSetting'"> 
+    <router-link  slot="right" to="/user/center" class="exalt" v-if="this.$route.name!='loginIndex' && this.$route.name!='pwdReset' && this.$route.name!='login_auth' && this.$route.name!='userSetting'">
     <i class="iconfont"  style="fill:#fff;position:relative;top:-2px;font-size:1.4rem;">&#xe6f8;</i>
     </router-link>
 </x-header>
 <tabbar class="app_nav" v-if="this.$route.name=='mineCenter'||this.$route.name=='taskCenter'||this.$route.name=='dealsCenter'||this.$route.name=='relationsFriends'||this.$route.name=='userCenter' ||this.$route.name=='candyIndex'" v-model="index">
-    <tabbar-item link="/mine/center">
+    <tabbar-item link="/mine/center" @click.native="audio_play()">
         <i slot="icon" class="iconfont">&#xe6f7;</i>
-        <span slot="label">挖矿</span>
+        <span slot="label">开发</span>
     </tabbar-item>
     <tabbar-item link="/task/center">
         <i slot="icon" class="iconfont">&#xe6fc;</i>
@@ -75,8 +78,12 @@ v-if="this.$route.meta.pageType!='wallet_chain' && this.$route.name!='mineCenter
 <!--     <keep-alive :include="['mineCenter', 'taskCenter', 'dealsCenter', 'userCenter']">
     </keep-alive> -->
       <router-view ></router-view>
+      <loading></loading>
   </div>
-
+<audio  id="audio_msg" ref="audio_msg">
+    <source src="@/assets/images/5103.mp3" >
+</audio>
+<fullscreen-img></fullscreen-img>
 </div>
 </template>
 
@@ -89,6 +96,9 @@ import Record from "@/components/m_record";
 import Withdrawlist from "@/components/m_withdrawlist";
 import WalletBar from "@/components/walletbar";
 import WalletBarInternational from "@/components/walletbar_international";
+import FullscreenImg from '@/views/components/FullscreenImg';
+import Loading from './views/components/Loading'
+
 export default {
   name: "app",
    data() {
@@ -142,17 +152,50 @@ export default {
       },
       onClickBack(){
           this.$router ? this.$router.back() : window.history.back()
-      }
+      },
+        audio_play()
+        {
+          let count = 0 ;
+          this.$store.state.sessionlist.map(function (val) {
+            count +=val.unread;
+          })
+
+          count+=this.$store.state.customSysMsgUnread;
+          if(count>0)
+          {
+            this.$vux.toast.text('有新消息')
+            var audio_msg = document.getElementById("audio_msg");
+            audio_msg.load();
+            audio_msg.currentTime = 0;
+            audio_msg.play();
+          }
+        }
    },
   components: {
     "module-record":Record,
     "module-withdraw":Withdrawlist,
     walletbar: WalletBar,
     walletbarinternational: WalletBarInternational,
+    FullscreenImg:FullscreenImg,
+    Loading:Loading
   },
   created(){
     //console.log(this.$route);
   },
+    updated () {
+        // 提交sdk连接请求
+      if(this.$route.name!='loginIndex')
+      {
+        this.$store.dispatch('connect')
+        this.$store.dispatch('updateRefreshState')
+        let count = 0;
+        this.$store.state.sessionlist.map((val)=>{
+          count+=val.unread;
+        })
+        count+=this.$store.state.sysMsgUnread.total;
+        this.$store.state.unreadMsgs_number = count
+      }
+    },
   watch: {
     $route() {
      const route_name = ['mineCenter','taskCenter','dealsCenter','candyIndex','userCenter'];
@@ -166,17 +209,21 @@ export default {
             path: "/error/404"
           });
      }
+     // if(this.index == 0)
+     // {
+     //
+     // }
      // console.log(this.$route);
     }
   }
 };
 
 </script>
-
 <style lang="less">
 @import './assets/css/reset.css';
 @import './assets/css/elReset.less';
 @import './assets/css/vuxReset.less';
+
 .flex-box {
     display: -webkit-box;
     display: -webkit-flex;
@@ -233,7 +280,7 @@ body{
 }
 ::-webkit-scrollbar-track {
 	// -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.15);
-	background-color: none; 
+	background-color: none;
 }
 ::-webkit-scrollbar-thumb {
 	width: none;
@@ -248,7 +295,7 @@ body{
     z-index: 10;
     height: 3.5rem;
     background: #f7f7f8;
-    
+
 }
 #app > .weui-tabbar:before{
     border-color: #eaeaea;
@@ -342,3 +389,4 @@ body{
 }
 
 </style>
+

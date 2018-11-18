@@ -11,7 +11,7 @@ import '../theme/index.css';
 import '@/assets/js/vueFilter.js';
 import VueRouter from 'vue-router'
 import FastClick from 'fastclick'
-import store from '@/vuex/store'
+import store from '@/store/'
 
 
 import '@/assets/iconfont/iconfont.css'
@@ -19,15 +19,23 @@ import '@/assets/iconfont/iconfont.css'
 import JSON from "JSON";
 import fanweCrypto from '@/crypto';
 //插件形式调用
-import  {LoadingPlugin ,ConfirmPlugin,Scroller,Confirm ,XInput,Box,XButton,Group,Cell,AlertPlugin,ToastPlugin,Toast,XDialog,XHeader,XImg,XNumber,XSwitch,XTable,XTextarea,Tabbar, TabbarItem,Tab, TabItem  ,Card} from 'vux'
+import  {LoadingPlugin ,ConfirmPlugin,Actionsheet,Search,ButtonTab,Scroller,
+  Confirm ,ButtonTabItem,XInput,Box,XButton,Group,Cell,AlertPlugin,ToastPlugin,Toast,XDialog,XHeader,
+  XImg,XNumber,XTable,XTextarea,Tabbar, TabbarItem,Tab, TabItem
+  ,Card,XSwitch} from 'vux'
 import { Loading } from 'element-ui';
 
 import VueClipboard from 'vue-clipboard2'
 import scroll from 'vue-seamless-scroll'
 Vue.use(scroll)
+import VueTouch from './plugins/touchEvent'
+Vue.use(VueTouch)
 FastClick.attach(document.body)
 
 Vue.config.productionTip = false;
+Vue.component('ButtonTab', ButtonTab)
+Vue.component('ButtonTabItem', ButtonTabItem)
+Vue.component('Search', Search)
 Vue.component('x-input',XInput);
 Vue.component('group',Group);
 Vue.component('x-button', XButton);
@@ -49,9 +57,12 @@ Vue.component('tabbar', Tabbar);
 Vue.component('tabbar-item', TabbarItem);
 Vue.component('confirm', Confirm);
 Vue.component('scroller', Scroller)
+Vue.component('ActionSheet', Actionsheet)
+Vue.component('Tab', Tab)
+Vue.component('TabItem', TabItem)
 Vue.use(LoadingPlugin)
 
- 
+
 Vue.use(AlertPlugin);
 Vue.use(ConfirmPlugin);
 Vue.use(ToastPlugin);
@@ -194,4 +205,11 @@ window.convertBase64UrlToBlob = function(urlData){
     }
 
     return new Blob( [ab] , {type : 'image/png'});
+}
+window.onClosePopWindow = function (url) {
+    switch (url) {
+        default:
+            $vue.$router.push({'path':url});
+            break;
+    }
 }

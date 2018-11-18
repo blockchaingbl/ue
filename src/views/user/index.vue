@@ -72,7 +72,7 @@
                     </div>
                     <div class="item-text">转&nbsp;&nbsp;出</div>
                 </div>
-                <div class="item flex-box" @click="tis_btn">
+                <div class="item flex-box" @click="liutong()">
                     <div class="user_icon">
                         <img src="@/assets/images/user_deals.png" alt="">
                     </div>
@@ -123,6 +123,8 @@ import {Confirm,Group, XSwitch, XButton, TransferDomDirective as TransferDom } f
 import { Flexbox, FlexboxItem, Divider } from 'vux'
 import { setCookie, getCookie, deleteCookie,clearCookie } from "../../assets/js/cookieHandle";
 import VueCoreImageUpload from 'vue-core-image-upload'
+import cookie from '../../utils/cookie'
+
 export default {
     directives: {
         TransferDom
@@ -155,6 +157,7 @@ export default {
             vc_normal:0,
             is_node:0,
             is_society:0,
+            j_order:0
         }
     },
     mounted () {
@@ -190,6 +193,9 @@ export default {
                 this.$store.state.is_node =  res.data.account_info.is_node;
                 this.loading  = false;
                 this.level = res.data.account_info.level;
+                this.j_order = res.data.account_info.j_order;
+                cookie.setCookie('uid', res.data.account_info.accid)
+                cookie.setCookie('sdktoken',res.data.account_info.token)
             }).catch(err => {
                 this.loading  = false;
                 if (err.errcode) {
@@ -353,6 +359,18 @@ export default {
             }else{
                 this.$router.push({path:'/finance'});
             }
+        },
+        liutong(){
+          if(this.loading)
+          {
+            return false;
+          }
+          if(parseFloat(this.vc_normal)<=parseFloat(this.$store.state.init.crowd_limit))
+          {
+            this.$vux.toast.text(`资产不足,需要达到${this.$store.state.init.crowd_limit}`);
+          }else{
+            this.$router.push({path:'/zc'});
+          }
         },
         credit(){
             if(this.loading)

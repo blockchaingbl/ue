@@ -56,10 +56,10 @@ module.exports = {
   build: {
     // Template for index.html
     //index: path.resolve(__dirname, '../dist/index.html'),
-    index: path.resolve(__dirname, '../../gbl_remote/resources/views/index.blade.php'),
+    index: path.resolve(__dirname, '../../wallet/resources/views/index.blade.php'),
 
     // Paths
-    assetsRoot: path.resolve(__dirname, '../../gbl_remote/public/static/'),
+    assetsRoot: path.resolve(__dirname, '../../wallet/public/static/'),
     assetsSubDirectory: '',
     //assetsPublicPath: './static/',
     assetsPublicPath: '/static/',
