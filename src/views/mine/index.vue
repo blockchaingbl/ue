@@ -50,7 +50,7 @@
                         </div>
                         <div class="cont-text">算力越高，开发越快</div>
                     </div>
-                    <router-link to="/session" class="msg-session" v-if="auth>0">
+                    <router-link to="/session" class="msg-session">
                         <div class="exalt-img2" style="position: relative;">
                             <img src="@/assets/images/msg-session.png" alt="">
                             <badge v-if="unread>0" style="position: absolute;right: -0.25rem;top: 2rem;"></badge>
@@ -98,6 +98,7 @@ import SVG from "@/views/mine/inc/svg";
 import Nodata from "@/components/nodata";
 import VueMarquee from "@/components/marquee";
 import vueSeamless from 'vue-seamless-scroll';
+import cookie from '../../utils/cookie'
 export default {
   name: "mineCenter",
   components: {
@@ -273,6 +274,8 @@ export default {
             _this.vc_amount = res.data.account_info.vc_amount;
             _this.cp_total = res.data.account_info.cp_total;
             _this.auth = res.data.account_info.chat_auth;
+            cookie.setCookie('uid', res.data.account_info.accid)
+            cookie.setCookie('sdktoken',res.data.account_info.token)
           })
           .catch(err => {
             if (err.errcode) {

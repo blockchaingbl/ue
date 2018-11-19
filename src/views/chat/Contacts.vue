@@ -1,9 +1,9 @@
 <template>
-  <div class="g-inherit m-main p-contacts g-window " v-if="!loading">
+  <div class="g-inherit m-main p-contacts g-window " >
     <tab style="height: 46px;font-size: 14px">
       <tab-item  @on-item-click="$router.push({path:'session'})">会话</tab-item>
       <tab-item selected>通讯录</tab-item>
-      <tab-item @on-item-click="$router.push({path:'sysmsgs'})">节点通知</tab-item>
+      <tab-item @on-item-click="$router.push({path:'sysmsgs'})">节点通知<badge v-show="customSysMsgUnread>0"></badge></tab-item>
     </tab>
     <div class="m-cards u-search-box-wrap" >
       <span class="u-search-box" v-if="ban==0">
@@ -50,12 +50,14 @@
           <img class="icon u-circle" slot="icon" width="20" :src="userInfos[friend.account].avatar">
         </cell>
       </group>
+      <loading v-show="loading"></loading>
     </div>
   </div>
 </template>
 
 <script>
-
+import { Badge } from "vux";
+import Loading from '../components/LoadingNew'
 export default {
     data(){
         return {
@@ -64,14 +66,16 @@ export default {
             level:0,
             loading:true,
             ban:0,
-            topRem:'2rem'
+            loading:true,
+            loadings:true,
         }
     },
     mounted(){
-      this.$vux.loading.show({
-        text: ''
-      })
         this.getUserinfo()
+    },
+    components:{
+      Badge:Badge,
+      Loading:Loading
     },
     methods:{
         getUserinfo(){
@@ -81,14 +85,14 @@ export default {
                this.level = res.data.level
                this.ban = res.data.ban
                this.loading = false;
-              this.$vux.loading.hide()
+                this.loadings = false;
             }).catch(err => {
                 if (err.errcode) {
                     this.$vux.toast.text(err.message);
                 }
               this.$vux.loading.hide()
-                console.log(err);
-                //  this.Toast(err || '网络异常，请求失败');
+              this.loading = false;
+              this.loadings = false;
             });
         },
         limit(){
@@ -96,6 +100,11 @@ export default {
         }
     },
   computed: {
+    customSysMsgUnread(){
+      let count = 0;
+
+      return  count+this.$store.state.customSysMsgUnread;
+    },
     friendslist () {
       return this.$store.state.friendslist.filter(item => {
         let account = item.account
@@ -138,6 +147,12 @@ export default {
 <style  lang="less" scoped>
   @import "../../assets/css/nim/theme.css";
   .p-contacts {
+    .vux-tab{
+      /deep/.vux-badge-dot{
+        padding: 5px!important;
+        height: auto;
+      }
+    }
     .add-friend {
       background-color: #fff;
     }
@@ -181,6 +196,10 @@ export default {
       .icon-team {
         background-position: -2.1rem -3rem;
         background-image: url(http://yx-web.nos.netease.com/webdoc/h5/im/icons.png);
+      }
+
+      /deep/.vux-tab-wrap{
+        height: 44px;
       }
     }
   }

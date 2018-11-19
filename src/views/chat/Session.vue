@@ -1,10 +1,10 @@
 <template>
   <div class="g-inherit m-main p-session g-window">
     <group class="u-list-s">
-      <tab style="height: 46px">
+      <tab style="height: 44px">
         <tab-item selected>会话</tab-item>
         <tab-item @on-item-click="$router.push({path:'contacts'})">通讯录</tab-item>
-        <tab-item @on-item-click="$router.push({path:'sysmsgs'})">节点通知</tab-item>
+        <tab-item @on-item-click="$router.push({path:'sysmsgs'})">节点通知<badge v-show="customSysMsgUnread>0"></badge></tab-item>
       </tab>
       <cell
         v-for="(session, index) in sessionlist"
@@ -34,7 +34,7 @@
 <script>
 import util from '../../utils'
 import config from '../../configs'
-
+import { Badge } from "vux";
 export default {
   data () {
     return {
@@ -46,6 +46,9 @@ export default {
       myAdvancedIcon: config.defaultAdvancedIcon
     }
   },
+    components:{
+        Badge:Badge
+    },
 
   computed: {
     sysMsgUnread () {
@@ -55,6 +58,10 @@ export default {
       sysMsgUnread += temp.team || 0
       let customSysMsgUnread = this.$store.state.customSysMsgUnread
       return sysMsgUnread + customSysMsgUnread
+    },
+    customSysMsgUnread(){
+      let count = 0 ;
+      return  count+ this.$store.state.customSysMsgUnread;
     },
     userInfos () {
       return this.$store.state.userInfos
@@ -170,6 +177,10 @@ export default {
     }
     .u-list-s{
       margin-top: -1rem;
+    }
+    /deep/.vux-badge-dot{
+      padding: 5px;
+      height: auto;
     }
   }
 </style>

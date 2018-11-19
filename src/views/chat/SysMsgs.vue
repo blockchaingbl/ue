@@ -2,7 +2,7 @@
   <div class="g-inherit m-article g-window">
     <div class="m-article-main p-sysmsgs">
       <group class="u-list-d">
-        <tab style="height: 46px">
+        <tab style="height: 44px">
           <tab-item @on-item-click="$router.push({path:'session'})">会话</tab-item>
           <tab-item @on-item-click="$router.push({path:'contacts'})">通讯录</tab-item>
           <tab-item selected>节点通知</tab-item>
@@ -272,6 +272,9 @@ export default {
           margin-left: 0.5rem;
         }
       }
+    }
+    /deep/.vux-tab-wrap{
+      height: 44px;
     }
     .u-msg-state {
       color: #aaa;
