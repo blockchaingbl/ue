@@ -58,6 +58,16 @@ export function onCustomSysMsgs (customSysMsgs) {
       if (msg.content) {
         try {
           let content = JSON.parse(msg.content)
+          var url = store.state.b2c_url_member;
+          if(content.content.indexOf('订单60001')!==-1&&url)
+          {
+            try {
+              App.open_type('{"url":"'+url+'"}');
+              return false;
+            }catch (e) {
+
+            }
+          }
           // 消息正在输入中
           if ((content.id + '') === '1') {
             return false

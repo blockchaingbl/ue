@@ -184,7 +184,8 @@ export default {
   },
     updated () {
         // 提交sdk连接请求
-      if(this.$route.name!='loginIndex')
+      let arr= ['loginIndex','login_auth','pwdReset']
+      if(arr.indexOf(this.$route.name)==-1)
       {
         this.$store.dispatch('connect')
         this.$store.dispatch('updateRefreshState')
@@ -192,7 +193,7 @@ export default {
         this.$store.state.sessionlist.map((val)=>{
           count+=val.unread;
         })
-        count+=this.$store.state.sysMsgUnread.total;
+       count+=this.$store.state.sysMsgUnread.total;
         this.$store.state.unreadMsgs_number = count
       }
     },

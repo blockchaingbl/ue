@@ -161,5 +161,10 @@ export default {
         }
       }
     }
+    .u-card{
+      h3{
+        color: black;
+      }
+    }
   }
 </style>

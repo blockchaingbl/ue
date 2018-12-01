@@ -14,6 +14,7 @@
             <cell title="社员资产" :value="incharge_less_amount"></cell>
             <cell title="昨日流通" :value="last_day_trans"></cell>
             <cell title="昨日算力" :value="benefit_amount"></cell>
+            <cell v-if="month_status==2" title="本月流通" :value="month_amount"></cell>
         </group>
         <div class="friend-block" v-show="toggle">
             <div class="friend-item flex-box" v-for="user in user_list">
@@ -59,7 +60,9 @@
                 income:'',
                 last_day_trans:'',
                 benefit_amount:'',
-                toggle:false
+                toggle:false,
+                month_status:0,
+                month_amount:0
             }
         },
         created(){
@@ -99,6 +102,8 @@
                         this.rate = res.data.rate
                         this.benefit_amount = res.data.benefit_amount;
                         this.last_day_trans = res.data.last_day_trans;
+                        this.month_status = res.data.month_status;
+                        this.month_amount = res.data.month_amount;
                         this.loading=false;
                         this.$vux.loading.hide()
                     }).catch(err => {

@@ -3,7 +3,7 @@
     <tab style="height: 46px;font-size: 14px">
       <tab-item  @on-item-click="$router.push({path:'session'})">会话</tab-item>
       <tab-item selected>通讯录</tab-item>
-      <tab-item @on-item-click="$router.push({path:'sysmsgs'})">节点通知<badge v-show="customSysMsgUnread>0"></badge></tab-item>
+      <tab-item @on-item-click="$router.push({path:'sysmsgs'})">节点通知<badge  style="padding: 5px;" v-show="customSysMsgUnread>0"></badge></tab-item>
     </tab>
     <div class="m-cards u-search-box-wrap" >
       <span class="u-search-box" v-if="ban==0">

@@ -78,7 +78,7 @@
                     </div>
                     <div class="item-text">流通大厅</div>
                 </div>
-                <div class="item flex-box" @click="tis_btn">
+                <div class="item flex-box" @click="turn_shop()">
                     <div class="user_icon">
                         <img src="@/assets/images/user_shopping.png" alt="">
                     </div>
@@ -194,6 +194,8 @@ export default {
                 this.loading  = false;
                 this.level = res.data.account_info.level;
                 this.j_order = res.data.account_info.j_order;
+                this.b2c_url = res.data.account_info.b2c_url;
+                this.$store.state.b2c_url_member =  res.data.account_info.b2c_url_member;
                 cookie.setCookie('uid', res.data.account_info.accid)
                 cookie.setCookie('sdktoken',res.data.account_info.token)
             }).catch(err => {
@@ -302,6 +304,18 @@ export default {
                     }
                 })
         },
+      turn_shop(){
+            if(this.loading)
+            {
+              return false;
+            }
+            if(this.b2c_url)
+            {
+              App.open_type('{"url":"'+this.b2c_url+'"}');
+            }else{
+              this.tis_btn();
+            }
+          },
         tis_btn(){
             this.$vux.toast.text('敬请期待');
         },
@@ -349,16 +363,16 @@ export default {
             }
         },
         jubaopen(){
-            if(this.loading)
-            {
-                return false;
-            }
-            if(parseFloat(this.vc_normal)<=parseFloat(this.$store.state.init.jubaopen))
-            {
-                this.$vux.toast.text(`资产不足,需要达到${this.$store.state.init.jubaopen}`);
-            }else{
-                this.$router.push({path:'/finance'});
-            }
+          if(this.loading)
+          {
+            return false;
+          }
+          if(parseFloat(this.vc_normal)<=parseFloat(this.$store.state.init.jubaopen) && this.j_order==0)
+          {
+            this.$vux.toast.text(`资产不足,需要达到${this.$store.state.init.jubaopen}`);
+          }else{
+            this.$router.push({path:'/finance'});
+          }
         },
         liutong(){
           if(this.loading)

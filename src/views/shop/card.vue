@@ -65,10 +65,13 @@
                 <group title="备注：" class="grant-bottom">
                     <x-input  v-model="memo" type="text"   placeholder="请输入备注"></x-input>
                 </group>
+                <popup-radio title="支付方式：" :options="pay_ways" v-model="pay_way">
+                    <p slot="popup-header" class="vux-1px-b grant-coin-slot">支付方式</p>
+                </popup-radio>
             </div>
 
             <box class="grant-btn-box" gap="0 0">
-                <x-button type="primary" style="border-radius:0;height:2.875rem;font-size:0.875rem;" @click.native="showDeploy=true">提交申请</x-button>
+                <x-button type="primary" style="border-radius:0;height:2.875rem;font-size:0.875rem;" @click.native="create_order">提交申请</x-button>
             </box>
         </div>
         <popup class="pop-deposit-deploy" v-model="showDeploy" position="bottom" style="width:100%;background:#fff;"  v-transfer-dom>
@@ -132,11 +135,13 @@ import { Datetime, Loading,LoadMore,PopupRadio,XSwitch, TransferDomDirective as 
                 oil_card_account:'',
                 oil_card_number:'',
                 memo:'',
-                address:''
+                address:'',
+                pay_ways:['令牌兑换'],
+                pay_way:'令牌兑换'
             };
         },
         mounted() {
-
+            this.get_auth();
         },
         methods: {
             buy_fixed(){
@@ -177,6 +182,64 @@ import { Datetime, Loading,LoadMore,PopupRadio,XSwitch, TransferDomDirective as 
                     this.$vux.toast.text(err.message);
 
                 })
+            },
+            create_order(){
+                if(this.pay_way=='资产兑换')
+                {
+                    this.showDeploy=true;
+                    return
+                }else{
+                    if(this.lock)
+                    {
+                        return false;
+                    }
+                    this.lock = true;
+                    let form = {
+                        card_number:this.card_number,
+                        address:this.address,
+                        name:this.name,
+                        mobile:this.mobile,
+                        security:this.security,
+                        area:this.area,
+                        shop_card:this.shop_card,
+                        oil_card_mobile:this.oil_card_mobile,
+                        shop_cards_amount:this.shop_cards_amount,
+                        get_way:this.get_way,
+                        card_type:this.card_type,
+                        oil_card:this.oil_card,
+                        oil_card_account:this.oil_card_account,
+                        oil_card_number:this.oil_card_number,
+                        memo:this.memo
+                    }
+                    const _this = this;
+                    this.$http.post('api/app.apply/cardorder/token_buy',form).then(res=>{
+                        if(res.errcode==0)
+                        {
+                            let amount = res.data.amount;
+                            let order_code = res.data.order_code;
+                            let url =encodeURI('/wallet/send/GBL Asset Chain?api=1&order=1&data='+order_code+'&amount='+amount)
+                            this.$router.push({path:url})
+                        }else{
+                            this.$vux.toast.text(res.message);
+                        }
+                        this.lock = false;
+                    }).catch(err=>{
+                        this.lock = false;
+                        this.$vux.toast.text(err.message);
+                    })
+                }
+            },
+            get_auth(){
+                this.$http.post('api/app.apply/cardorder/auth',{}).then(res=>{
+                   if(res.data.auth==1)
+                   {
+                       this.pay_ways.push('资产兑换')
+                   }
+                }).catch(err=>{
+                    this.lock = false;
+                    this.$vux.toast.text(err.message);
+
+                })
             }
         },
         computed:{
@@ -184,8 +247,12 @@ import { Datetime, Loading,LoadMore,PopupRadio,XSwitch, TransferDomDirective as 
                 return parseFloat(this.shop_cards_amount)/1000*140;
             },
             pay_amount(){
-                console.log(1+this.$store.state.init.card_fee);
-                let amount =  parseFloat(this.shop_cards_amount/this.$store.state.init.coin_price) * (1+this.$store.state.init.card_fee)
+
+                let amount =  parseFloat(this.shop_cards_amount/this.$store.state.init.coin_price)
+                if(this.pay_way=='资产兑换')
+                {
+                  amount *= (1+this.$store.state.init.card_fee);
+                }
                 if(this.get_way=='需要新卡' || this.get_way=='收货地址')
                 {
                     amount+=this.$store.state.init.card_trans_fee;

@@ -195,6 +195,10 @@ export default {
     this.data = router.currentRoute.query.data;
     this.api = router.currentRoute.query.api == 1;
     this.order = Boolean(router.currentRoute.query.order);
+    if(this.order)
+    {
+      this.recieve_address = this.$store.state.init.order_address;
+    }
     var _this = this;
     if (!this.$store.state.wallet.address) {
       this.$store.commit("loadWallets", function() {
@@ -382,10 +386,7 @@ export default {
           this.$store.state.properties_set[this.coin_type].decimals
         );
         //var value = parseFloat(this.recieve_amount) * Math.pow(10, decimals);
-        var value =  this.toInt(parseFloat(this.recieve_amount), decimals);
-        value = "0x" + value.toString(16);
-        value = value.split(".");
-        value = value[0];
+        var value =  this.recieve_amount
         this.coin_unit = this.$store.state.properties_set[this.coin_type].name;
 
         this.$store.state.page_loading = true;

@@ -95,6 +95,9 @@
                     </cell>
                 </group>
             </div>
+            <box class="grant-btn-box" gap="0 0" v-if="user_id==0&&pay_type==1&&pay_status==0">
+                <x-button type="primary" style="border-radius:0;height:2.875rem;font-size:0.875rem;" @click.native="turn_to_pay()">立即支付</x-button>
+            </box>
         </div>
         <div v-transfer-dom>
             <loading :show="loading"></loading>
@@ -145,7 +148,9 @@
         deal_user_id:0,
         deal_user:{},
         user_id:{},
-        user:{}
+        user:{},
+        pay_status:0,
+        pay_type:0
       };
     },
     mounted() {
@@ -176,7 +181,13 @@
         },
           connect_user(){
             this.$router.push({path: '/chat/p2p-'+this.user.accid})
-          }
+          },
+        turn_to_pay(){
+            let total_amount = this.total_amount;
+            let order_code = this.order_code;
+            let url =encodeURI('/wallet/send/GBL Asset Chain?api=1&order=1&data='+order_code+'&amount='+total_amount)
+            this.$router.push({path:url})
+        }
     },
     computed:{
       per_month(){
