@@ -60,16 +60,24 @@
                 <group class="candy-numb" title="收货地址："  v-show="get_way=='收货地址'">
                     <x-input readonly v-model="address" type="text"    :required="true" ></x-input>
                 </group>
-                <group>
+                <group v-show="get_way=='收货地址'">
                     <cell>
-                        <div v-show="get_way=='收货地址'">
+                        <div>
                             <span style="color: red">选择收货地址需额外{{$store.state.init.card_trans_fee}}个GBL资产</span>
                         </div>
                     </cell>
                 </group>
+                <group>
+                    <div style="padding: 10px 15px;color: #999999">
+                        兑换业务由行业节点提供，行业节点属于第三方商业合作机构，规则及售后均由行业节点提供，GBL只保证数据安全，功能正常使用，保证合作行业节点不会出现道德风险，如遇行业节点对兑换方案进行合理调整或合理解约，GBL将无权干涉，敬请理解！
+                    </div>
+                </group>
                 <group title="备注：" class="grant-bottom">
                     <x-input readonly v-model="memo" type="text"></x-input>
                 </group>
+                <popup-radio title="支付方式：" :options="pay_ways" v-model="pay_type_desc" readonly>
+                    <p slot="popup-header" class="vux-1px-b grant-coin-slot">支付方式</p>
+                </popup-radio>
                 <group v-if="deal_user_id>0">
                     <cell>
                         <div style="font-size: 1rem;">
@@ -95,8 +103,11 @@
                     </cell>
                 </group>
             </div>
-            <box class="grant-btn-box" gap="0 0" v-if="user_id==0&&pay_type==1&&pay_status==0">
-                <x-button type="primary" style="border-radius:0;height:2.875rem;font-size:0.875rem;" @click.native="turn_to_pay()">立即支付</x-button>
+            <box class="grant-btn-box" gap="0 0" v-if="examine==0 && user_id>0">
+                <x-button type="primary" style="border-radius:0;height:2.875rem;font-size:0.875rem;" @click.native="examine_back()">取消订单,退换资产</x-button>
+            </box>
+            <box class="grant-btn-box" gap="0 0" v-if= "user_id==0&&pay_type==1&&pay_status==0">
+                <x-button type="primary" style="border-radius:0;height:2.875rem;font-size:0.875rem;" @click.native="cancel_card()">取消订单</x-button>
             </box>
         </div>
         <div v-transfer-dom>
@@ -130,8 +141,8 @@
         shop_card:'天虹',
         shop_cards:['天虹','永辉','北国','大润发','步步高','沃尔玛'],
         oil_card_mobile:'',
-        shop_cards_amount:'1000',
-        shop_cards_amounts:[{key:'1000',value:'1000等值GBL'},{key:'3000',value:'3000等值GBL'},{key:'5000',value:'5000等值GBL'},{key:'10000',value:'10000等值GBL'},{key:'20000',value:'20000等值GBL'}],
+        shop_cards_amount:'500',
+        shop_cards_amounts:[{key:'500',value:'500等值GBL'},{key:'1000',value:'1000等值GBL'},{key:'3000',value:'3000等值GBL'},{key:'5000',value:'5000等值GBL'},{key:'10000',value:'10000等值GBL'},{key:'20000',value:'20000等值GBL'}],
         lock:false,
         get_ways:['自有加油卡','需要新卡'],
         get_way:'自有加油卡',
@@ -150,7 +161,11 @@
         user_id:{},
         user:{},
         pay_status:0,
-        pay_type:0
+        pay_type:0,
+        examine:0,
+        lock:false,
+        pay_ways:['令牌兑换','资产兑换'],
+
       };
     },
     mounted() {
@@ -175,24 +190,88 @@
           this.loading = false;
         })
       },
-        connect()
-        {
-            this.$router.push({path: '/chat/p2p-'+this.deal_user.accid})
-        },
-          connect_user(){
-            this.$router.push({path: '/chat/p2p-'+this.user.accid})
-          },
-        turn_to_pay(){
-            let total_amount = this.total_amount;
-            let order_code = this.order_code;
-            let url =encodeURI('/wallet/send/GBL Asset Chain?api=1&order=1&data='+order_code+'&amount='+total_amount)
-            this.$router.push({path:url})
-        }
+      connect()
+      {
+        this.$router.push({path: '/chat/p2p-'+this.deal_user.accid})
+      },
+      connect_user(){
+        this.$router.push({path: '/chat/p2p-'+this.user.accid})
+      },
+      turn_to_pay(){
+        let total_amount = this.total_amount;
+        let order_code = this.order_code;
+        let url =encodeURI('/wallet/send/GBL Asset Chain?api=1&order=1&data='+order_code+'&amount='+total_amount)
+        this.$router.push({path:url})
+      },
+      examine_back(){
+        let _this = this;
+        this.$vux.confirm.show({
+          title: '确定取消并退款吗？',
+          onCancel(){},
+          onConfirm(){
+            if(_this.lock)
+            {
+              return false;
+            }else {
+              _this.lock = true;
+            }
+            _this.$http.post('api/app.apply/cardorder/examine',{id:_this.$route.params.id}).then(res=>{
+              if(res.errcode==0)
+              {
+                setTimeout(()=>{
+                  _this.$router.go(-1)
+                },2000)
+              }
+              _this.$vux.toast.text(res.message);
+            }).catch(err=>{
+              _this.lock = false;
+              _this.$vux.toast.text(err.message);
+              _this.loading = false;
+            })
+          }
+        })
+      },
+      cancel_card(){
+        let _this = this;
+        this.$vux.confirm.show({
+          title: '确定取消吗？',
+          onCancel(){},
+          onConfirm(){
+            if(_this.lock)
+            {
+              return false;
+            }else {
+              _this.lock = true;
+            }
+            _this.$http.post('api/app.apply/cardorder/cancel',{id:_this.$route.params.id}).then(res=>{
+              if(res.errcode==0)
+              {
+                setTimeout(()=>{
+                  _this.$router.go(-1)
+                },2000)
+              }
+              _this.$vux.toast.text(res.message);
+            }).catch(err=>{
+              _this.lock = false;
+              _this.$vux.toast.text(err.message);
+              _this.loading = false;
+            })
+          }
+        })
+      }
     },
     computed:{
       per_month(){
         return parseFloat(this.shop_cards_amount)/1000*140;
-      }
+      },
+        pay_type_desc(){
+          if(this.pay_type==0)
+          {
+              return '资产支付'
+          }else{
+              return '令牌支付'
+          }
+        }
     },
     watch:{
       card_type(){

@@ -9,12 +9,12 @@
             <x-input type="number" v-model="amount" :show-clear="false" class="flex-1" @on-change="sumFee()" ref="amount" :required="true"></x-input>
             <span>{{coin_type.coin_unit}}</span>
         </div>
-        <div class="select-box" v-show="coin_type.id==0">
+        <div class="select-box" v-if="coin_type.id==0 || coin_type.token_exchange_open==1">
             <group>
                 <popup-picker title="选择令牌" :data="token_list" v-model="token_name" show-name :columns="1" @on-change="sumFee()"></popup-picker>
             </group>
         </div>
-        <div class="item-block" v-show="coin_type.id==0">
+        <div class="item-block" v-show="coin_type.id==0 || coin_type.token_exchange_open==1">
             <div class="item flex-box">
                 <div class="item-title flex-1">需要支付：{{incharge_fee}} {{token_symbol}}</div>
             </div>
@@ -48,7 +48,7 @@ export default {
         return {
             coin_type:[],
             amount:'',
-            token_list:[{name:'',value:'',address:'',rate:''}],
+            token_list:[{name:'',value:'',address:'',rate:'',order_address:''}],
             token_name:[],
             token_symbol:'',
             address:'',
@@ -71,6 +71,7 @@ export default {
         }else{
             this.coin_type = {id:0,coin_unit:this.$store.state.init.coin_uint}
         }
+        console.log(this.coin_type);
     },
     mounted () {
         this.getWallets();
@@ -121,20 +122,35 @@ export default {
         },
         sumFee(){
             var _this = this;
-            if(_this.coin_type.id==0){
+            if(_this.coin_type.id==0 || _this.coin_type.token_exchange_open==1){
                 //只有平台币要根据不用币去计算
                 if(_this.amount>0){
+                    console.log(_this.amount)
                     var list = _this.token_list[0];
                     for(var i in list){
                         if(list[i].value==_this.token_name[0]){
                             _this.token_symbol = list[i].name;
                             _this.address = list[i].address;
+                            _this.order_address = list[i].order_address
                             _this.rate = list[i].rate;
                         }
                     }
-                    _this.incharge_fee = parseFloat(_this.amount)/(_this.rate/_this.platform_coin_price) || 0;
+
+                    if(_this.coin_type.token_exchange_open==1)
+                    {
+                      if(_this.coin_type.coin_unit == _this.token_symbol)
+                      {
+                        _this.incharge_fee = parseFloat(_this.amount);
+                      }else{
+                        let int = 100000000000000;
+                        _this.incharge_fee = int * parseFloat(_this.amount)*parseFloat(this.coin_type.real_price)/parseFloat(_this.rate)/int || 0;
+                      }
+                    }else{
+                      _this.incharge_fee = parseFloat(_this.amount)/(_this.rate/_this.platform_coin_price) || 0;
+                    }
                     _this.incharge_fee = _this.incharge_fee.toFixed(5);
-                    if(_this.token_symbol==this.$store.state.init.coin_uint){
+
+                    if(_this.token_symbol==this.$store.state.init.coin_uint && this.coin_type.coin_unit==this.$store.state.init.coin_uint){
                         _this.incharge_fee = (_this.incharge_fee/2).toFixed(5)
                     }
                 }
@@ -162,14 +178,38 @@ export default {
                     }
                 }else{
                     //兑换其他币
-                    var token_name = _this.token_name;
-                    var amount = _this.amount;
-                    _this.walletPay(token_name,amount);
+                      var token_name = _this.token_name;
+                      var amount = _this.amount;
+                    if(_this.coin_type.coin_unit == _this.token_symbol)
+                    {
+                      _this.walletPay(token_name,amount);
+                    }else{
+                      _this.tokenPay(token_name,amount);
+                    }
+
                 }
             }else{
                 _this.$vux.toast.text("数额必须大于0");
                 _this.$refs.amount.forceShowError = true;
             }
+        },
+        tokenPay(token_name,amount){
+          let formData = {id:this.coin_type.id,amount:amount}
+          const _this = this;
+          _this.$http.post('/api/app.tokenpay/pay/exchange',formData).then(res => {
+            if(res.errcode>0){
+              _this.$vux.toast.text(res.message);
+            }else{
+              let amount = res.data.token_exchange.amount;
+              let order_code = res.data.token_exchange.order_code;
+              let url =encodeURI('/wallet/send/GBL Asset Chain?api=1&order=1&data='+order_code+'&amount='+amount)
+              this.$router.push({path:url})
+            }
+          }).catch(err => {
+            if (err.errcode) {
+              _this.$vux.toast.text(err.message);
+            }
+          });
         },
         walletPay(token_name,amount){
             var _this = this;

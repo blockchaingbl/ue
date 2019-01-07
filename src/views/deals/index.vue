@@ -1,7 +1,6 @@
 <template lang="html">
 <div class="deals-index">
-    <div class="deals-head flex-box">
-        
+    <div class="deals-head flex-box" style="position: relative">
         <div class="head-text flex-1">
             <div class="assets-text">剩余{{$store.state.init.coin_uint}}：</div>
             <div class="assets-numb">{{vc_total}}</div>
@@ -10,11 +9,16 @@
             <x-button type="primary" style="border-radius:99px;" class='found-btn' link="/deals/sell" v-if="$store.state.init.otc_sale_auth==0 || otc_auth">出让</x-button>
             <x-button type="primary" style="border-radius:99px;" class='import-btn' @click.native="toWithdraw()">上链</x-button>
         </box>
+        <div class="usdc_box" v-if="$store.state.usdc_info&&drawLine_done">
+                <span>{{$store.state.usdc_info.rate_day}}</span>
+        </div>
     </div>
     <!--<div class="banner">-->
         <!--<img src="@/assets/images/deals_banner.jpg" alt="">-->
     <!--</div>-->
-    <div id="myChart" :style="{width: '100%', height: '200px', background: '#263238'}"></div>
+    <div id="myChart" :style="{width: '100%', height: '200px', background: '#263238',position:'relative'}">
+
+    </div>
     <div class="deals-content">
         <div class="deals-title">正在出让的{{$store.state.init.coin_uint}}
                 <router-link to="/deals/record" class="ddjl">我的订单</router-link> </div>
@@ -31,7 +35,7 @@
                     <div class="item-item numb">{{otc.vc_less_amount}}</div>
                     <div class="item-item price flex-1">
                         <div class="item-price">&yen; <em>{{otc.total_price}}</em></div>
-                        <div class="decs">单价 &yen; {{otc.vc_unit_price}}</div>
+                        <div class="decs">单价 &yen; {{otc.vc_unit_price}}|${{(otc.vc_unit_price/$store.state.init.usd_rate).toFixed(2)}}</div>
                     </div>
                     <router-link :to="{name:'dealsBuy',params:{id:otc.id}}" class="item-item item-btn">受让</router-link>
                 </div>
@@ -68,7 +72,8 @@ export default {
             chart_price:[],
             chart_price_max:0,
             chart_price_min:0,
-            otc_auth:0
+            otc_auth:0,
+            drawLine_done:false
         }
     },
     mounted () {
@@ -209,6 +214,9 @@ export default {
                 this.chart_price = res.data.price;
                 this.chart_price_max = res.data.max;
                 this.chart_price_min = res.data.min;
+                this.$store.state.usdc_type_name = res.data.coin_type_name
+                this.$store.state.usdc_info = res.data.usdc;
+                this.$store.state.usdc_text = res.data.text;
                 this.drawLine();
             }).catch(err => {
                  //   this.$vux.toast.text(err.message);
@@ -217,11 +225,12 @@ export default {
         },
         drawLine(){
             // 基于准备好的dom，初始化echarts实例
-            let myChart = Echarts.init(document.getElementById('myChart'));
+            let text = this.$store.state.usdc_text;
+          let myChart = Echarts.init(document.getElementById('myChart'));
             // 绘制图表
-            myChart.setOption({
+                myChart.setOption({
                 title: {
-                    text: '行情走势',
+                    text: text,
                     subtext: '最高 '+this.chart_price_max+"  最低 "+this.chart_price_min+' 当前行情 '+this.$store.state.init.coin_price,
                     textStyle: {
                         color: '#6d7887',
@@ -269,6 +278,7 @@ export default {
                     data: this.chart_price
                 }]
             });
+            this.drawLine_done =true
         },
         toWithdraw(){
             if(this.$store.state.init.withdraw_open==1){
@@ -319,6 +329,13 @@ export default {
                 margin-top: 0;
                 margin-left: 0.25rem;
                 background-color: #fc8c92;
+            }
+            .usdc_box{
+                position: absolute;
+                top: 66px;
+                color: #a7acae;
+                z-index: 9;
+                left: 160px;
             }
         }
         .banner{
@@ -375,6 +392,13 @@ export default {
                     }
                 }
             }
+        }
+        .usdg_box{
+            position: absolute;
+            top: 12px;
+            color: rgb(167, 172, 174);
+            font-size: 12px;
+            left: 80px;
         }
         .item-item{
             overflow: hidden;

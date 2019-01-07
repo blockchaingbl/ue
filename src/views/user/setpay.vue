@@ -37,10 +37,18 @@
                         <div class="item-list">账号：{{weixin.payment_account}}</div>
                     </router-link>
                 </div>
+                <div class="item">
+                    <router-link to="/user/setpay/setwallet" class="paytype no-paytype flex-box" v-if="wallet==0">
+                        <div class="iconfont"><img  style="width: 32px;height: 35px;" src="@/assets/images/wallet.png" alt=""></div>
+                        <div class="no-paytype-text">点击绑定</div>
+                    </router-link>
+                    <router-link to="/user/setpay/setwallet" class="paytype hasType Alipay" v-else>
+                        <div class="item-title"><div class="iconfont">&#xe6ed;</div>钱包已绑定</div>
+                    </router-link>
+                </div>
             </div>
         </div>
     </div>
-</div> 
 </template>
 <script>
 export default {
@@ -51,7 +59,8 @@ export default {
         return {
             bankcard:'',
             alipay:'',
-            weixin:''
+            weixin:'',
+            wallet:''
         }
     },
     mounted () {
@@ -85,6 +94,10 @@ export default {
                 if(res.data.bind_info.weixin){
                     this.weixin = res.data.bind_info.weixin;
                 }
+                  if(res.data.bind_info.wallet){
+                    this.wallet = res.data.bind_info.wallet;
+                  }
+
             }).catch(err => {
                 if (err.errcode) {
                     this.$vux.toast.text(err.message);

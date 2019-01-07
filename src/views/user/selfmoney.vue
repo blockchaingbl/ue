@@ -16,6 +16,9 @@
                         <div class="item-decs flex-box" v-if="x.coin_type.price>0">
                             <div class="item-decs-list">≈&nbsp;&nbsp;¥&nbsp;{{(x.vc_amount*x.coin_type.price).toFixed(2)}}</div>
                         </div>
+                        <div class="item-decs flex-box" v-if="x.coin_type.price>0">
+                            <div class="item-decs-list">≈&nbsp;&nbsp;$&nbsp;{{(x.vc_amount*x.coin_type.price/$store.state.init.usd_rate).toFixed(2)}}</div>
+                        </div>
                     </div>
                 </div>
             </div>

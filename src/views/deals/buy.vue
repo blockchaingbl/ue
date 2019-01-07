@@ -21,9 +21,12 @@
         <div class="item vux-1px-b flex-box">
             <div class="title flex-1">应支付</div>
             <div class="decs">
-                <div class="price-box flex-box">
+                <div class="price-box flex-box" v-show="chose_payment_info.payment_key!='wallet'">
                     <div class="price">&yen; <span>{{(amount*vc_unit_price).toFixed(2) || 0}}</span></div>
-                    <div class="univalent">单价 &yen; {{vc_unit_price}}</div>
+                    <div class="univalent">单价 &yen; {{vc_unit_price}}|${{(vc_unit_price/$store.state.init.usd_rate).toFixed(2)}}</div>
+                </div>
+                <div class="price-box flex-box" v-show="chose_payment_info.payment_key=='wallet'">
+                    <div class="price"> <span>{{(amount*vc_unit_price/$store.state.usdc_info.last/$store.state.init.usd_rate).toFixed(3) || 0}}  USDG</span></div>
                 </div>
             </div>
         </div>
@@ -82,7 +85,7 @@
 
     </div>
     <div style="text-align: center;padding: 20px;" v-show="pay_status==1">
-        <div v-show="chose_payment_info.payment_key=='weixin' || chose_payment_info.payment_key=='alipay'">
+        <div v-show="chose_payment_info.payment_key=='weixin' || chose_payment_info.payment_key=='alipay' || chose_payment_info.payment_key=='wallet'">
             <img :src="chose_payment_info.qrcode"  height='200' width="200">
         </div>
     </div>

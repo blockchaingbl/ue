@@ -40,6 +40,9 @@
                                 <div class="item-decs flex-box" v-if="property.amount>0&&property.price>0" v-show="$store.state.init.token_add">
                                     <div class="item-decs-list">≈&nbsp;&nbsp;¥&nbsp;{{(property.amount*property.price).toFixed(2)}}</div>
                                 </div>
+                                <div class="item-decs flex-box" v-if="property.amount>0&&property.price>0" v-show="$store.state.init.token_add">
+                                    <div class="item-decs-list">≈&nbsp;&nbsp;$&nbsp;{{(property.amount*property.price/$store.state.init.usd_rate).toFixed(2)}}</div>
+                                </div>
                             </div>
                         </div>
                     </div>

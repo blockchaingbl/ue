@@ -157,7 +157,8 @@ export default {
             vc_normal:0,
             is_node:0,
             is_society:0,
-            j_order:0
+            j_order:0,
+            ban:0
         }
     },
     mounted () {
@@ -174,12 +175,14 @@ export default {
                 _this.$vux.toast.text('二维码内容错误');
             });
         };
+
     },
     methods:{
         onConfirm5(){},
         onShow5(){},
         getUserinfo(){
             this.$http.post('/api/app.user/account/info',{}).then(res => {
+                this.$store.state.init.usd_rate = res.data.usd_rate;
                 this.usermobile=res.data.account_info.mobile;
                 this.username=res.data.account_info.username;
                 this.useravatar=res.data.account_info.avatar;
@@ -195,6 +198,7 @@ export default {
                 this.level = res.data.account_info.level;
                 this.j_order = res.data.account_info.j_order;
                 this.b2c_url = res.data.account_info.b2c_url;
+                this.ban = res.data.account_info.ban;
                 this.$store.state.b2c_url_member =  res.data.account_info.b2c_url_member;
                 cookie.setCookie('uid', res.data.account_info.accid)
                 cookie.setCookie('sdktoken',res.data.account_info.token)
@@ -309,6 +313,10 @@ export default {
             {
               return false;
             }
+            if(this.ban){
+              this.$vux.toast.text('资产不足');
+              return false;
+            }
             if(this.b2c_url)
             {
               App.open_type('{"url":"'+this.b2c_url+'"}');
@@ -367,6 +375,10 @@ export default {
           {
             return false;
           }
+          if(this.ban){
+            this.$vux.toast.text('资产不足');
+            return false;
+          }
           if(parseFloat(this.vc_normal)<=parseFloat(this.$store.state.init.jubaopen) && this.j_order==0)
           {
             this.$vux.toast.text(`资产不足,需要达到${this.$store.state.init.jubaopen}`);
@@ -379,11 +391,15 @@ export default {
           {
             return false;
           }
-          if(parseFloat(this.vc_normal)<=parseFloat(this.$store.state.init.crowd_limit))
+          if(this.ban){
+            this.$vux.toast.text('资产不足');
+            return false;
+          }
+          if(parseFloat(this.vc_normal)<parseFloat(this.$store.state.init.crowd_limit))
           {
             this.$vux.toast.text(`资产不足,需要达到${this.$store.state.init.crowd_limit}`);
           }else{
-            this.$router.push({path:'/zc'});
+            this.$router.push({path:'/crowd/choice'});
           }
         },
         credit(){
