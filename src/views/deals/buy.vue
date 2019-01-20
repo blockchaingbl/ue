@@ -128,19 +128,40 @@
             </div>
         </div>
     </div>
+    <popup class="pop-deposit-deploy" v-model="showDeploy" position="bottom" style="width:100%;background:#fff;"  v-transfer-dom>
+        <popup-header
+                left-text=""
+                right-text=""
+                title="资金密码"
+                :show-bottom-border="false"
+                @on-click-right="showDeploy = false">
+        </popup-header>
+        <group>
+            <div class="deposit-deploy-tis"></div>
+            <x-input  placeholder="请输入交易密码" v-model="security" type="password" ref="security"></x-input>
+        </group>
+        <group class="nobg flex-box">
+            <x-button type="primary" style="border-radius:99px;height:2.25rem;line-height:2.25rem;font-size:0.875rem;background:#3f73ed" @click.native="buy_fixed">确认</x-button>
+        </group>
+    </popup>
 </div>
 </template>
 <script>
-    import { XInput , PopupPicker , Group , Selector  } from 'vux'
+    import { XInput , PopupPicker , Group , Selector,Popup ,PopupHeader,TransferDomDirective as TransferDom  } from 'vux'
     export default {
     components: {
         XInput,
         PopupPicker,
         Group,
-        Selector
+        Selector,Popup,PopupHeader
+    },
+    directives: {
+     TransferDom
     },
     data () {
         return {
+            security:'',
+            showDeploy:false,
             timer:null,
             countimer:"",
             ifshow:false,
@@ -329,7 +350,18 @@
             if(typeof (this.chose_payment)=="string")
             this.chose_payment_info = this.payment[this.chose_payment];
         },
-        buy(){
+      buy(){
+        if(this.chose_payment_info.payment_key=='asset')
+        {
+          this.showDeploy =true;
+          return;
+        }
+            this.tobuy();
+         },
+          buy_fixed(){
+            this.tobuy();
+          },
+        tobuy(){
             if(this.click_lock)
             {
                 return false;
@@ -343,7 +375,8 @@
             let formData = {
                 otc_id : this.$route.params.id,
                 amount : this.amount,
-                payment_info:this.chose_payment_info
+                payment_info:this.chose_payment_info,
+                security: this.security
             }
           var _this= this;
           if(this.chose_payment_info.payment_key=='asset')

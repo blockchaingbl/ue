@@ -117,19 +117,42 @@
             </div>
         </div>
     </div>
+    <popup class="pop-deposit-deploy" v-model="showDeploy" position="bottom" style="width:100%;background:#fff;"  v-transfer-dom>
+        <popup-header
+                left-text=""
+                right-text=""
+                title="资金密码"
+                :show-bottom-border="false"
+                @on-click-right="showDeploy = false">
+        </popup-header>
+        <group>
+            <div class="deposit-deploy-tis"></div>
+            <x-input  placeholder="请输入交易密码" v-model="security" type="password" ref="security" :required="true"></x-input>
+        </group>
+        <group class="nobg flex-box">
+            <x-button type="primary" style="border-radius:99px;height:2.25rem;line-height:2.25rem;font-size:0.875rem;background:#3f73ed" @click.native="buy_fixed">确认</x-button>
+        </group>
+    </popup>
 </div>
 </template>
 <script>
-    import { XInput , PopupPicker , Group , Selector  } from 'vux'
+    import { XInput , PopupPicker , Group , Selector, Popup ,PopupHeader,TransferDomDirective as TransferDom } from 'vux'
     export default {
     components: {
         XInput,
         PopupPicker,
         Group,
-        Selector
+        Selector,
+        Popup,
+        PopupHeader
     },
+      directives: {
+        TransferDom
+      },
     data () {
         return {
+            security:'',
+            showDeploy:false,
             timer:null,
             countimer:"",
             ifshow:false,
@@ -258,62 +281,74 @@
             this.chose_payment_info = this.payment[this.chose_payment];
         },
         buy(){
-            if(this.click_lock)
-            {
-                return false;
-            }
-            this.click_lock = true;
-            let formData = {
-                token_otc_id : this.$route.params.token_otc_id,
-                amount : this.amount,
-                payment_info:this.chose_payment_info
-            }
-            var _this= this;
             if(this.chose_payment_info.payment_key=='asset')
             {
-                this.$vux.confirm.show({
-                    title: '使用USDG资产兑换,即时到账',
-                    onCancel () {},
-                    onConfirm () {
-                        _this.$vux.loading.show({
-                            text: ''
-                        })
-                        _this.$http.post('/api/app.tokenotc/deals/buy',formData).then( res=>{
-                            if(res.errcode==0){
-                                _this.$vux.loading.hide()
-                                _this.$vux.toast.text('受让成功');
-                                _this.$router.push({path:'/token_otc/order'})
-                            }
-                        }).catch(error=>{
-                            _this.click_lock = false;
-                            if (error.errcode) {
-                                _this.$vux.toast.text(error.message);
-                            }
-                            _this.$vux.loading.hide()
-                        })
-                    }
-                });
-            }else{
-                this.$http.post('/api/app.tokenotc/deals/buy',formData).then( res=>{
-                    if(res.errcode==0){
-                        this.pay_status = 1;
-                        this.order_id = res.data.order_id;
-                        this.readOnlyFlag = true;
-                        this.order_sn = res.data.order_sn;
-                        this.accid = res.data.accid;
-                    }
-                    this.click_lock = false;
-                    this.pay_status=1;
-                    this.counttime(this.$store.state.init.otc_order_overtime*60);
-                }).catch(error=>{
-                    this.click_lock = false;
-                    if (error.errcode) {
-                        this.$vux.toast.text(error.message);
-                    }
-                })
+              this.showDeploy =true;
+              return;
             }
+            this.tobuy();
 
         },
+      tobuy(){
+        if(this.click_lock)
+        {
+          return false;
+        }
+        this.click_lock = true;
+        let formData = {
+          token_otc_id : this.$route.params.token_otc_id,
+          amount : this.amount,
+          payment_info:this.chose_payment_info,
+          security:this.security
+        }
+        var _this= this;
+        if(this.chose_payment_info.payment_key=='asset')
+        {
+          this.$vux.confirm.show({
+            title: '使用USDG资产兑换,即时到账',
+            onCancel () {},
+            onConfirm () {
+              _this.$vux.loading.show({
+                text: ''
+              })
+              _this.$http.post('/api/app.tokenotc/deals/buy',formData).then( res=>{
+                if(res.errcode==0){
+                  _this.$vux.loading.hide()
+                  _this.$vux.toast.text('受让成功');
+                  _this.$router.push({path:'/token_otc/order'})
+                }
+              }).catch(error=>{
+                _this.click_lock = false;
+                if (error.errcode) {
+                  _this.$vux.toast.text(error.message);
+                }
+                _this.$vux.loading.hide()
+              })
+            }
+          });
+        }else{
+          this.$http.post('/api/app.tokenotc/deals/buy',formData).then( res=>{
+            if(res.errcode==0){
+              this.pay_status = 1;
+              this.order_id = res.data.order_id;
+              this.readOnlyFlag = true;
+              this.order_sn = res.data.order_sn;
+              this.accid = res.data.accid;
+            }
+            this.click_lock = false;
+            this.pay_status=1;
+            this.counttime(this.$store.state.init.otc_order_overtime*60);
+          }).catch(error=>{
+            this.click_lock = false;
+            if (error.errcode) {
+              this.$vux.toast.text(error.message);
+            }
+          })
+        }
+      },
+      buy_fixed(){
+          this.tobuy();
+      },
         checkBuyNum:function(value){
             return {
                 valid: value > 0,
