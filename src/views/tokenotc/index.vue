@@ -1,8 +1,16 @@
 <template lang="html">
 <div class="token-deals-index">
     <div class="deals-content">
+        <x-header class="m-tab" :left-options="{backText: ' '}">
+            <h1 class="m-tab-top">令牌流通</h1>
+            <a slot="left"></a>
+            <a slot="right">
+                <i slot="right" v-on:click="showMenus()" class="iconfont"  style="fill:#fff;position:relative;top:-2px;font-size:1.4rem;">&#xe6f5;</i>
+                <!--<router-link to="/token_otc/order">我的订单</router-link>-->
+            </a>
+        </x-header>
         <tab>
-            <tab-item v-for="(val,key) in $store.state.token_coin_lists" :key="key" :selected="key==0">{{val.coin_type.coin_unit}}</tab-item>
+            <tab-item v-for="(val,key) in $store.state.token_coin_lists" :key="key" :selected="key==0" @click.native="chose_type(val.id)">{{val.coin_type.coin_unit}}</tab-item>
         </tab>
         <div class="token_otc_lists">
             <div class="otc-item" v-for="(val,key) in otc_list" :key="key">
@@ -16,24 +24,23 @@
                     </flexbox-item>
                 </flexbox>
                 <flexbox>
-                    <flexbox-item :span="6"><div class="flex-otc-number">数量 {{val.vc_less_amount}}{{val.coin_info.coin_unit}}</div></flexbox-item>
-                    <flexbox-item :span="6"><div class="flex-otc-number-right">单价</div></flexbox-item>
+                    <flexbox-item :span="8"><div class="flex-otc-number">限额 {{val.min_buy_amount}} ~ {{val.vc_less_amount}}{{val.coin_info.coin_unit}}</div></flexbox-item>
+                    <flexbox-item :span="4"><div class="flex-otc-number-right">单价</div></flexbox-item>
                 </flexbox>
                 <flexbox>
-                    <flexbox-item :span="6"><div class="flex-otc-number">总价 ￥{{val.total_price}}</div></flexbox-item>
-                    <flexbox-item :span="6"><div class="flex-otc-number-price">￥{{val.vc_unit_price}}</div></flexbox-item>
+                    <flexbox-item :span="9"><div class="flex-otc-number">总额{{val.vc_less_amount}}{{val.coin_info.coin_unit}}  总价 ￥{{val.total_price}}</div></flexbox-item>
+                    <flexbox-item :span="3"><div class="flex-otc-number-price">￥{{val.vc_unit_price}}</div></flexbox-item>
                 </flexbox>
                 <flexbox>
                     <flexbox-item :span="6">
-                        <div class="pay_way">
                             <img src="@/assets/images/wechat.png" v-if="val.payment_key.indexOf('weixin')!==-1">
                             <img src="@/assets/images/alipay.png" v-if="val.payment_key.indexOf('alipay')!==-1">
                             <img src="@/assets/images/bankcard.png" v-if="val.payment_key.indexOf('bankcard')!==-1">
-                        </div>
+                            <img src="@/assets/images/wallet.png" v-if="val.payment_key.indexOf('asset')!==-1 || val.payment_key.indexOf('wallet')!==-1">
                     </flexbox-item>
                     <flexbox-item :span="6">
                         <div class="flex-otc-button">
-                            <x-button type="primary" mini>购买</x-button>
+                            <x-button type="primary" mini @click.native="turn_buy(val.id)">受让</x-button>
                         </div>
                     </flexbox-item>
                 </flexbox>
@@ -43,17 +50,34 @@
             <Scroller v-if="otc_list.length>0" v-on:load="loadOtcLists" :loading="loading" :container="'.block-box'" ></Scroller>
             <nodata  v-else :datatip="'暂无数据'"></nodata>
         </div>
+        <popup v-model="showRightBar" position="right" style="width:60%;background:#fff;"  v-transfer-dom>
+            <div style="width:100%; padding-top:30px;">
+                <box gap="25px 10px">
+                    <x-button class="right_item  rbt" style="background-color:#1d62c1;border-radius:99px;" type="primary" link="/token_otc/order">我的订单</x-button>
+                    <x-button class="right_item rbt" style="background-color:#1da0c1;border-radius:99px;color: #fff" type="primary" link="/token_otc/deal/sell">我的挂单</x-button>
+                    <x-button class="right_item  rbt" style="background-color:#cf222d;border-radius:99px;" type="primary" link="/token_incharge/0">令牌转入</x-button>
+                    <x-button class="right_item rbt" style="background-color:#1aad19;border-radius:99px;color: #fff" type="primary" link="/token_otc/withdraw">令牌转出</x-button>
+                    <x-button v-if="auth>0" class="right_item rbt" style="background-color:#fff;padding:0;border-radius:99px; color: #1d62c1; border-color: #7fabe7;" type="default" @click.native="turn_push">出让</x-button>
+                    <!--<x-button  class="right_item rbt" style="background-color:#fff;padding:0;border-radius:99px; color: #1d62c1; border-color: #7fabe7;" type="default" link="/token_incharge/0">令牌转入</x-button>-->
+                    <!--<x-button  class="right_item rbt" style="background-color:#fff;padding:0;border-radius:99px;" type="default" link="/token_incharge/0">令牌转出</x-button>-->
+
+                </box>
+            </div>
+        </popup>
 
     </div>
 </div>   
 </template>
 <script>
-import {  LoadMore , Divider,Tab, TabItem ,Flexbox ,FlexboxItem,Popup } from 'vux';
+import {  LoadMore , Divider,Tab, TabItem ,Flexbox ,FlexboxItem,Popup,TransferDom } from 'vux';
 
 
 import Scroller from "@/components/scroller";
 import Nodata from "@/components/nodata";
 export default {
+    directives: {
+    TransferDom
+    },
     components: {
       Scroller,
       LoadMore,
@@ -75,7 +99,9 @@ export default {
             formData:{
               coin_type:0,
               page:1
-            }
+            },
+            showRightBar:false,
+            auth:0
         }
     },
     mounted () {
@@ -86,6 +112,7 @@ export default {
         getTab(){
             this.$http.post('/api/app.tokenotc/deals/get_open_coin',{}).then(res => {
                 this.$store.state.token_coin_lists=res.data.lists;
+                this.auth = res.data.auth;
                 this.loadOtcListsFirst();
             }).catch(err => {
                 if (err.errcode) {
@@ -111,7 +138,7 @@ export default {
                 //  this.Toast(err || '网络异常，请求失败');
             });
         },
-        loadOtcLists(){
+      loadOtcLists(){
             if (this.loading) {
                 //正在加载中
             }else if(this.formData.page!=null){
@@ -144,6 +171,24 @@ export default {
             this.formData.page++;
             this.loadOtcLists();
         },
+      turn_buy(id){
+            this.$router.push({path:'/token_buy/'+id})
+      },
+      turn_push(){
+        this.$router.push({path:'/token_push'})
+      },
+      chose_type(id){
+          this.formData = {
+            coin_type:id,
+            page:1
+          }
+          this.otc_list = [];
+          this.loadOtcListsFirst();
+      },
+      showMenus()
+      {
+        this.showRightBar = true
+      }
     }
 }
 </script>

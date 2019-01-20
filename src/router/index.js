@@ -1452,8 +1452,80 @@ export default new Router({routes:[
         title: '令牌流通',
         requireAuth: false,
         pageType: 'token_otc',
+        hide_head:true
       }
     },
+    {
+      path: '/token_buy/:token_otc_id',
+      name: 'token_buy',
+      component: resolve => require(['@/views/tokenotc/buy'], resolve),
+      meta: {
+        title: '受让',
+        requireAuth: false,
+        pageType: 'token_buy',
+      }
+    },
+    {
+        path: '/token_push',
+        name: 'token_push',
+        component: resolve => require(['@/views/tokenotc/push'], resolve),
+        meta: {
+            title: '出让',
+            requireAuth: false,
+            pageType: 'token_push',
+        }
+    },
+    {
+      path: '/token_otc/order',
+      name: 'token_otc_order',
+      component: resolve => require(['@/views/tokenotc/order'], resolve),
+      meta: {
+        title: '我的订单',
+        requireAuth: false,
+        pageType: 'token_otc_order',
+      }
+    },
+    {
+      path: '/token_otc/order/:order_id',
+      name: 'token_otc_order_detail',
+      component: resolve => require(['@/views/tokenotc/detail'], resolve),
+      meta: {
+        title: '订单详情',
+        requireAuth: false,
+        pageType: 'token_otc_order_detail',
+      }
+    },
+    {
+      path: '/token_otc/deal/sell',
+      name: 'token_otc_deal_sell',
+      component: resolve => require(['@/views/tokenotc/sell'], resolve),
+      meta: {
+        title: '流通出让',
+        requireAuth: false,
+        pageType: 'token_otc_deal_sell',
+      }
+    },
+    {
+      path: '/token_incharge/:token_name',
+      name: 'token_incharge',
+      component: resolve => require(['@/views/tokenotc/incharge'], resolve),
+      meta: {
+        title: '令牌转入',
+        requireAuth: false,
+        pageType: 'token_incharge',
+      }
+    },
+    {
+      path: '/token_otc/withdraw',
+      name: 'withdraw',
+      component: resolve => require(['@/views/tokenotc/withdraw'], resolve),
+      meta: {
+        title: '令牌转出',
+        requireAuth: false,
+        pageType: 'withdraw',
+      }
+    },
+
   ]});
 /*
   router.beforeEach((to, from, next) => {

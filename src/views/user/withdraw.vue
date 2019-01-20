@@ -4,19 +4,19 @@
         <div class="head-text flex-1">可上链{{this.coin_uint}}：<span>{{vc_total}}</span></div>
     </div>
     <div class="withdraw">
-        <div class="title">申请提取</div>
+        <div class="title">申请上链</div>
         <div class="input-box flex-box vux-1px-b">
             <input type="text" v-model="withdraw_money"  :min="min_withdraw" class="flex-1">
             <span>{{coin_uint}}</span>
         </div>
         <div class="item-block">
             <div class="item flex-box">
-                <div class="item-title flex-1">预计所需手续费：{{ServiceCharge}} {{coin_uint}}</div>
-                <div class="item-decs">最低提取{{min_withdraw}}{{coin_uint}}</div>
+                <div class="item-title flex-1">预计所需燃烧：{{ServiceCharge}} {{coin_uint}}</div>
+                <div class="item-decs">最低上链{{min_withdraw}}{{coin_uint}}</div>
             </div>
             <div class="item flex-box">
                 <div class="item-title flex-1">预计到账数额：{{real_withdraw}} {{coin_uint}}</div>
-                <div class="item-decs" v-if="coin_type==0">注：上链前先收购{{limit_rate}}%</div>
+                <div class="item-decs" v-if="coin_type==0">注：上链前先受让{{limit_rate}}%</div>
             </div>
         </div>
         <div class="select-box">
@@ -43,8 +43,8 @@
             <div class="title">申请上链成功</div>
             <span class="vux-close" v-on:click="colse_pup()"></span>
             <div class="pup-block">
-                <div class="item">提取数额：<span>{{withdraw_money}}</span></div>
-                <div class="item">手续费：{{ServiceCharge}}</div>
+                <div class="item">上链数额：<span>{{withdraw_money}}</span></div>
+                <div class="item">燃烧：{{ServiceCharge}}</div>
                 <div class="item">到账数额：<span>{{real_withdraw}}</span></div>
             </div>
             <box gap="2.1875rem 1.75rem 1.375rem">
@@ -142,9 +142,9 @@ export default {
             this.$router.push({path:'/user/withdrawlist'})
         },
         getUserinfo(){
-            this.$http.post('/api/app.user/account/info',{}).then(res => {
-                this.vc_total=res.data.account_info.vc_normal;
-                this.vc_normal=res.data.account_info.vc_normal;
+            this.$http.post('/api/app.tokenotc/deals/withdrawcredit',{}).then(res => {
+                this.vc_total=res.data.amount;
+                this.vc_normal=res.data.amount;
             }).catch(err => {
                 if (err.errcode) {
                     this.$vux.toast.text(err.message);

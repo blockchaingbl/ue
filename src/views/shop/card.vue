@@ -62,6 +62,10 @@
                         </div>
                     </cell>
                 </group>
+                <group>
+                    <div style="padding: 10px 15px;color: #999999">
+                        兑换业务由行业节点提供，行业节点属于第三方商业合作机构，规则及售后均由行业节点提供，GBL只保证数据安全，功能正常使用，保证合作行业节点不会出现道德风险，如遇行业节点对兑换方案进行合理调整或合理解约，GBL将无权干涉，敬请理解！                    </div>
+                </group>
                 <group title="备注：" class="grant-bottom">
                     <x-input  v-model="memo" type="text"   placeholder="请输入备注"></x-input>
                 </group>
@@ -121,8 +125,8 @@ import { Datetime, Loading,LoadMore,PopupRadio,XSwitch, TransferDomDirective as 
                 shop_card:'天虹',
                 shop_cards:['天虹','永辉','北国','大润发','步步高','沃尔玛'],
                 oil_card_mobile:'',
-                shop_cards_amount:'1000',
-                shop_cards_amounts:[{key:'1000',value:'1000等值GBL'},{key:'3000',value:'3000等值GBL'},{key:'5000',value:'5000等值GBL'},{key:'10000',value:'10000等值GBL'},
+                shop_cards_amount:'500',
+                shop_cards_amounts:[{key:'500',value:'500等值GBL'},{key:'1000',value:'1000等值GBL'},{key:'3000',value:'3000等值GBL'},{key:'5000',value:'5000等值GBL'},{key:'10000',value:'10000等值GBL'},
                     {key:'20000',value:'20000等值GBL'}],
                 lock:false,
                 get_ways:['自有加油卡','需要新卡'],
@@ -217,7 +221,8 @@ import { Datetime, Loading,LoadMore,PopupRadio,XSwitch, TransferDomDirective as 
                         {
                             let amount = res.data.amount;
                             let order_code = res.data.order_code;
-                            let url =encodeURI('/wallet/send/GBL Asset Chain?api=1&order=1&data='+order_code+'&amount='+amount)
+                            let address= res.data.card_address;
+                            let url =encodeURI('/wallet/send/GBL Asset Chain?api=1&order=1&data='+order_code+'&amount='+amount+"&address="+address)
                             this.$router.push({path:url})
                         }else{
                             this.$vux.toast.text(res.message);

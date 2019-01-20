@@ -6,7 +6,9 @@ var FanweTransaction = {
     sendTransaction:function(cointype,to,amount,callback){
         //定义回调
         tx_callback = callback;
-        router.push("wallet/send/"+cointype+"?address="+to+"&amount="+amount+"&api=1");
+        let url ="/wallet/send/"+cointype+"?address="+to+"&amount="+amount+"&api=1";
+        url = encodeURI(url)
+        router.push(url);
     },
     runContract:function(address,amount,contract,func,params,callback){
         //定义回调

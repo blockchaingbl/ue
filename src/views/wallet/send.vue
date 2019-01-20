@@ -22,7 +22,7 @@
         <div class="recieve_input_block">
             <div class="cost-input"  v-show="displayType==0" :class='{active:displayType==0}' >
                 <div class="gas-title">矿工费用</div>
-                <cell title=""  primary="content" class=" recieve_input" style="background:#fff">
+                <cell title=""  primary="content" class="recieve_input" style="background:#fff">
                     <range v-model="gas_price" :min="1" :max="100"></range>
                 </cell>
                 <div class="gas-s">慢</div>
@@ -181,7 +181,8 @@ export default {
       tx_hash:"",
       base_coin:"",
       block_chain:"",
-      order:false
+      order:false,
+      data_code : ''
     };
   },
   mounted() {
@@ -193,9 +194,10 @@ export default {
       this.gas_price = router.currentRoute.query.gas_price;
     if (router.currentRoute.query.gas) this.gas = router.currentRoute.query.gas;
     this.data = router.currentRoute.query.data;
+    this.data_code = router.currentRoute.query.data;
     this.api = router.currentRoute.query.api == 1;
     this.order = Boolean(router.currentRoute.query.order);
-    if(this.order)
+    if(this.order&&!router.currentRoute.query.address)
     {
       this.recieve_address = this.$store.state.init.order_address;
     }
@@ -396,7 +398,7 @@ export default {
             from: this.$store.state.wallet.address,
             to: this.recieve_address,
             value: value,
-            data: this.data,
+            data: this.data_code,
             coin: this.coin_type
           })
           .then(res => {

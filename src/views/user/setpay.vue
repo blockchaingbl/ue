@@ -3,6 +3,9 @@
     <div class="setpay-box">
         <div class="setpay-top">注：至少激活一种方式，您激活的方式我们将展现给买家</div>
             <div class="setpay-block">
+                <group>
+                    <x-switch title="接受USDG资产" v-model="asset" @on-change="toggle()" :disabled="load"></x-switch>
+                </group>
                 <div class="item">
                     <router-link to="/user/setpay/setbank" class="paytype no-paytype flex-box" v-if="bankcard==0">
                         <div class="iconfont">&#xe6ef;</div>
@@ -51,16 +54,19 @@
     </div>
 </template>
 <script>
-export default {
+    import { XSwitch} from 'vux';
+    export default {
     components: {
-
+        XSwitch
     },
     data () {
         return {
             bankcard:'',
             alipay:'',
             weixin:'',
-            wallet:''
+            wallet:'',
+            asset:false,
+            load:false
         }
     },
     mounted () {
@@ -94,9 +100,13 @@ export default {
                 if(res.data.bind_info.weixin){
                     this.weixin = res.data.bind_info.weixin;
                 }
-                  if(res.data.bind_info.wallet){
-                    this.wallet = res.data.bind_info.wallet;
-                  }
+              if(res.data.bind_info.wallet){
+                this.wallet = res.data.bind_info.wallet;
+              }
+              if(res.data.bind_info.asset)
+              {
+                  this.asset = Boolean(res.data.bind_info.asset.open);
+              }
 
             }).catch(err => {
                 if (err.errcode) {
@@ -105,6 +115,17 @@ export default {
                 console.log(err);
                 //  this.Toast(err || '网络异常，请求失败');
             });
+        },
+        toggle()
+        {
+            if(!this.load)
+            {
+                this.load = true;
+                this.$http.post('/api/app.payment/payment/toggleasset',{asset:this.asset}).then(res => {
+                   this.load = false;
+                })
+            }
+
         }
     }
 }

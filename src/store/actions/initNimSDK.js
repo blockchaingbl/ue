@@ -25,7 +25,7 @@ export function initNimSDK ({ state, commit, dispatch }, loginInfo) {
   dispatch('showLoading')
   // 初始化SDK
   window.nim = state.nim = SDK.NIM.getInstance({
-    debug: true,
+    debug: false,
     appKey: config.appkey,
     account: loginInfo.uid,
     token: loginInfo.sdktoken,

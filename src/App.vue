@@ -196,6 +196,13 @@ export default {
        count+=this.$store.state.sysMsgUnread.total;
         this.$store.state.unreadMsgs_number = count
       }
+      if(!this.$store.state.init.coin_price)
+      {
+        this.getInit();
+      }else if (!this.$store.state.init)
+      {
+        this.getInit();
+      }
     },
   watch: {
     $route() {

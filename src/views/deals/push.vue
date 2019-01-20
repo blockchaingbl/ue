@@ -16,7 +16,7 @@
         <div class="push-item input-box vux-1px-b">
             <input type="text" class="price" v-model="sale_total" readonly="true">
         </div>
-        <div class="push-item title">手续费({{$store.state.init.coin_uint}})</div>
+        <div class="push-item title">燃烧({{$store.state.init.coin_uint}})</div>
         <div class="push-item input-box">
             <input type="text" class="price" v-model="otc_fee" readonly="true">
         </div>
@@ -67,7 +67,8 @@ export default {
             lock:false,
             lock_day:'',
             otc_auth_type:null,
-            otc_freeze_seller:''
+            otc_freeze_seller:'',
+            click_lock:false
         }
     },
     computed:{
@@ -150,6 +151,12 @@ export default {
             }
         },
         sure_push(){
+            if(this.click_lock)
+            {
+                return;
+            }else{
+                this.click_lock = true;
+            }
             if(this.coin_price<this.sale_price_min){
                 this.$vux.toast.text('行情不得小于最低价' + this.sale_price_min);
                 return;
@@ -168,9 +175,11 @@ export default {
                 if(res.errcode=="0"){
                     this.$vux.toast.show({text: '挂单成功'});
                     this.$router.push({path:'/deals/center'});
+                }else{
+                    this.click_lock = false;
                 }
             }).catch(err=>{
-
+                this.click_lock = false;
                 if (err.errcode) {
                     this.$vux.toast.text(err.message);
                 }

@@ -48,11 +48,17 @@
                     </div>
                     <div class="item-text">我的钱包</div>
                 </router-link>
-                <div class="item flex-box" @click="credit">
+                <div class="item flex-box"  @click="jubaopen">
                     <div class="user_icon">
-                        <img src="@/assets/images/user_credit.png" alt="">
+                        <img src="@/assets/images/user_cornucopia.png" alt="">
                     </div>
-                    <div class="item-text">我的信用</div>
+                    <div class="item-text">聚宝盆</div>
+                </div>
+                <div class="item flex-box" @click="tis_btn">
+                    <div class="user_icon">
+                        <img src="@/assets/images/xinyong.png" alt="">
+                    </div>
+                    <div class="item-text">信用值</div>
                 </div>
                 <div class="item flex-box" @click="open_scan">
                     <div class="user_icon">
@@ -72,17 +78,17 @@
                     </div>
                     <div class="item-text">转&nbsp;&nbsp;出</div>
                 </div>
-                <div class="item flex-box" @click="liutong()">
-                    <div class="user_icon">
-                        <img src="@/assets/images/user_deals.png" alt="">
-                    </div>
-                    <div class="item-text">流通大厅</div>
-                </div>
                 <div class="item flex-box" @click="turn_shop()">
                     <div class="user_icon">
                         <img src="@/assets/images/user_shopping.png" alt="">
                     </div>
                     <div class="item-text">商&nbsp;&nbsp;城</div>
+                </div>
+                <div class="item flex-box" @click="liutong()">
+                    <div class="user_icon">
+                        <img src="@/assets/images/user_deals.png" alt="">
+                    </div>
+                    <div class="item-text">令牌流通</div>
                 </div>
                 <router-link class="item flex-box" :to="{path: '/circulate/index'}" >
                     <div class="user_icon">
@@ -90,12 +96,18 @@
                     </div>
                     <div class="item-text">资产流通</div>
                 </router-link>
-                <!--<div class="item flex-box" @click="tis_btn" >-->
-                    <!--<div class="user_icon">-->
-                        <!--<img src="@/assets/images/user_circulation.png" alt="">-->
-                    <!--</div>-->
-                    <!--<div class="item-text">资产流通</div>-->
-                <!--</div>-->
+                <div class="item flex-box" @click="zjg">
+                    <div class="user_icon">
+                        <img src="@/assets/images/zjg.png" alt="">
+                    </div>
+                    <div class="item-text">中奖购</div>
+                </div>
+                <div class="item flex-box" @click="tis_btn">
+                    <div class="user_icon">
+                        <img src="@/assets/images/vote.png" alt="">
+                    </div>
+                    <div class="item-text">投&nbsp;&nbsp;票</div>
+                </div>
                 <div class="item flex-box" @click="turn_node()">
                     <div class="user_icon">
                         <img src="@/assets/images/user_node.png" alt="">
@@ -108,11 +120,17 @@
                     </div>
                     <div class="item-text">社群建设</div>
                 </div>
-                <div class="item flex-box"  @click="jubaopen">
+                <div class="item flex-box" @click="credit">
                     <div class="user_icon">
-                        <img src="@/assets/images/user_cornucopia.png" alt="">
+                        <img src="@/assets/images/user_credit.png" alt="">
                     </div>
-                    <div class="item-text">聚宝盆</div>
+                    <div class="item-text">我的信用</div>
+                </div>
+                <div class="item flex-box"  @click="zc">
+                    <div class="user_icon">
+                        <img src="@/assets/images/choubao.png" alt="">
+                    </div>
+                    <div class="item-text">筹&nbsp;&nbsp;宝</div>
                 </div>
             </div>
         </div>
@@ -289,6 +307,7 @@ export default {
                 this.$vux.toast.text('请先创建钱包');
             }
         },
+
         AppUpload(){
             App.CutPhoto('{"w":"200","h":"200"}')
         },
@@ -386,6 +405,33 @@ export default {
             this.$router.push({path:'/finance'});
           }
         },
+        zc(){
+          if(this.loading)
+          {
+            return false;
+          }
+          if(this.ban){
+            this.$vux.toast.text('资产不足');
+            return false;
+          }
+          if(parseFloat(this.vc_normal)<parseFloat(this.$store.state.init.crowd_limit))
+          {
+            this.$vux.toast.text(`资产不足,需要达到${this.$store.state.init.crowd_limit}`);
+          }else{
+            this.$router.push({path:'/zc'});
+          }
+        },
+          zjg(){
+            if(this.loading)
+            {
+              return false;
+            }
+            if(this.ban){
+              this.$vux.toast.text('资产不足');
+              return false;
+            }
+            this.$router.push({path:'/crowd_buy'});
+          },
         liutong(){
           if(this.loading)
           {
@@ -399,7 +445,7 @@ export default {
           {
             this.$vux.toast.text(`资产不足,需要达到${this.$store.state.init.crowd_limit}`);
           }else{
-            this.$router.push({path:'/crowd/choice'});
+            this.$router.push({path:'/token_otc'});
           }
         },
         credit(){
@@ -593,19 +639,19 @@ export default {
                 flex-wrap: wrap;
                 border-bottom: 1px solid #eee;
                 .item {
-                    width: 33.3333%;
+                    width: 25%;
                     height: 6.75rem;
                     color: #363840;
                     flex-direction: column;
                     justify-content: center;
                     border-right: 1px solid #eee;
                     border-bottom: 1px solid #eee;
-                    &:nth-child(3n+3) {
+                    &:nth-child(4n+4) {
                         border-right: none;
                     }
                     .user_icon {
-                        width: 3.0625rem;
-                        height: 3.0625rem;
+                        width: 2.5625rem;
+                        height: 2.5625rem;
                         margin: 0 auto 0.5rem;
                         img{
                             display: block;

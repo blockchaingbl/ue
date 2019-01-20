@@ -14,18 +14,18 @@
                     </div>
                     <div class="item-text">中奖购</div>
                 </router-link>
-                <div class="item flex-box" @click="tis_btn">
-                    <div class="user_icon">
-                        <img src="@/assets/images/liutong.png" alt="">
-                    </div>
-                    <div class="item-text">令牌流通</div>
-                </div>
-                <!--<router-link class="item flex-box" :to="{path:'/token_otc'}">-->
+                <!--<div class="item flex-box" @click="tis_btn">-->
                     <!--<div class="user_icon">-->
                         <!--<img src="@/assets/images/liutong.png" alt="">-->
                     <!--</div>-->
                     <!--<div class="item-text">令牌流通</div>-->
-                <!--</router-link>-->
+                <!--</div>-->
+                <router-link class="item flex-box" :to="{path:'/token_otc'}">
+                    <div class="user_icon">
+                        <img src="@/assets/images/liutong.png" alt="">
+                    </div>
+                    <div class="item-text">令牌流通</div>
+                </router-link>
             </div>
         </div>
     </div>

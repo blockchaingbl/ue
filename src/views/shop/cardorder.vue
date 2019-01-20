@@ -18,7 +18,8 @@
                     <div class="item-item flex-box">
                         <div class="item-text flex-1">消耗数额:{{order.amount}} {{$store.state.init.coin_uint}} </div>
                         <div class="item-text">
-                            <router-link :to="{path: '/cardorder/detail/'+order.id}">查看详情</router-link>
+                            <router-link :to="{path: '/cardorder/detail/'+order.id}" v-if="order.examine==0">查看详情</router-link>
+                            <span v-else>订单已取消，已退资产</span>
                             <router-link :to="{path: order.pay_url}" v-if="order.pay_type==1 && order.pay_status==0">立即支付</router-link>
                         </div>
                     </div>
@@ -70,10 +71,11 @@ export default {
                 this.$http.post('/api/app.apply/cardorder/myorder',this.formData).then(res => {
                     this.total = res.data.total;
                     this.first_loading = false;
+                    let address = this.$store.state.init.card_address
                     res.data.orders.map(function (val) {
                         if(val.pay_type==1 && val.pay_status==0)
                         {
-                            val.pay_url =encodeURI('/wallet/send/GBL Asset Chain?api=1&order=1&data='+val.order_code+'&amount='+val.amount)
+                            val.pay_url =encodeURI('/wallet/send/GBL Asset Chain?api=1&order=1&data='+val.order_code+'&amount='+val.amount+'&address='+address)
                         }
                     })
                     if(res.data==null){
