@@ -7,8 +7,19 @@
             <h3 class="panel-title">交易挂单列表（共 {{$lists->total()}} 条记录）</h3>
         </div>
         <div class="panel-body">
-            <form id="search_form" action="{{url("transaction.saleorder")}}" method="GET" class="form-horizontal" role="form" >
+            <form id="search_form" action="{{url("token.transaction.saleorder")}}" method="GET" class="form-horizontal" role="form" >
                 <div class="form-group">
+                    <div class="col-md-2">
+                        <div class="input-group">
+                            <span class="input-group-addon">数字资产</span>
+                            <select name="coin_type" id="coin_type" class="form-control">
+                                <option value="all">全部</option>
+                                @foreach($coin_type_all as $item)
+                                    <option value="{{$item['coin_type']}}">{{$item['coin_unit']}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
                     <div class="col-md-2"  style="display:block; float: left; padding-left:0px;">
                         <span style="float: left;line-height: 30px;">单号：</span>
                         <input type="text" class="form-control" style="width: 150px;float: left;margin-left: 10px;" name="order_sn" value="{{$param['order_sn']}}" placeholder="输入订单号">
@@ -53,8 +64,8 @@
                         </select>
                         <input type="text" id="saleorder_date" name="saleorder_date" value="{{$param['saleorder_date']}}" class="form-control" style="float: left;width: 180px;" />
                     </div>
+
                     <div class="col-md-2"  style="display:block; float: left;">
-                        <button type="button" class="btn btn-primary" onclick="clearSearch()">清 除</button>
                         <button type="submit" class="btn btn-primary">查 询</button>
                         <button type="button" class="btn btn-primary" onclick="export_saleorder()">导 出</button>
                     </div>
@@ -64,7 +75,7 @@
         <table class="table table-bordered">
             <thead>
             <tr>
-                <th>订单号</th>
+                <td>订单号</td>
                 <th>买家</th>
                 <th>卖家</th>
                 <th>成交数量</th>
@@ -87,7 +98,7 @@
                     <td>{{Helper::formatOrderSN($item->create_time,$item->id)}}</td>
                     <td>{{$item->buyer->username}}</td>
                     <td>{{$item->seller->username}}</td>
-                    <td>{{$item->vc_amount}}</td>
+                    <td>{{$item->vc_amount.$coin_type_all[$item->coin_type]['coin_unit']}}</td>
                     <td>{{$item->vc_uint_price}}</td>
                     <td>{{$item->vc_total_price}}</td>
                     <td>@if($item->create_time>0){{date('Y-m-d H:i:s',$item->create_time)}}@endif</td>
@@ -133,7 +144,7 @@
             @endforeach
             </tbody>
         </table>
-        <div style="position:relative;top:10px;">{!! $lists->appends(['keyword'=>$keyword,'saleorder_date'=>$param['saleorder_date'],'time_type'=>$param['time_type'],'appeal_status'=>$param['appeal_status'],'status'=>$param['status'],'deal_memo'=>$param['deal_memo']])->render() !!}</div>
+        <div style="position:relative;top:10px;">{!! $lists->appends(['keyword'=>$keyword,'saleorder_date'=>$param['saleorder_date'],'time_type'=>$param['time_type'],'appeal_status'=>$param['appeal_status'],'status'=>$param['status'],'deal_memo'=>$param['deal_memo'],'coin_type'=>$param['coin_type']])->render() !!}</div>
 
         <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -207,7 +218,7 @@
                 }
                 var formData = {id:id,deal_memo:deal_memo,type:deal_type};
                 $.ajax({
-                    url:'{{url('transaction.appeal')}}',
+                    url:'{{url('token.transaction.appeal')}}',
                     data:formData,
                     dataType:'json',
                     type:'post',
@@ -223,6 +234,7 @@
             }
             $(function () {
                 $('#status').val('{{$param['status']}}')
+                $('#coin_type').val('{{$param['coin_type']}}')
             })
             function export_saleorder() {
                 var url = `{!! $url !!}`;
