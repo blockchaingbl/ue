@@ -46,7 +46,7 @@
             <div class="popup1" v-on:click='close_invitation()'></div>
         </popup>
     </div>
-</div>   
+</div>
 </template>
 <script>
 
@@ -66,7 +66,7 @@ export default {
             invite_num:0,
             cp_invite_total:0,
             invite_cp:0,
-            app_download_url: "暂无下载链接", 
+            app_download_url: "暂无下载链接",
             invite_code:"",
             app_name:"",
             username:"",
@@ -135,7 +135,7 @@ export default {
         }
         .info-item {
             text-align: center;
-            
+
             .item-title {
                 line-height: 1.5rem;
             }
@@ -182,7 +182,7 @@ export default {
         }
         background: #4964cc;
         .invitbox{
-            
+
             background: #4964cc;
             background-image: url(../../assets/images/invita_card_bg.jpg);
             background-repeat: no-repeat;
@@ -194,7 +194,7 @@ export default {
                 font-size: 1.5625rem;
                 line-height: 2.1875rem;
                 color: #fff;
-                font-weight: bold; 
+                font-weight: bold;
             }
             .invite-decs{
                 font-size: @fs-middle;
@@ -205,7 +205,7 @@ export default {
             .invite-content{
                 background-color: #fff;
                 border-radius: 0.25rem;
-                
+
                 position: absolute;
                 left: 0.875rem;
                 right: 0.875rem;
@@ -226,7 +226,7 @@ export default {
                     color: #6597fa;
                     line-height: 2.8125rem;
                 }
-                
+
                 .invite-user{
                     padding:6% 6% 2%;
                     border-top: 1px dashed #bababa;
@@ -246,10 +246,9 @@ export default {
                         width: 60%;
                         border: 1px solid #e3e3e3;
                         padding: 0.625rem;
-                        
-                            
+                        height: 200px;
                             // canvas{
-                                
+
                             // }
                             img{
                                 height: 100% !important;
@@ -292,5 +291,5 @@ export default {
             z-index: 10;
         }
     }
-    
+
 </style>

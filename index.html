@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>GBL</title>
+  <meta name="description" content="GBL">
+  <meta name="keywords" content="GBL">
+  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link type="text/css" href="http://g.alicdn.com/sd/ncpc/nc.css?t=1502182314627" rel="stylesheet" />
+  <!-- <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.1/jquery.min.js"></script> -->
+  <!-- <script type="text/javascript" src="/static/libs/jquery-3.3.1.min.js"></script> -->
+  <script type="text/javascript" src="http://g.alicdn.com/sd/ncpc/nc.js?t=1502182314627"></script>
+  <style>
+    @font-face {
+      font-family: 'iconfont';  /* project id 805280 */
+      src: url('//at.alicdn.com/t/font_805280_n86ki07nj4.eot');
+      src: url('//at.alicdn.com/t/font_805280_n86ki07nj4.eot?#iefix') format('embedded-opentype'),
+      url('//at.alicdn.com/t/font_805280_n86ki07nj4.woff') format('woff'),
+      url('//at.alicdn.com/t/font_805280_n86ki07nj4.ttf') format('truetype'),
+      url('//at.alicdn.com/t/font_805280_n86ki07nj4.svg#iconfont') format('svg');
+    }
+
+    .iconfont {
+      font-family: "iconfont" !important;
+      font-size: 16px;
+      font-style: normal;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      vertical-align: baseline;
+    }
+
+  </style>
+  <script shendun-eddy>
+    (function() {
+      var srcFilterTags = ['script', 'iframe'];
+      // 域名白名单 可以加多个
+      var whiteList = ['{{$domain}}','vux.li','localhost','/'];
+      var whiteListReg = [];
+
+      // 正则匹配
+      whiteList.forEach(function(wl) {
+        var wlReg = new RegExp('/.+?\/\/' + wl + '|\/\/' + wl + '|.+?\.' + wl + '|^' + wl);
+        whiteListReg.push(wlReg);
+      });
+      // 白名单助手
+      var inWhileList = function(addedNode) {
+        // shendun-eddy 是script的白名单标签
+        if (addedNode.src === '' && addedNode.getAttribute('shendun-eddy') !== null) {
+          return true;
+        }
+
+        var isInWhiteList = false;
+
+        whiteListReg.forEach(function(wlReg) {
+          if (wlReg.test(addedNode.src)) {
+            isInWhiteList = true;
+            return false;
+          }
+        });
+
+        return isInWhiteList;
+      };
+
+      // dom观察器
+      var mutationHandler = function(records) {
+        records.forEach(function(record) {
+          Array.prototype.slice.call(record.addedNodes).forEach(function(addedNode) {
+            srcFilterTags.forEach(function(tagName) {
+              // 标签匹配 白名单匹配
+              if (addedNode.tagName === tagName.toUpperCase() && !inWhileList(addedNode)) {
+                addedNode.remove();
+              };
+            });
+          });
+        })
+      };
+
+      // 核心 - MutationObserver 提供了监视对DOM树所做更改的能力
+      // 优点 - 动态监听是否有非法的 iframe 和 script 代码
+      // 缺点 - 无法查找头部直接插入的代码
+      var MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver,
+        observeMutationSupport = !!MutationObserver;
+      var html = document.getElementsByTagName('html')[0];
+
+      if (observeMutationSupport) {
+        new MutationObserver(mutationHandler).observe(html, {
+          'childList': true,
+          'subtree': true
+        });
+      }
+
+      // 唯独直接加载的不能remove掉，异步加载的都能remove掉！！
+      // ***  记录头部的script，通知工信部 ***
+      var eleList = document.querySelectorAll('script');
+      var len = eleList.length;
+      for (var i = 0; i < len; i++) {
+        // 遍历操作
+        if (!inWhileList(eleList[i])) {
+          // do sth 这里的删除虽然已经晚了，因为头部同步JS已被执行，删除操作意义不大，但可以统计被劫持的代码是什么，记录好LOG 通知工信部
+          // sendLog
+          eleList[i].remove();
+        }
+      }
+    })();
+  </script>
+</head>
+
+<body>
+  <div id="app" class="g-window"></div>
+</body>
+
+</html>

@@ -21,13 +21,13 @@
             </div>
             <div class="candy-senior-opera">
                 <group class="lock-time vux-1px-b">
-                    <div class="lock-select flex-box">
-                        <div class="lock-se-title flex-1">是否锁仓</div>
-                        <x-switch title="锁仓" v-model="lock"></x-switch>
-                    </div>
-                    <x-input class="candy-numb" v-show="lock"  v-model="lock_day" placeholder="请输入锁仓天数(天)" keyboard="number" type="number" :max="5"></x-input>
+                    <!--<div class="lock-select flex-box">-->
+                        <!--<div class="lock-se-title flex-1">是否锁仓</div>-->
+                        <!--<x-switch title="锁仓" v-model="lock" :readonly="true"></x-switch>-->
+                    <!--</div>-->
+                    <x-input class="candy-numb" v-show="lock"  v-model="lock_day" placeholder="请输入锁仓天数(天)" keyboard="number" type="number" :max="5" :readonly="true"></x-input>
                 </group>
-                <group class="limit-time" title="领取有效期(天)">
+                <group class="limit-time" title="领取有效期(天)" :readonly="true">
                     <x-input  placeholder="输入发糖后可领取时间" v-model="receive_limit" type="number" keyboard="number"  :required="true"></x-input>
                 </group>
             </div>
@@ -50,6 +50,8 @@
                 <x-button type="primary" style="background-color: #6f7180;border-radius:0;height:2.875rem;font-size:0.875rem;" disabled v-else>发糖果</x-button>
             </box>
         </div>
+
+
         <div v-transfer-dom>
             <loading :show="loading"></loading>
         </div>
@@ -80,13 +82,13 @@ export default {
             show_coin : {},
             asset : 0,
             copys :'',
-            lock_day:'',
+            lock_day:50,
             disable:false,
             amount:'',
             disable_desc:'',
             coin_unit : this.$store.state.init.coin_uint,
             copys_amount:0,
-            receive_limit:'',
+            receive_limit:1,
             loading :true,
             mobile:'',
             security:'',
@@ -239,7 +241,7 @@ export default {
         background: #fff;
         padding-bottom: 0.25rem;
     }
-    
+
     .text_red{
         color: red;
     }

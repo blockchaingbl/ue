@@ -10,7 +10,7 @@
 /*头部主题色*/
 body .vux-header{
   background-color:@themecolor;
-  
+
 }
 #app >.app-body .vux-header.machine_header {
   padding: 0;
@@ -253,6 +253,7 @@ body .vux-header{
   .weui-cells{
     line-height: 3.125rem;
     .weui-check__label{
+      height: 2.825rem;
       padding: 0 0.9375rem;
     }
   }
@@ -303,12 +304,12 @@ body .vux-header{
 
 }
 .vux-popup-dialog {
-  
+
   .weui-cells{
     padding: 0;
     margin-top: 0;
     .tx_list{
-      
+
       .weui-cell_access{
         .weui-cell__ft{
           &::after{
@@ -518,7 +519,7 @@ body .weui-cells{
     &::before{
       display:none;
     }
-    
+
     &::after{
       left: 15px;
     }
@@ -586,7 +587,7 @@ body .weui-cells{
 }
 .password_input{
   margin-bottom: 0.625rem;
-  
+
 }
 #wallet_international_send{
   input::-webkit-input-placeholder{
@@ -703,7 +704,7 @@ body .weui-cells{
     &::before{
       display:none;
     }
-    
+
     &::after{
       left: 15px;
     }
@@ -1134,7 +1135,7 @@ body .weui-cells{
 }
 .market-detail{
   .vux-button-group{
-    
+
     overflow: hidden;
     height: 34px;
   }
@@ -1166,6 +1167,134 @@ body .weui-cells{
     border-bottom-right-radius: 4px;
   }
 }
+body .manage-pop{
+  background: #fff;
+  .vux-input-icon.weui-icon-warn:before, .vux-input-icon.weui-icon-success:before{
+    font-size: 18px;
+  }
+  .password_input{
+    margin: 0;
+  }
+  .nobg{
+    padding: 0.625rem 0;
+    .weui-cells{
+      display: flex;
+      align-items: center;
+      padding: 0 15px;
+      &::after{
+        display: none;
+      }
+      &::before{
+        display: none;
+      }
+      .weui-btn{
+        border-radius: 99px;
+        line-height: 2rem;
+        font-size: 0.875rem;
+        background: #1ea0c2;
+      }
+      .weui-btn + .weui-btn{
+        margin: 0;
+        margin-left: 0.625rem;
+        background-color: #2F82FF;
+      }
+    }
+  }
+}
+.vux-popup-dialog.no_overflow{
+  overflow: inherit;
+  .weui-cells{
+    overflow: inherit;
+  }
+}
+.pop-deposit-deploy{
+  .deposit-deploy-tis {
+    padding: 0 0.9375rem;
+    font-size: 0.75rem;
+    color: #f22e58;
+    line-height: 1.375rem;
+    background: #e3e5ed;
+  }
+  .vux-popup-header{
+    background: none;
+    line-height: 2.375rem;
+    height: 2.375rem;
+    font-size: 0.9375rem;
+    position: relative;
+  }
+  .vux-popup-header-left{
+    padding: 0;
+  }
+  .vux-popup-header-right{
+    width: 2rem;
+    height: 2rem;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 0.9375rem;
+    padding: 0;
+    color: #847e97;
+    &::before{
+      position: absolute;
+      display: block;
+      content: '\E617';
+      font-size: 1rem;
+      width: 1rem;
+      height: 1rem;
+      top: 50%;
+      right: -2px;
+      line-height: 1rem;
+      font-family: 'iconfont';
+      transform: translateY(-50%);
+    }
+  }
+  .weui-cell__ft{
+    color: #2f82ff;
+  }
+  .weui-cell{
+    height: 2.75rem;
+    line-height: 2.75rem;
+  }
+  .nobg{
+    height: 3.25rem;
+    padding: 0 0.9375rem;
+    .weui-cells{
+      width: 100%;
+    }
+  }
+  .deposit-buy-numb{
+    &::before{
+      display: none;
+    }
+  }
+}
+.page-bank-index,.page-bank-self{
+  .vux-tab{
+    .vux-tab-item{
+      color: #363840;
+      background: none;
+    }
+    .vux-tab-item.vux-tab-selected{
+      color: #363840;
+      border: none;
+      span{
+        position: relative;
+        display: inline-block;
+        &::after{
+          height: 3px;
+          width: 23px;
+          left: 50%;
+          transform: translateX(-50%);
+          position: absolute;
+          bottom: 0;
+          display: block;
+          content: '';
+          background: #3f72ed;
+        }
+      }
+    }
+  }
+}
 
 
 .normal-packet,.luck-packet{
@@ -1181,7 +1310,7 @@ body .weui-cells{
       color: #22262d;
       font-size: 0.875rem;
       padding: 0 0.75rem;
-     
+
     }
   }
 

@@ -2,7 +2,8 @@
 <div class="buy-box">
 
     <div class="head">
-        您将受让的{{coin_unit}}令牌
+        <span v-if="buy_flag">您将受让的{{coin_unit}}令牌</span>
+        <span v-else>您将出让的{{coin_unit}}令牌</span>
     </div>
     <div class="buy-block">
         <div class="item flex-box vux-1px-b" v-show="pay_status">
@@ -32,15 +33,17 @@
             </div>
         </div>
         <div class="item vux-1px-b flex-box">
-            <div class="red_weight flex-1">数量 <span>（可改）</span></div>
-            <x-input  v-model="amount"  required placeholder="请输入受让数量" placeholder-align="right" text-align="right" :required="true" :is-type="checkBuyNum"></x-input>
+            <div class="red_weight flex-1">数量 <span></span></div>
+            <x-input  v-model="amount"  required placeholder="请输入受让数量" placeholder-align="right" text-align="right" :required="true" :is-type="checkBuyNum" readonly="true"></x-input>
         </div>
-        <div class="item flex-box vux-1px-b" v-show="payment_info.length>0">
-            <selector @on-change="showPayInfo"  style="width: 100%;"  title="支付方式(可改)" :options="payment_info" v-model="chose_payment" direction="rtl"></selector>
+        <div class="item vux-1px-b flex-box" v-if="reward==1">
+            <div class="red_weight flex-1">受让可额外获赠锁仓资产</div>
+            <x-input  v-model="vc_fee"  required placeholder="受让可额外获赠锁仓资产" placeholder-align="right" text-align="right" readonly="true"></x-input>
         </div>
-        <div class="item flex-box vux-1px-b" v-show="payment_info.length>0&&chose_payment_info.is_connect==1">
-            <div class="title flex-1">联系方式</div>
-            <div class="decs"><a style="color: #4c4c51" :href="call_number">{{chose_payment_info.connect}}</a></div>
+        <div class="item flex-box vux-1px-b">
+            <div class="red_weight flex-1">支付方式</div>
+            <x-input  v-model="chose_payment_info.payment_org"  required placeholder="支付方式" placeholder-align="right" text-align="right" readonly="true"></x-input>
+
         </div>
         <div class="item flex-box vux-1px-b" v-show="chose_payment_info.is_connect==1">
             <div class="title flex-1">联系方式</div>
@@ -160,7 +163,9 @@
             accid:'',
             coin_unit:'',
              usdc_price:0,
-            loading:true
+            loading:true,
+            reward:0,
+            vc_fee:0,
         }
     },
     mounted () {
@@ -177,6 +182,7 @@
           this.$store.state.init.usdc_price =res.data.usdc_price;
           let otc_order = res.data.order;
           this.identity = otc_order.identity;
+          this.payment_info = otc_order.payment
           if(this.identity=='seller')
           {
             type=2;
@@ -191,6 +197,8 @@
           this.amount =otc_order.vc_amount;
           this.vc_unit_price = otc_order.vc_uint_price;
           this.order_sn = otc_order.order_sn;
+          this.reward = otc_order.reward;
+          this.vc_fee = (parseFloat(otc_order.vc_fee)* parseFloat(this.$store.state.init.token_otc_reward_rate)).toFixed(5)
           if(type==2){
             this.buy_flag=0;
             this.pay_status = 1;

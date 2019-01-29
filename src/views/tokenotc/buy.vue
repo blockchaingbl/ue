@@ -35,12 +35,12 @@
             <div class="red_weight flex-1">数量 <span>（可改）</span></div>
             <x-input  v-model="amount"  required placeholder="请输入受让数量" placeholder-align="right" text-align="right" :required="true" :is-type="checkBuyNum"></x-input>
         </div>
+        <div class="item vux-1px-b flex-box" v-if="reward==1">
+            <div class="red_weight flex-1">受让可额外获赠锁仓资产</div>
+            <x-input  v-model="lock_raward"  required placeholder="受让可额外获赠锁仓资产" placeholder-align="right" text-align="right" readonly="true"></x-input>
+        </div>
         <div class="item flex-box vux-1px-b" v-show="payment_info.length>0">
             <selector @on-change="showPayInfo"  style="width: 100%;"  title="支付方式(可改)" :options="payment_info" v-model="chose_payment" direction="rtl"></selector>
-        </div>
-        <div class="item flex-box vux-1px-b" v-show="payment_info.length>0&&chose_payment_info.is_connect">
-            <div class="title flex-1">联系方式</div>
-            <div class="decs"><a style="color: #4c4c51" :href="call_number">{{chose_payment_info.connect}}</a></div>
         </div>
         <div class="item flex-box vux-1px-b" v-show="chose_payment_info.is_connect">
             <div class="title flex-1">联系方式</div>
@@ -183,7 +183,9 @@
             click_lock :false,
             accid:'',
             coin_unit:'',
-             usdc_price:0
+             usdc_price:0,
+             reward:0,
+             fee_rate:0,
         }
     },
     mounted () {
@@ -202,6 +204,8 @@
                 this.amount = otc.vc_less_amount;
                 this.usdc_price = res.data.usdc_price;
                 this.coin_unit = otc.coin_info.coin_unit;
+                this.reward = otc.reward;
+                this.fee_rate = otc.vc_fee_rate
                this.$store.state.init.usdc_price= res.data.usdc_price;
                 if(otc.payment){
                     for (let x in otc.payment){
@@ -370,6 +374,17 @@
     computed:{
         call_number (){
             return 'tel:'+this.chose_payment_info.connect
+        },
+        lock_raward(){
+          if(this.reward)
+          {
+            let r = (parseFloat(this.fee_rate) * parseFloat(this.amount) * parseFloat(this.$store.state.init.token_otc_reward_rate)).toFixed(5)
+            if(!isNaN(r))
+            {
+              return r;
+            }
+          }
+          return 0;
         }
     }
 }

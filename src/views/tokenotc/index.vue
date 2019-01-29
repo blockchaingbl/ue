@@ -10,7 +10,7 @@
             </a>
         </x-header>
         <tab>
-            <tab-item v-for="(val,key) in $store.state.token_coin_lists" :key="key" :selected="key==0" @click.native="chose_type(val.id)">{{val.coin_type.coin_unit}}</tab-item>
+            <tab-item :disabled="lock" v-for="(val,key) in $store.state.token_coin_lists" :key="key" :selected="key==0" @on-item-click="chose_type(val.id)">{{val.coin_type.coin_unit}}</tab-item>
         </tab>
         <div class="token_otc_lists">
             <div class="otc-item" v-for="(val,key) in otc_list" :key="key">
@@ -19,7 +19,8 @@
                         <div class="flex-otc-head">
                             <img v-if="val.user.avatar!=''" src="@/assets/images/avatar.png">
                             <img v-else src="@/assets/images/avatar.png">
-                            <span>{{val.user.username}}</span>
+                            <span v-if="val.reward==0">{{val.user.username}}</span>
+                            <span v-if="val.reward==1" style="color:#2f82ff;">{{val.user.username}}</span>
                         </div>
                     </flexbox-item>
                 </flexbox>
@@ -101,7 +102,8 @@ export default {
               page:1
             },
             showRightBar:false,
-            auth:0
+            auth:0,
+            lock:false
         }
     },
     mounted () {
@@ -122,21 +124,28 @@ export default {
             });
         },
       loadOtcListsFirst(){
+          if(!this.lock)
+          {
+            this.lock = true;
             this.$http.post('/api/app.tokenotc/deals',this.formData).then(res => {
-                this.otc_list = this.otc_list.concat_unk(res.data.otc_list,"id");
-                if (res.data.otc_list.length<10) {
-                    this.loading=false;
-                    this.formData.page=null;
-                }else{
-                    this.formData.page=2;
-                }
+              this.otc_list = this.otc_list.concat_unk(res.data.otc_list,"id");
+              if (res.data.otc_list.length<10) {
+                this.loading=false;
+                this.formData.page=null;
+              }else{
+                this.formData.page=2;
+              }
+              this.lock = false;
             }).catch(err => {
-                if (err.errcode) {
-                    this.$vux.toast.text(err.message);
-                }
-                console.log(err);
-                //  this.Toast(err || '网络异常，请求失败');
+              if (err.errcode) {
+                this.$vux.toast.text(err.message);
+              }
+              this.lock = false;
+              console.log(err);
+              //  this.Toast(err || '网络异常，请求失败');
             });
+          }
+
         },
       loadOtcLists(){
             if (this.loading) {
@@ -158,8 +167,9 @@ export default {
                         this.loading=false;
                        // console.log(this.otc_list);
                     }
+                  this.lock = false;
                 }).catch(err => {
-                    console.log(err);
+                    this.lock = false;
                     this.formData.page=null;
                     this.loading = false;
                 });
@@ -178,6 +188,11 @@ export default {
         this.$router.push({path:'/token_push'})
       },
       chose_type(id){
+          if(this.formData.coin_type==id)
+          {
+            console.log('===id')
+            return;
+          }
           this.formData = {
             coin_type:id,
             page:1
@@ -189,7 +204,12 @@ export default {
       {
         this.showRightBar = true
       }
-    }
+    },
+  watch:{
+      lock(){
+        console.log(this.lock)
+      }
+  }
 }
 </script>
 
