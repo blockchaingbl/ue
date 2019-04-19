@@ -24,6 +24,11 @@
         <nodata  v-else :datatip="'暂无数据'"></nodata>
         <div class="" style="clear:both;"></div>
     </scroller>
+    <div class="record-bottom">
+        <box gap="0 35px 20px" class="record-btn-box flex-box">
+            <x-button type="primary" style="border-radius:99px;" class='record-btn' link="/deals/need">发布需求</x-button>
+        </box>
+    </div>
 </div>
 </template>
 <script>

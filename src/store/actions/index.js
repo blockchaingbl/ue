@@ -73,7 +73,6 @@ export default {
     let {type} = Object.assign({}, obj)
     // type 可为 nim chatroom
     type = type || 'nim'
-      console.log(type);
     switch (type) {
       case 'nim':
         connectNim(store, obj)

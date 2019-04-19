@@ -240,13 +240,33 @@ export default new Router({routes:[
       }
     },
     {
+      path: '/deals/need',
+      name: 'dealsNeed',
+      component: resolve => require(['@/'+style+'/deals/need'], resolve),
+      meta: {
+        title: '发布需求',
+        requireAuth: false,
+        pageType: 'dealsNeed'
+      }
+    },
+    {
       path: '/deals/buy',
       name: 'dealsBuy',
       component: resolve => require(['@/'+style+'/deals/buy'], resolve),
       meta: {
-        title: '流通受让',
+        title: '上链兑换',
         requireAuth: false,
         pageType: 'dealsBuy'
+      }
+    },
+    {
+      path: '/deals/need/sell',
+      name: 'dealsNeedSell',
+      component: resolve => require(['@/'+style+'/deals/need_sell'], resolve),
+      meta: {
+        title: '兑换',
+        requireAuth: false,
+        pageType: 'dealsNeedSell'
       }
     },
     {
@@ -267,6 +287,16 @@ export default new Router({routes:[
         title: '流通出让',
         requireAuth: false,
         pageType: 'dealsSell'
+      }
+    },
+    {
+      path: '/deals/needlog',
+      name: 'dealsNeedLog',
+      component: resolve => require(['@/'+style+'/deals/needlog'], resolve),
+      meta: {
+        title: '流通需求',
+        requireAuth: false,
+        pageType: 'dealsNeedLog'
       }
     },
     {
@@ -1466,6 +1496,16 @@ export default new Router({routes:[
       }
     },
     {
+      path: '/token_sell/:token_otc_id',
+      name: 'token_sell',
+      component: resolve => require(['@/views/tokenotc/token_sell'], resolve),
+      meta: {
+        title: '需求',
+        requireAuth: false,
+        pageType: 'token_sell',
+      }
+    },
+    {
         path: '/token_push',
         name: 'token_push',
         component: resolve => require(['@/views/tokenotc/push'], resolve),
@@ -1476,11 +1516,21 @@ export default new Router({routes:[
         }
     },
     {
+      path: '/token_need',
+      name: 'token_need',
+      component: resolve => require(['@/views/tokenotc/need'], resolve),
+      meta: {
+        title: '需求',
+        requireAuth: false,
+        pageType: 'token_need',
+      }
+    },
+    {
       path: '/token_otc/order',
       name: 'token_otc_order',
       component: resolve => require(['@/views/tokenotc/order'], resolve),
       meta: {
-        title: '我的订单',
+        title: '我的兑换',
         requireAuth: false,
         pageType: 'token_otc_order',
       }
@@ -1523,6 +1573,16 @@ export default new Router({routes:[
         title: '令牌转出',
         requireAuth: false,
         pageType: 'withdraw',
+      }
+    },
+    {
+      path: '/devapp',
+      name: 'devapp',
+      component: resolve => require(['@/views/shop/dev_app'], resolve),
+      meta: {
+        title: '系统开发',
+        requireAuth: false,
+        pageType: 'devapp',
       }
     },
 

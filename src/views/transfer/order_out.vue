@@ -10,7 +10,7 @@
                         <div class="item-text" >接收人：{{order.to_user.username}}</div>
                     </div>
                     <div class="item-item flex-box">
-                        <div class="item-text flex-1">转出数额 {{order.amount}} {{$store.state.init.coin_uint}}</div>
+                        <div class="item-text flex-1">转出数额 {{order.amount}}</div>
                         <div class="item-text">手机：**********{{order.to_user.mobile.substr(-1,1)}}</div>
                     </div>
                     <!--<div class="item-item flex-box">-->
@@ -104,7 +104,7 @@ export default {
         padding: 0.9375rem 0.9375rem 0;
         font-size: 0.8125rem;
         line-height: 1.25rem;
-        
+
     }
     .distri-block {
         padding: 0.625rem 0.9375rem 0;

@@ -26,6 +26,7 @@ const state = {
     page_loading:false,
     config:false,
     init:{},
+    self_wallet_auth:0,
     sign:true,
     coin_info:{},
     nimLoading:false,

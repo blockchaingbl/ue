@@ -41,7 +41,8 @@
                     </flexbox-item>
                     <flexbox-item :span="6">
                         <div class="flex-otc-button">
-                            <x-button type="primary" mini @click.native="turn_buy(val.id)">受让</x-button>
+                            <x-button type="primary" mini @click.native="turn_buy(val.id)" v-if="val.type==0">受让</x-button>
+                            <x-button type="warn" mini @click.native="turn_sell(val.id)" v-if="val.type==1">出让</x-button>
                         </div>
                     </flexbox-item>
                 </flexbox>
@@ -58,7 +59,8 @@
                     <x-button class="right_item rbt" style="background-color:#1da0c1;border-radius:99px;color: #fff" type="primary" link="/token_otc/deal/sell">我的挂单</x-button>
                     <x-button class="right_item  rbt" style="background-color:#cf222d;border-radius:99px;" type="primary" link="/token_incharge/0">令牌转入</x-button>
                     <x-button class="right_item rbt" style="background-color:#1aad19;border-radius:99px;color: #fff" type="primary" link="/token_otc/withdraw">令牌转出</x-button>
-                    <x-button v-if="auth>0" class="right_item rbt" style="background-color:#fff;padding:0;border-radius:99px; color: #1d62c1; border-color: #7fabe7;" type="default" @click.native="turn_push">出让</x-button>
+                    <x-button v-if="auth>0" class="right_item rbt" style="background-color:#df5000;border-radius:99px;color: #fff" type="default" @click.native="turn_push">出让</x-button>
+                    <x-button class="right_item rbt" style="background-color:#fff;padding:0;border-radius:99px; color: #1d62c1; border-color: #7fabe7;" type="default" @click.native="turn_need">需求</x-button>
                     <!--<x-button  class="right_item rbt" style="background-color:#fff;padding:0;border-radius:99px; color: #1d62c1; border-color: #7fabe7;" type="default" link="/token_incharge/0">令牌转入</x-button>-->
                     <!--<x-button  class="right_item rbt" style="background-color:#fff;padding:0;border-radius:99px;" type="default" link="/token_incharge/0">令牌转出</x-button>-->
 
@@ -67,7 +69,7 @@
         </popup>
 
     </div>
-</div>   
+</div>
 </template>
 <script>
 import {  LoadMore , Divider,Tab, TabItem ,Flexbox ,FlexboxItem,Popup,TransferDom } from 'vux';
@@ -92,8 +94,6 @@ export default {
     },
     data () {
         return {
-
-            formData:{page:1,type:0,orderkey:'',orderby:'desc'},
             lock:false,
             otc_list : [],
             loading:false,
@@ -115,6 +115,7 @@ export default {
             this.$http.post('/api/app.tokenotc/deals/get_open_coin',{}).then(res => {
                 this.$store.state.token_coin_lists=res.data.lists;
                 this.auth = res.data.auth;
+                this.formData.coin_type = res.data.lists[0].id;
                 this.loadOtcListsFirst();
             }).catch(err => {
                 if (err.errcode) {
@@ -184,13 +185,19 @@ export default {
       turn_buy(id){
             this.$router.push({path:'/token_buy/'+id})
       },
+      turn_sell(id)
+      {
+        this.$router.push({path:'/token_sell/'+id})
+      },
       turn_push(){
         this.$router.push({path:'/token_push'})
+      },
+      turn_need(){
+        this.$router.push({path:'/token_need'})
       },
       chose_type(id){
           if(this.formData.coin_type==id)
           {
-            console.log('===id')
             return;
           }
           this.formData = {

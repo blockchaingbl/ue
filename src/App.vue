@@ -57,8 +57,9 @@ v-if="this.$route.meta.pageType!='wallet_chain' && this.$route.name!='mineCenter
         <span slot="label">我</span>
     </tabbar-item>
 </tabbar>
-<div class="app-footer" v-if="this.$route.name =='dealsSell' || this.$route.name =='userWithdrawlist' || this.$route.name =='userSelfmoney'">
+<div class="app-footer" v-if="this.$route.name =='dealsSell' || this.$route.name =='dealsNeedLog' || this.$route.name =='userWithdrawlist' || this.$route.name =='userSelfmoney'">
     <module-record v-if="this.$route.name =='dealsSell'"></module-record>
+    <module-recordneed v-if="this.$route.name =='dealsNeedLog'"></module-recordneed>
     <module-withdraw v-if="this.$route.name =='userWithdrawlist'"></module-withdraw>
     <box gap="10px 0" v-if="$store.state.init.market && this.$route.name =='userSelfmoney'">
         <x-button type="warn" link="/market/index">查看行情</x-button>
@@ -98,6 +99,7 @@ import WalletBar from "@/components/walletbar";
 import WalletBarInternational from "@/components/walletbar_international";
 import FullscreenImg from '@/views/components/FullscreenImg';
 import Loading from './views/components/Loading'
+import RecordNeed from "@/components/m_recordneed";
 
 export default {
   name: "app",
@@ -174,6 +176,7 @@ export default {
   components: {
     "module-record":Record,
     "module-withdraw":Withdrawlist,
+    'module-recordneed':RecordNeed,
     walletbar: WalletBar,
     walletbarinternational: WalletBarInternational,
     FullscreenImg:FullscreenImg,

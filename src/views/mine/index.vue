@@ -57,6 +57,12 @@
                         </div>
                         <div class="exalt-text">消息</div>
                     </router-link>
+                    <div class="candy_router" @click="go_dev">
+                        <div class="exalt-img3" style="position: relative;">
+                            <img src="@/assets/images/app_dev.png" alt="">
+                        </div>
+                        <div class="exalt-text">技术支持</div>
+                    </div>
                     <router-link to="/task/center" class="exalt">
                         <div class="exalt-img">
                             <img src="@/assets/images/icon_exalt_new.png" alt="">
@@ -202,6 +208,9 @@ export default {
 
   },
   methods: {
+    go_dev(){
+      this.$router.push({path:'/devapp'})
+    },
     getCoin() {
       // console.log("res.data");
       this.$http
@@ -511,8 +520,16 @@ export default {
                     padding-top: 1rem;
                     font-size: 0.875rem;
                 }
+                .exalt-img3 {
+                    height: 3.0625rem;
+                    width: 42px;
+                    padding-top: 0.9rem;
+                    font-size: 0.875rem;
+                    margin-left: 0.5rem;
+                    bottom:1px;
+                }
                 .msg-session {
-                    margin-left: 4rem;
+                    margin-left: 1rem;
                     pointer-events: auto;
                     display: block;
                     color: #fff;
@@ -832,6 +849,14 @@ export default {
             opacity: 0;
             filter: alpha(opacity=0);
         }
+    }
+    .icon-hy:after{
+        content:"\e612";
+    }
+    .candy_router{
+        pointer-events: auto;
+        display: block;
+        color: #fff;
     }
 }
 </style>

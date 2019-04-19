@@ -1,55 +1,37 @@
 <template lang="html">
 <div class="deals-push-box">
-    <div class="head flex-box">
-        <div class="head-text flex-1">剩余{{$store.state.init.coin_uint}}：<span>{{vc_total}}</span>&nbsp;&nbsp;可流通：<span>{{vc_normal}}</span></div>
-    </div>
     <div class="push-content">
-        <div class="push-item title">出让数量</div>
+        <div class="push-item title">需求数量</div>
         <div class="push-item vux-1px-b">
-            <x-input type="number" placeholder="请输入出让数量" v-model="sale_amount" :required="true" :is-type="checkSaleNum"></x-input>
+            <x-input type="number" placeholder="请输入需求数量" v-model="sale_amount" :required="true" :is-type="checkSaleNum"></x-input>
         </div>
-        <div class="push-item title">最低受让数量</div>
-        <div class="push-item vux-1px-b">
-            <x-input type="number" class="price" placeholder="请输入最低受让数量" v-model="min_buy_amount" :required="true"></x-input>
-        </div>
+        <!--<div class="push-item title">最低单次需求数量</div>-->
+        <!--<div class="push-item vux-1px-b">-->
+            <!--<x-input type="number" class="price" placeholder="请输入最低需求数量" v-model="min_buy_amount" :required="true"></x-input>-->
+        <!--</div>-->
         <div class="push-item title" v-show="$store.state.init.otc_sale_price">单价</div>
         <div class="push-item input-box" id="sale_price" v-show="$store.state.init.otc_sale_price">
             <x-number :min="0" :max="999999" :step="(sale_price_max-sale_price_min)/10" v-model="coin_price" :fillable="true" button-style="round" align="left" width="100px"></x-number>
         </div>
-        <div class="push-item title">出让行情</div>
+        <div class="push-item title">需求行情</div>
         <div class="push-item input-box vux-1px-b">
             <input type="text" class="price" v-model="sale_total" readonly="true">
         </div>
-        <div class="push-item title">燃烧({{$store.state.init.coin_uint}})</div>
-        <div class="push-item input-box">
-            <input type="text" class="price" v-model="otc_fee" readonly="true">
+        <div class="push-item title">需求所需USDG资产</div>
+        <div class="push-item input-box vux-1px-b">
+            <input type="text" class="price" v-model="usdg_total" readonly="true">
         </div>
-        <div class="push-item title">出让保证金 (违约将被燃烧)</div>
+        <!--<div class="push-item title">燃烧({{$store.state.init.coin_uint}})</div>-->
+        <!--<div class="push-item input-box">-->
+            <!--<input type="text" class="price" v-model="otc_fee" readonly="true">-->
+        <!--</div>-->
+        <div class="push-item title">需求保证金 (违约将被燃烧)</div>
         <div class="push-item input-box">
-            <input type="text" class="price" v-model="otc_freeze_seller" readonly="true">
+            <input type="text" class="price" v-model="otc_freeze_buyer" readonly="true">
         </div>
     </div>
-    <div class="candy-senior-opera">
-        <group class="lock-time">
-            <div class="lock-select flex-box">
-                <div class="lock-se-title flex-1">是否锁仓</div>
-                <x-switch title="锁仓" v-model="lock" :disabled="true"></x-switch>
-            </div>
-            <x-input class="candy-numb" v-show="lock" v-model="lock_day"  placeholder="请输入锁定时间" keyboard="number" type="number" :max="5" :readonly="otc_auth_type==2">
-                <x-button slot="right" type="primary" mini>天</x-button>
-            </x-input>
-            <group :title="day_release" v-show="lock"></group>
-        </group>
-    </div>
-    <group v-show="otc_auth_type==0">
-        <cell>
-            <div v-show="otc_auth_type==0">
-                <span style="color: red">您没有锁仓权限</span>
-            </div>
-        </cell>
-    </group>
     <box gap="32px 35px 0">
-        <x-button type="primary" style="border-radius:99px;" class='push-btn' v-on:click.native="sure_push()">出让</x-button>
+        <x-button type="primary" style="border-radius:99px;" class='push-btn' v-on:click.native="sure_push()">发布需求</x-button>
     </box>
 </div>
 </template>
@@ -69,9 +51,8 @@ export default {
             sale_price_min:0,
             sale_price_max:0,
             lock:false,
-            lock_day:'',
             otc_auth_type:null,
-            otc_freeze_seller:'',
+            otc_freeze_buyer:'',
             click_lock:false,
             min_buy_amount:0
         }
@@ -87,29 +68,17 @@ export default {
             var price = (saleAmount*1000000000*this.coin_price/1000000000).toFixed(2);
             return price || 0;
         },
-        otc_fee:function(){
-            var saleAmount = this.sale_amount;
-            if(!saleAmount)saleAmount = 0;
-            saleAmount = parseFloat(saleAmount);
-            if(saleAmount < this.$store.state.init.min_otc_sale){
-                return 0;
-            }
-            var price = (saleAmount*1000000000*this.otc_fee_rate/1000000000).toFixed(8);
-            return price || 0;
-        },
-        day_release:function () {
-            let amount = parseFloat(this.sale_amount)
-            let day = parseInt(this.lock_day)
-            if(amount&&day)
-            {
-                return `每日释放${(amount/day).toFixed(5)}`;
-            }else {
-                return ''
-            }
+        usdg_total:function () {
+          var ret = this.sale_amount*1000000000*this.coin_price/1000000000 * 10000000 / this.$store.state.usdc_info.last / this.$store.state.init.usd_rate /10000000
+          if (!ret)
+          {
+            return 0;
+          }
+          return ret.toFixed(5);
         }
     },
     mounted () {
-        this.otc_freeze_seller = this.$store.state.init.otc_freeze_seller
+        this.otc_freeze_buyer = this.$store.state.init.otc_freeze_buyer
         this.getUserinfo();
         this.coin_price = parseFloat(this.$store.state.init.coin_price);
         this.otc_fee_rate = parseFloat(this.$store.state.init.otc_fee_rate);
@@ -162,24 +131,17 @@ export default {
             }else{
                 this.click_lock = true;
             }
-            if(this.coin_price<this.sale_price_min){
-                this.$vux.toast.text('行情不得小于最低价' + this.sale_price_min);
-                return;
-            }
-            if(this.coin_price>this.sale_price_max){
-                this.$vux.toast.text('行情不得大于最高价' + this.sale_price_max);
-                return;
-            }
             const formData = {
                 amount:this.sale_amount,
                 price:this.coin_price,
                 is_lock:Number(this.lock),
                 lock_day:this.lock_day,
-                min_buy_amount:this.min_buy_amount
+                min_buy_amount:this.min_buy_amount,
+                type:1
             }
-            this.$http.post('/api/app.otc/deals/push',formData).then(res=>{
+            this.$http.post('/api/app.otc/dealsbuy/push',formData).then(res=>{
                 if(res.errcode=="0"){
-                    this.$vux.toast.show({text: '挂单成功'});
+                    this.$vux.toast.show({text: '发布成功'});
                     this.$router.push({path:'/deals/center'});
                 }else{
                     this.click_lock = false;
@@ -195,7 +157,7 @@ export default {
         checkSaleNum:function(value){
             return {
                 valid: parseFloat(value) >= parseFloat(this.$store.state.init.min_otc_sale),
-                msg: '出让数量不得低于'+this.$store.state.init.min_otc_sale
+                msg: '需求数量不得低于'+this.$store.state.init.min_otc_sale
             }
         }
     }

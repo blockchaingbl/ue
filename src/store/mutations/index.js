@@ -739,6 +739,7 @@ export default {
             state.properties = res.data.properties;
             state.balance_loading = false;
             state.properties_amount = 0;
+            state.self_wallet_auth = res.data.self_wallet_auth;
             for(var i in state.properties)
             {
                 state.properties_set[state.properties[i].type] = state.properties[i];

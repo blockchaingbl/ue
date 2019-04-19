@@ -2,26 +2,37 @@
     <scroller @on-scroll-bottom="onScrollBottom" height="100%" lock-x ref="scrollerEvent">
         <div class="deals-record-box">
             <div class="head">
-                我的订单
+                我的兑换
             </div>
             <tab :line-width="2" custom-bar-width="60px">
-                <tab-item  :selected="this.formData.type==1" @click.native="switchType(1)">受让</tab-item>
-                <tab-item  :selected="this.formData.type==2"  @click.native="switchType(2)">出让</tab-item>
+                <tab-item  :selected="this.formData.type==1" @click.native="switchType(1)">上链兑换</tab-item>
+                <tab-item  :selected="this.formData.type==2"  @click.native="switchType(2)" v-if="$store.state.otc_auth">出让</tab-item>
             </tab>
             <div v-if="!loadings">
                 <div class="record-block" v-if="order_list.length>0" >
                     <div class="item flex-box" v-for="order in order_list" @click="turnOrder(order)">
                         <div class="item-text flex-1">
-                            <div class="title">数量：<span>{{order.vc_amount}}</span></div>
+                            <div class="title flex-box">
+                                <div class="flex-1">数量：<span>{{order.vc_amount}}</span></div>
+                                <div class="flex-1">
+                                    <span v-if="formData.type==2 &&order.status!=2 && order.status!=3"><span>电话：</span><a :href="'tel:'+order.buyermobile" style="color: #4c4c51;font-size: 0.9375rem;">{{order.buyermobile}}</a></span></div>
+                            </div>
                             <div class="money flex-box">
                                 <div class="get flex-1">行情：<span>&yen;{{order.vc_total_price}}</span></div>
-                                <div class="price flex-1">单价：&yen; {{order.vc_uint_price}}</div>
+                                <div class="price flex-1" v-if="formData.type==2">兑换方：<span>{{order.buyersellername}}</span></div>
                             </div>
-                            <div class="account-number">下单时间：{{order.create_time}}</div>
+                            <div class="account-number flex-box">
+                                <div class="flex-1 price">
+                                    单价：&yen;{{order.vc_uint_price}}
+                                </div>
+                                <div class="flex-1 price">
+                                    <span>{{order.create_time}} </span>
+                                </div>
+                            </div>
                         </div>
                         <div class="order-sn">单号：{{order.order_sn}}</div>
                         <div class="item-type-box" v-if="formData.type==1">
-                            <div class="item-type unaudited" v-if="order.status==0">待付款</div>
+                            <div class="item-type unaudited" v-if="order.status==0">待完成</div>
                             <div class="item-type paid" v-if="order.status==1">已付款</div>
                             <div class="item-type fail" v-if="order.status==2">已完成</div>
                             <div class="item-type fail" v-if="order.status==3">已取消</div>
@@ -33,11 +44,11 @@
                             <div class="item-btn appeal" v-if="order.appeal_status==1 || order.appeal_status==4">申诉中</div>
                         </div>
                         <div class="item-type-box" v-if="formData.type==2">
-                            <div class="item-type unaudited" v-if="order.status==0">待付款</div>
+                            <div class="item-type unaudited" v-if="order.status==0">待完成</div>
                             <div class="item-type paid" v-if="order.status==1">待发GBL</div>
                             <div class="item-type fail" v-if="order.status==2">已完成</div>
                             <div class="item-type fail" v-if="order.status==3">已取消</div>
-                            
+
                         </div>
                         <div class="item-bnt-box" v-if="formData.type==2">
                             <div class="item-btn appeal" v-if="(order.appeal_status==0 || order.appeal_status==1) && order.status==1" @click.stop="appeal(order.id)">申诉</div>
@@ -110,13 +121,17 @@ export default {
                     this.formData.page++;
                     this.loading = false;
                     this.loadings=false;
+                    this.$store.state.otc_auth = res.data.otc_auth
                 })
                 .catch(error=>{
                     this.loading = false;
                 })
         },
         onScrollBottom(){
-            this.loadOtcOrders();
+            setTimeout(()=>{
+              this.loadOtcOrders();
+            },200)
+
         },
         switchType(type){
             if(type!=this.formData.type){

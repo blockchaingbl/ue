@@ -32,7 +32,10 @@
             </div>
         </div>
         <box gap="40px 35px">
-            <x-button type="primary" style="border-radius:99px;" class='pup-btn' @click.native="toPay()">立即支付</x-button>
+            <x-button type="primary" style="border-radius:99px;" class='pup-btn' @click.native="toPay()">立即兑换</x-button>
+        </box>
+        <box gap="40px 35px" v-if="coin_type.id==0 && $store.state.self_wallet_auth">
+            <x-button type="warn" style="border-radius:99px;" class='pup-btn-2' @click.native="toPaynew()">使用新令牌兑换</x-button>
         </box>
     </div>
 </template>
@@ -54,7 +57,8 @@
         address:'',
         rate:'',
         incharge_fee:0,
-        platform_coin_price:0
+        platform_coin_price:0,
+        token:{}
       }
     },
     computed:{
@@ -71,7 +75,6 @@
       }else{
         this.coin_type = {id:0,coin_unit:this.$store.state.init.coin_uint}
       }
-      console.log(this.coin_type);
     },
     mounted () {
       this.getWallets();
@@ -79,6 +82,21 @@
       this.$refs.amount.focus();
     },
     methods:{
+      toPaynew(){
+        var _this = this;
+        var to_address = _this.token.incharge_address;
+        var token_name = this.token.token_name;
+        var amount = this.incharge_fee;
+        if(amount<=0)
+        {
+          _this.$vux.toast.text("您输入的数额太少，无法兑换");
+          _this.$refs.amount.forceShowError = true;
+          return;
+        }
+        let url ="/wallet/send/"+token_name+"?address="+to_address+"&amount="+amount+"&api=1&data=3457895";
+        url = encodeURI(url)
+        _this.$router.push(url);
+      },
       open_pup(){
         $('.pupBox').addClass('isopen');
       },
@@ -94,9 +112,13 @@
         });
       },
       getInchargeToken(id){
-        this.$http.post('/api/app.util/init/incharge_token',{id:id}).then(res => {
+        this.$http.post('/api/app.wallet/wallets/incharge_token',{id:id}).then(res => {
           let token = res.data.list;
           let arr = [];
+          if(id==0)
+          {
+            this.token = res.data.token;
+          }
           for (var x in token){
             if(token[x].token_symbol){
               arr.push({
@@ -200,7 +222,7 @@
           }else{
             let amount = res.data.token_exchange.amount;
             let order_code = res.data.token_exchange.order_code;
-            let url =encodeURI('/wallet/send/GBL Asset Chain?api=1&order=1&data='+order_code+'&amount='+amount)
+            let url =encodeURI(`/wallet/send/${token_name[0]}?api=1&order=1&data=`+order_code+'&amount='+amount)
             this.$router.push({path:url})
           }
         }).catch(err => {
@@ -390,6 +412,12 @@
                 }
                 .pup-btn{
                     background-color: #628cf8;
+                    height: 2.4375rem;
+                    line-height: 2.4375rem;
+                    font-size: 0.9375rem;
+                }
+                .pup-btn-2{
+                    background-color: #795da3;
                     height: 2.4375rem;
                     line-height: 2.4375rem;
                     font-size: 0.9375rem;

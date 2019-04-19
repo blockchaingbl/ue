@@ -6,7 +6,8 @@
             <div class="assets-numb">{{vc_total}}</div>
         </div>
         <box gap="0" class="flex-box">
-            <x-button type="primary" style="border-radius:99px;" class='found-btn' link="/deals/sell" v-if="$store.state.init.otc_sale_auth==0 || otc_auth">出让</x-button>
+            <x-button type="primary" style="border-radius:99px;" class='found-btn' link="/deals/sell" v-if="$store.state.otc_auth">兑换</x-button>
+            <x-button type="primary" style="border-radius:99px;" class='found-btn' link="/deals/needlog" v-else>需求</x-button>
             <x-button type="primary" style="border-radius:99px;" class='import-btn' @click.native="toWithdraw()">上链</x-button>
         </box>
         <div class="usdc_box" v-if="$store.state.usdc_info&&drawLine_done">
@@ -20,8 +21,8 @@
 
     </div>
     <div class="deals-content">
-        <div class="deals-title">正在出让的{{$store.state.init.coin_uint}}
-                <router-link to="/deals/record" class="ddjl">我的订单</router-link> </div>
+        <div class="deals-title">待兑换的{{$store.state.init.coin_uint}}
+                <router-link to="/deals/record" class="ddjl">我的兑换</router-link> </div>
         <div class="deals-block">
             <div class="item item-head flex-box">
                 <div class="item-item name"></div>
@@ -37,14 +38,16 @@
                         <div class="item-price">&yen; <em>{{otc.total_price}}</em></div>
                         <div class="decs">单价 &yen; {{otc.vc_unit_price}}|${{(otc.vc_unit_price/$store.state.init.usd_rate).toFixed(2)}}</div>
                     </div>
-                    <router-link :to="{name:'dealsBuy',params:{id:otc.id}}" class="item-item item-btn">受让</router-link>
+                    <router-link :to="{name:'dealsBuy',params:{id:otc.id}}" class="item-item item-btn" v-if="otc.type==0">上链兑换</router-link>
+                    <router-link :to="{name:'dealsNeedSell',params:{id:otc.id}}"  class="item-item item-btn" v-if="otc.type==1&&!$store.state.otc_auth">兑换</router-link>
+                    <span disabled="disabled" class="item-item item-btn" v-if="otc.type==1&&$store.state.otc_auth">兑换</span>
                 </div>
             </div>
             <Scroller v-if="otc_list.length>0" v-on:load="loadOtcLists" :loading="loading" :container="'.block-box'" ></Scroller>
             <nodata  v-else :datatip="'暂无数据'"></nodata>
         </div>
     </div>
-</div>   
+</div>
 </template>
 <script>
 import {  LoadMore , Divider } from 'vux';
@@ -72,7 +75,6 @@ export default {
             chart_price:[],
             chart_price_max:0,
             chart_price_min:0,
-            otc_auth:0,
             drawLine_done:false
         }
     },
@@ -122,7 +124,7 @@ export default {
                 this.cp_total=res.data.account_info.cp_total;
                 this.cp_rank=res.data.account_info.cp_rank;
                 this.vc_total=res.data.account_info.vc_total;
-                this.otc_auth=res.data.account_info.otc_auth;
+                this.$store.state.otc_auth=res.data.account_info.otc_auth;
             }).catch(err => {
                 if (err.errcode) {
                     this.$vux.toast.text(err.message);
@@ -406,7 +408,7 @@ export default {
             white-space: nowrap;
         }
         .name{
-            width: 6rem;
+            width: 4rem;
         }
         .numb{
             width: 4.5rem;
@@ -435,10 +437,18 @@ export default {
             }
         }
         .item-btn {
-            width: 2.75rem;
+            width: 3.75rem;
         }
         a.item-btn{
             background: #6b94f8;
+            color: #fff;
+            text-align: center;
+            font-size: @fs-middle;
+            height: 1.5rem;
+            line-height: 1.5rem;
+        }
+        span.item-btn{
+            background: #6f7180;
             color: #fff;
             text-align: center;
             font-size: @fs-middle;

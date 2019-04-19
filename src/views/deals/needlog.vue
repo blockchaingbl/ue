@@ -1,17 +1,13 @@
 <template lang="html">
 <div class="record-box">
     <div class="head">
-        待交易的令牌
+        需求中的{{$store.state.init.coin_uint}}
     </div>
-    <tab :line-width="2" custom-bar-width="60px">
-        <tab-item :disabled="loading" :selected="this.formData.type==0" @click.native="switchType(0)">出让</tab-item>
-        <tab-item :disabled="loading" :selected="this.formData.type==1"  @click.native="switchType(1)">需求</tab-item>
-    </tab>
     <scroller @on-scroll-bottom="onScrollBottom"  lock-x ref="scrollerEvent">
         <div class="record-block" v-if="otc_list.length>0">
             <div class="item flex-box" v-for="otc in otc_list">
                 <div class="item-text flex-1">
-                    <div class="title">数量：<span>{{otc.vc_less_amount}}{{otc.coin_info.coin_unit}}</span></div>
+                    <div class="title">数量：<span>{{otc.vc_less_amount}}</span></div>
                     <div class="money flex-box">
                         <div class="get flex-1">行情：<span>&yen;{{(otc.vc_less_amount * otc.vc_unit_price).toFixed(2)}}</span></div>
                         <div class="price flex-1">单价：&yen; {{otc.vc_unit_price}}</div>
@@ -42,7 +38,7 @@ export default {
     },
     data () {
         return {
-            formData:{page:1,myself:true,type:0},
+            formData:{page:1,myself:true,type:1},
             lock:false,
             loading:false,
             otc_list:[],
@@ -58,7 +54,7 @@ export default {
             }
             this.lock = true;
             this.loading = true;
-            this.$http.post('/api/app.tokenotc/deals',this.formData).then(res => {
+            this.$http.post('/api/app.otc/deals',this.formData).then(res => {
                 if(res.data.otc_list.length>0){
                     res.data.otc_list.map(val=>{val.total_price = val.vc_unit_price * val.vc_less_amount});
                     this.otc_list = this.otc_list.concat_unk(res.data.otc_list,"id");
@@ -70,29 +66,8 @@ export default {
                 this.loading = false;
             });
         },
-      loadOtcListsFirst(){
-        this.lock = true;
-        this.loading = true;
-        this.$http.post('/api/app.tokenotc/deals',this.formData).then(res => {
-          if(res.data.otc_list.length>0){
-            res.data.otc_list.map(val=>{val.total_price = val.vc_unit_price * val.vc_less_amount});
-            this.otc_list = this.otc_list.concat_unk(res.data.otc_list,"id");
-          }
-          this.lock =false;
-          this.loading = false;
-          this.formData.page++;
-        }).catch(err => {
-          this.lock =false;
-          this.loading = false;
-        });
-      },
         onScrollBottom(){
             this.loadOtcLists();
-        },
-        switchType(type){
-            if(type!=this.formData.type){
-              this.reload(type);
-            }
         },
         down(id){
             const _this = this
@@ -100,13 +75,13 @@ export default {
                 content: '是否确认下架',
                 onConfirm () {
                     let formData = {
-                      token_otc_id:id,
+                        otc_id:id,
                     };
-                    _this.$http.post('/api/app.tokenotc/deals/down',formData)
+                    _this.$http.post('/api/app.otc/deals/down',formData)
                         .then(res=>{
                             _this.$vux.toast.text('下架成功');
                             setTimeout(function () {
-                                _this.reload(_this.formData.type);
+                                _this.reload();
                             },2000)
                         })
                         .catch(error=>{
@@ -117,10 +92,11 @@ export default {
                 }
             })
         },
-        reload(type){
-            this.formData = {page:1,myself:true,type:type};
+        reload(){
+            this.lock = false;
+            this.formData = {page:1,myself:true,type:1};
             this.otc_list = [];
-            this.loadOtcListsFirst();
+            this.loadOtcLists();
         }
     }
 }

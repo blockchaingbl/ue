@@ -11,11 +11,11 @@
         <group class="candy_success_block">
             <cell>
                 <span slot="title" class="candy_success_title">转出数额</span>
-                <span class="candy_success_value">{{transfer.amount}} {{$store.state.init.coin_uint}}</span>
+                <span class="candy_success_value">{{transfer.amount}} {{transfer.coin_unit}}</span>
             </cell>
             <cell>
                 <span slot="title" class="candy_success_title">到账数额</span>
-                <span class="candy_success_value">{{transfer.receive}} {{$store.state.init.coin_uint}}</span>
+                <span class="candy_success_value">{{transfer.receive}} {{transfer.coin_unit}}</span>
             </cell>
             <cell>
                 <span slot="title" class="candy_success_title">转入人</span>

@@ -20,6 +20,11 @@
                         <p slot="popup-header" class="vux-1px-b grant-coin-slot"></p>
                     </popup-radio>
                 </group>
+                <group class="assets-type vux-1px-b">
+                    <popup-radio title="" :options="asset_lists" v-model="chose_asset_id"  @on-hide="hide_change_asset">
+                        <p slot="popup-header" class="vux-1px-b grant-coin-slot"></p>
+                    </popup-radio>
+                </group>
                 <group class="numb-assets vux-1px-b">
                     <x-input  v-model="amount"  placeholder="请输入转出数额"  type="number"  :required="true"></x-input>
                 </group>
@@ -37,7 +42,7 @@
                 </cell>
                 <cell>
                     <div>
-                        <span style="color: red">可转{{vc_normal}} {{$store.state.init.coin_uint}}</span>
+                        <span style="color: red">可转{{vc_normal}}</span>
                     </div>
                 </cell>
             </group>
@@ -87,7 +92,10 @@ export default {
             rate_lists:[],
             chose_info:{},
             security:"",
-            vc_normal:''
+            vc_normal:'',
+            coin_type:0,
+            asset_lists:[],
+            chose_asset:{}
         }
     },
     mounted () {
@@ -103,7 +111,6 @@ export default {
                     this.$router.push({name:'editSecurity'});
                 },2000)
             }
-            this.vc_normal = res.data.vc_normal
             this.trans_fee =res.data.trans_fee;
             this.username = res.data.user.username;
             this.user_id = res.data.user.id;
@@ -111,7 +118,13 @@ export default {
             this.usermobile = res.data.user.mobile
             this.coin_price = res.data.coin_price;
             this.rate_lists = res.data.lists;
-
+            this.asset_lists_all = res.data.assets_lists;
+            res.data.assets_lists.map((val)=> {
+            let value = val.coin_type.coin_unit;
+            this.asset_lists.push({key:val.id,value:value})
+            })
+            this.chose_asset_id= res.data.last_transfer;
+            this.hide_change_asset();
             res.data.lists.map((val)=> {
                 let value = `${val.name}(${val.symbol})`;
                 this.ex_rate.push({key:val.id,value:value})
@@ -130,7 +143,8 @@ export default {
                 amount:this.amount,
                 ex_id:this.chose_rate,
                 to_id:this.user_id,
-                security:this.security
+                security:this.security,
+                coin_type:this.chose_asset_id
             }
             this.$http.post('/api/app.user/transfer/send',post).then(res => {
                 if(res.errcode==0)
@@ -150,6 +164,14 @@ export default {
             this.chose_info = this.rate_lists.find(function (val) {
                 return val.id==id;
             })
+        },
+        hide_change_asset(){
+            let id = this.chose_asset_id;
+            this.chose_asset = this.asset_lists_all.find(function (val) {
+              return val.id==id;
+            })
+            this.vc_normal =  this.chose_asset.vc_total;
+
         }
     },
     computed:{
@@ -158,9 +180,9 @@ export default {
             {
                 let amount = parseFloat(this.amount)
                 let chose_info =this.chose_info;
-                let coin_price = parseFloat(this.coin_price);
-                let gbl_price = (amount*chose_info.rate/coin_price)*(parseFloat(this.trans_fee)+1);
-                return '约'+gbl_price.toFixed(5) + '  '+this.$store.state.init.coin_uint;
+                let coin_price = parseFloat(this.chose_asset.coin_type.real_price);
+                let gbl_price = (amount*chose_info.rate/coin_price)*1000000000/1000000000*(parseFloat(this.chose_asset.coin_type.transfer_fee)+1);
+                return '约'+gbl_price.toFixed(5) + '  '+this.chose_asset.coin_type.coin_unit;
             }
         }
     }
@@ -179,7 +201,7 @@ export default {
         background: #fff;
         padding-bottom: 0.25rem;
     }
-    
+
     .text_red{
         color: red;
     }

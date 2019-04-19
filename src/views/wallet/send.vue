@@ -43,6 +43,9 @@
         <box gap="20px 10px">
             <x-button type="primary" style="border-radius:99px;" @click.native="estimateTx">流通估算</x-button>
         </box>
+        <box gap="20px 10px" v-if="can_use_new">
+            <x-button type="warn" style="border-radius:99px;" @click.native="toNewToken()">使用新令牌</x-button>
+        </box>
 
         <popup v-model="tx_detail" v-transfer-dom>
             <div class="tx_detail">
@@ -186,50 +189,64 @@ export default {
     };
   },
   mounted() {
-	if(router.currentRoute.query.address)
-    this.recieve_address = router.currentRoute.query.address;
-    if (router.currentRoute.query.amount)
-      this.recieve_amount = router.currentRoute.query.amount;
-    if (router.currentRoute.query.gas_price)
-      this.gas_price = router.currentRoute.query.gas_price;
-    if (router.currentRoute.query.gas) this.gas = router.currentRoute.query.gas;
-    this.data = router.currentRoute.query.data;
-    this.data_code = router.currentRoute.query.data;
-    this.api = router.currentRoute.query.api == 1;
-    this.order = Boolean(router.currentRoute.query.order);
-    if(this.order&&!router.currentRoute.query.address)
-    {
-      this.recieve_address = this.$store.state.init.order_address;
-    }
-    var _this = this;
-    if (!this.$store.state.wallet.address) {
-      this.$store.commit("loadWallets", function() {
-        _this.refresh_wallet();
-        _this.$store.commit("loadProperties", function() {
-          var coin_type = "ethereum";
-          if (router.currentRoute.params["coin"]) {
-            coin_type = router.currentRoute.params["coin"];
-          }
-          _this.coin_amount =
-            _this.$store.state.properties_set[coin_type].amount +
-            " " +
-            _this.$store.state.properties_set[coin_type].name;
-            _this.gas_price= _this.$store.state.properties_set[coin_type].default_gas_price;
-        });
-      });
-    }
-    if (this.$store.state.wallets) {
-      for (var address in this.$store.state.wallets) {
-        var wallet_item = {
-          key: address,
-          value: this.$store.state.wallets[address].name
-        };
-        this.wallets.push(wallet_item);
-      }
-      this.wallet_address = this.$store.state.wallet.address;
-    }
+	this.mounted_init(0)
   },
   methods: {
+    mounted_init(refresh_wallet=0){
+      if(router.currentRoute.query.address)
+        this.recieve_address = router.currentRoute.query.address;
+      if (router.currentRoute.query.amount)
+        this.recieve_amount = router.currentRoute.query.amount;
+      if (router.currentRoute.query.gas_price)
+        this.gas_price = router.currentRoute.query.gas_price;
+      if (router.currentRoute.query.gas) this.gas = router.currentRoute.query.gas;
+      this.data = router.currentRoute.query.data;
+      this.data_code = router.currentRoute.query.data;
+      this.api = router.currentRoute.query.api == 1;
+      this.order = Boolean(router.currentRoute.query.order);
+      if(this.order&&!router.currentRoute.query.address)
+      {
+        this.recieve_address = this.$store.state.init.order_address;
+      }
+      var _this = this;
+      if (!this.$store.state.wallet.address || refresh_wallet==1) {
+        this.$store.commit("loadWallets", function() {
+          _this.refresh_wallet();
+          _this.$store.commit("loadProperties", function() {
+            var coin_type = "ethereum";
+            if (router.currentRoute.params["coin"]) {
+              coin_type = router.currentRoute.params["coin"];
+            }
+            _this.coin_amount =
+              _this.$store.state.properties_set[coin_type].amount +
+              " " +
+              _this.$store.state.properties_set[coin_type].name;
+            _this.gas_price= _this.$store.state.properties_set[coin_type].default_gas_price;
+          });
+        });
+      }
+      if (this.$store.state.wallets) {
+        this.wallets = [];
+        for (var address in this.$store.state.wallets) {
+          var wallet_item = {
+            key: address,
+            value: this.$store.state.wallets[address].name
+          };
+          this.wallets.push(wallet_item);
+        }
+        this.wallet_address = this.$store.state.wallet.address;
+      }
+      if (router.currentRoute.params["coin"]) {
+        this.coin_type = router.currentRoute.params["coin"];
+      }
+      if (this.$store.state.properties.length > 0) {
+        this.coin_amount =
+          this.$store.state.properties_set[this.coin_type].name +
+          " " +
+          this.$store.state.properties_set[this.coin_type].amount;
+        this.gas_price = this.$store.state.properties_set[this.coin_type].default_gas_price;
+      }
+    },
     changerange(val) {
       /*  this.gas_price=parseInt(val);
                 console.log();*/
@@ -282,7 +299,6 @@ export default {
           .catch(err => {
             this.$store.state.page_loading = false;
             loading.close();
-            console.log(err);
             if (err.errcode) {
               AlertModule.show({
                 title: "错误",
@@ -334,7 +350,6 @@ export default {
         );
         var dec_address = fanweEth.wallet.privatekeyToAddress(privateKey);
       } catch (ex) {
-        console.log(ex);
       }
 
       if (
@@ -436,7 +451,6 @@ export default {
                 this.data
               );
             loading.close();
-            // console.log(this.tx_raw);
             this.tx_detail = true;
             this.miner_fee =
               "约 " + this.gas_estimate * this.gas_price / 1000000000 + " " + this.base_coin;
@@ -461,6 +475,7 @@ export default {
     },
     refresh_wallet: function() {
       if (this.$store.state.wallets) {
+        this.wallets = [];
         for (var address in this.$store.state.wallets) {
           var wallet_item = {
             key: address,
@@ -471,6 +486,7 @@ export default {
         this.wallet_address = this.$store.state.wallet.address;
       } else {
         router.replace("/wallet/create");
+        this.mounted_init(1)
       }
     },
     walletItemClass: function(wallet_item) {
@@ -502,11 +518,19 @@ export default {
     },
     onCopy: function(e) {
       this.$vux.toast.text("复制成功");
-      //console.log('You just copied: ' + e.text)
     },
     onError: function(e) {
       this.$vux.toast.text("复制失败，您可以尝试手动记录");
-      //console.log('Failed to copy texts')
+    },
+    toNewToken()
+    {
+        let adress = this.recieve_address;
+        let amount = this.recieve_amount;
+        let new_asset_name = this.$store.state.init.new_asset_name;
+        let data = this.data;
+        let path =encodeURI(`/wallet/send/${new_asset_name}?api=1&order=1&data=`+data+'&amount='+amount+'&address='+adress);
+        this.$router.replace({path:path})
+        this.mounted_init(1)
     }
   },
   watch: {
@@ -532,8 +556,6 @@ export default {
     gas_price: {
       handler(currentGas, lastGas) {
         this.gas_price = parseFloat(this.gas_price);
-
-        // console.log("test");
       }
     },
     $route() {
@@ -542,6 +564,21 @@ export default {
         _this.refresh_wallet();
       });
       this.$store.commit("loadProperties");
+    }
+  },
+  computed:{
+    can_use_new()
+    {
+      if(!this.$store.state.self_wallet_auth||!this.data)
+      {
+        return false;
+      }
+      let type = parseInt(this.data.substr(0,5));
+      if(this.order==1&&this.coin_type=='GBL Asset Chain' && (this.$store.state.init.new_asset_sp.indexOf(type)!=-1) || type >= 70000)
+      {
+            return true;
+      }
+      return false;
     }
   }
 };

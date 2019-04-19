@@ -1,80 +1,63 @@
 <template lang="html">
 <div class="buy-box">
+
     <div class="head">
-        您将<span v-if="identity=='buyer'">兑换</span><span v-else-if="identity=='seller'">兑换</span><span v-else>兑换</span>的{{$store.state.init.coin_uint}}
+        您将出让的{{coin_unit}}令牌
     </div>
     <div class="buy-block">
-        <div class="item flex-box vux-1px-b" v-show="pay_status">
-            <div class="title flex-1">
-                <span>订单号</span>
-            </div>
-            <div class="decs" v-clipboard:copy="order_sn" v-clipboard:success="onCopy" v-clipboard:error="onError">{{order_sn}} <i class="iconfont">&#xe64b;</i></div>
-        </div>
+        <!--<div class="item flex-box vux-1px-b" v-show="pay_status">-->
+            <!--<div class="title flex-1">-->
+                <!--<span>订单号</span>-->
+            <!--</div>-->
+            <!--<div class="decs" v-clipboard:copy="order_sn" v-clipboard:success="onCopy" v-clipboard:error="onError">{{order_sn}} <i class="iconfont">&#xe64b;</i></div>-->
+        <!--</div>-->
         <div class="item flex-box vux-1px-b">
             <div class="title flex-1">
-                <span v-if="identity=='buyer'">兑换方</span>
-                <span v-else-if="identity=='seller'">兑换方</span>
-                <span v-else>兑换方</span>
+                <span>需求方</span>
             </div>
-            <div class="decs">{{sellerName}}</div>
+            <div class="decs">{{otc.user.username}}</div>
         </div>
         <div class="item vux-1px-b flex-box">
-            <div class="title flex-1">兑换数额</div>
+            <div class="title flex-1">应支付</div>
             <div class="decs">
                 <div class="price-box flex-box" v-show="chose_payment_info.payment_key!='wallet' && chose_payment_info.payment_key!='asset'">
                     <div class="price">&yen; <span>{{(amount*vc_unit_price).toFixed(2) || 0}}</span></div>
-                    <div class="univalent">单价 &yen; {{vc_unit_price}}|${{(vc_unit_price/$store.state.init.usd_rate).toFixed(2)}}</div>
+                    <div class="univalent">单价 &yen; {{vc_unit_price}}|${{(vc_unit_price/$store.state.init.usdc_price).toFixed(2)}}</div>
                 </div>
                 <div class="price-box flex-box" v-show="chose_payment_info.payment_key=='wallet' || chose_payment_info.payment_key=='asset'">
-                    <div class="price"> <span>{{(amount*vc_unit_price/$store.state.usdc_info.last/$store.state.init.usd_rate).toFixed(3) || 0}}  USDG</span></div>
+                    <div class="price"> <span>{{(amount*vc_unit_price/$store.state.init.usdc_price).toFixed(3) || 0}}  USDG</span></div>
                 </div>
             </div>
         </div>
         <div class="item vux-1px-b flex-box">
-            <div class="red_weight flex-1">数量 <span v-if="!readOnlyFlag">（可改）</span></div>
-            <x-input  v-model="amount" :readonly="readOnlyFlag" required placeholder="请输入兑换数量" placeholder-align="right" text-align="right" :required="true" :is-type="checkBuyNum"></x-input>
+            <div class="red_weight flex-1">数量 <span>（可改）</span></div>
+            <x-input  v-model="amount"  required placeholder="请输入受让数量" placeholder-align="right" text-align="right" :required="true" :is-type="checkBuyNum"></x-input>
         </div>
-        <!--<div class="item vux-1px-b flex-box" v-if="reward==1">-->
-            <!--<div class="red_weight flex-1">兑换可额外获赠锁仓资产</div>-->
-            <!--<x-input  v-model="lock_raward"  required placeholder="请输入兑换数量" placeholder-align="right" text-align="right" readonly="true"></x-input>-->
-        <!--</div>-->
-        <div class="item flex-box vux-1px-b" v-show="payment_info.length>0&&!readOnlyFlag">
-            <selector @on-change="showPayInfo"  style="width: 100%;"  title="兑换方式(可改)" :options="payment_info" v-model="chose_payment" direction="rtl"></selector>
+        <div class="item vux-1px-b flex-box" v-if="reward==1">
+            <div class="red_weight flex-1">受让可额外获赠锁仓资产</div>
+            <x-input  v-model="lock_raward"  required placeholder="受让可额外获赠锁仓资产" placeholder-align="right" text-align="right" readonly="true"></x-input>
         </div>
-        <div class="item flex-box vux-1px-b" v-show="payment_info.length>0&&!readOnlyFlag&&chose_payment_info.is_connect">
-            <div class="title flex-1">联系方式</div>
-            <div class="decs"><a style="color: #4c4c51" :href="call_number">{{chose_payment_info.connect}}</a></div>
+        <div class="item flex-box vux-1px-b" v-show="payment_info.length>0">
+            <selector @on-change="showPayInfo"  style="width: 100%;"  title="支付方式(可改)" :options="payment_info" v-model="chose_payment" direction="rtl"></selector>
         </div>
-        <div class="item flex-box vux-1px-b" v-show="payment_info.length==0 || readOnlyFlag">
-            <div class="red_weight flex-1">兑换方式(可改)</div>
-            <div class="decs">{{chose_payment_info.payment_org}}</div>
-        </div>
-        <div class="item flex-box vux-1px-b" v-show="(payment_info.length==0 || readOnlyFlag)&&chose_payment_info.is_connect">
+        <div class="item flex-box vux-1px-b" v-show="chose_payment_info.is_connect">
             <div class="title flex-1">联系方式</div>
             <div class="decs"><a  style="color: #4c4c51" :href="call_number">{{chose_payment_info.connect}}</a></div>
         </div>
         <div class="item flex-box vux-1px-b">
-            <div class="title flex-1">兑换保证金（违约将被燃烧）</div>
+            <div class="title flex-1">受让保证金（违约将被燃烧）</div>
             <div class="decs">{{$store.state.init.otc_freeze_buyer}} {{$store.state.init.coin_uint}}</div>
         </div>
-        <div class="item flex-box vux-1px-b" v-if="lock_day>0">
-            <div class="title flex-1">锁仓时间</div>
-            <div class="decs">{{lock_day}}天</div>
-        </div>
-        <div class="item flex-box vux-1px-b" v-if="lock_day>0">
-            <div class="title flex-1">每日释放</div>
-            <div class="decs">{{amount/lock_day.toFixed(5)}}</div>
-        </div>
 
-        <div class="item flex-box vux-1px-b" v-show="pay_status==1&&chose_payment_info.payment_key == 'bankcard'">
+        <div class="item flex-box vux-1px-b" v-show="chose_payment_info.payment_key == 'bankcard'">
             <div class="title flex-1">卡号</div>
             <div class="decs">{{chose_payment_info.payment_account}}</div>
         </div>
-        <div class="item flex-box vux-1px-b" v-show="pay_status==1&&chose_payment_info.payment_key == 'bankcard'">
+        <div class="item flex-box vux-1px-b" v-show="chose_payment_info.payment_key == 'bankcard'">
             <div class="title flex-1">支行</div>
             <div class="decs">{{chose_payment_info.branch_bank}}</div>
         </div>
-        <div class="item flex-box vux-1px-b" v-show="pay_status==1&&chose_payment_info.payment_key == 'bankcard'">
+        <div class="item flex-box vux-1px-b" v-show="chose_payment_info.payment_key == 'bankcard'">
             <div class="title flex-1">转入人</div>
             <div class="decs">{{chose_payment_info.payment_receipt}}</div>
         </div>
@@ -84,7 +67,7 @@
         </div>
         <div class="item item-tis flex-box vux-1px-b">
             <div class="title">注：</div>
-            <div class="decs flex-1">注:此兑换订单将冻结一定数额资产，交易成功将全额退回，如未兑换成功点已确定兑换成功，或已兑换成功{{this.$store.state.init.otc_order_overtime}}分钟内未点击我确定已兑换成功，致使交易订单无法生成，冻结保证金将被燃烧掉，并且信用还将受到影响。如已确认兑换成功，商家在5小时内未发放资产，请在意见反馈里留言并上传兑换成功凭证，客服会核实发放资产。</div>
+            <div class="decs flex-1">注:此受让订单将冻结一定数额资产，交易成功将全额退回，如未支付点已确定支付，或已支付{{this.$store.state.init.otc_order_overtime}}分钟内未点击我确定已支付，致使交易订单无法生成，冻结保证金将被燃烧掉，并且信用还将受到影响。如已确认支付，商家在5小时内未发放资产，请在意见反馈里留言并上传支付凭证，客服会核实发放资产。</div>
         </div>
 
     </div>
@@ -96,10 +79,10 @@
     <!--买家进入-->
     <div v-show="buy_flag==1 && !time_end">
         <box gap="8px 35px 25px" v-show="pay_status==0">
-            <x-button type="primary" style="border-radius:99px;" class='buy-btn' :class="{ 'noTime': add }" v-on:click.native="buy()">确认兑换</x-button>
+            <x-button type="primary" style="border-radius:99px;" class='buy-btn' :class="{ 'noTime': add }" v-on:click.native="sell()">确认出让</x-button>
         </box>
         <div class="buy-bottom" v-show="pay_status==1">
-            <div class="tis" v-show="confirm_pay==0">请在倒计时时间内完成兑换并点击下方我确认已兑换成功</div>
+            <div class="tis" v-show="confirm_pay==0">请在倒计时时间内完成支付并点击下方我确认已支付</div>
             <div class="count-down" v-show="confirm_pay==0">
                 倒计时 <span>{{minute}}:{{second}}</span>
             </div>
@@ -109,21 +92,21 @@
         </div>
     </div>
     <!--卖家进入-->
-    <div v-show="buy_flag==0 && !time_end">
-        <div class="buy-bottom">
-            <div class="tis">转入不发{{$store.state.init.coin_uint}}将视为严重影响信用值,请在300分钟内完成发{{$store.state.init.coin_uint}}</div>
-            <div class="count-down">
-                倒计时 <span>{{minute}}:{{second}}</span>
-            </div>
-            <box gap="8px 35px 25px">
-                <x-button type="primary" style="border-radius:99px;" class='buy-btn' :class="{ 'noTime': add }" @click.native="deliver()">我已收到款，确认发GBL</x-button>
-            </box>
-        </div>
-    </div>
+    <!--<div v-show="buy_flag==0 && !time_end">-->
+        <!--<div class="buy-bottom">-->
+            <!--<div class="tis">转入不发{{$store.state.init.coin_uint}}将视为严重影响信用值,请在300分钟内完成发{{$store.state.init.coin_uint}}</div>-->
+            <!--<div class="count-down">-->
+                <!--倒计时 <span>{{minute}}:{{second}}</span>-->
+            <!--</div>-->
+            <!--<box gap="8px 35px 25px">-->
+                <!--<x-button type="primary" style="border-radius:99px;" class='buy-btn' :class="{ 'noTime': add }" @click.native="deliver()">我已收到款，确认发GBL</x-button>-->
+            <!--</box>-->
+        <!--</div>-->
+    <!--</div>-->
     <div class="pupBox" :class="{ 'isopen': is_open }">
         <div class="pupBox-content">
             <div class="pup-block">
-                <p>您兑换的{{$store.state.init.coin_uint}}将在{{this.$store.state.init.otc_order_overtime}}分钟内到账，请注意查收。</p>
+                <p>您受让的{{$store.state.init.coin_uint}}将在{{this.$store.state.init.otc_order_overtime}}分钟内到账，请注意查收。</p>
                 <p>未付款的请重新付款，否则将影响信用</p>
             </div>
             <div class="pup-btn-box flex-box vux-1px-t">
@@ -142,7 +125,7 @@
         </popup-header>
         <group>
             <div class="deposit-deploy-tis"></div>
-            <x-input  placeholder="请输入交易密码" v-model="security" type="password" ref="security"></x-input>
+            <x-input  placeholder="请输入交易密码" v-model="security" type="password" ref="security" :required="true"></x-input>
         </group>
         <group class="nobg flex-box">
             <x-button type="primary" style="border-radius:99px;height:2.25rem;line-height:2.25rem;font-size:0.875rem;background:#3f73ed" @click.native="buy_fixed">确认</x-button>
@@ -151,17 +134,19 @@
 </div>
 </template>
 <script>
-    import { XInput , PopupPicker , Group , Selector,Popup ,PopupHeader,TransferDomDirective as TransferDom  } from 'vux'
+    import { XInput , PopupPicker , Group , Selector, Popup ,PopupHeader,TransferDomDirective as TransferDom } from 'vux'
     export default {
     components: {
         XInput,
         PopupPicker,
         Group,
-        Selector,Popup,PopupHeader
+        Selector,
+        Popup,
+        PopupHeader
     },
-    directives: {
-     TransferDom
-    },
+      directives: {
+        TransferDom
+      },
     data () {
         return {
             security:'',
@@ -186,7 +171,7 @@
             pay_status:0,
             order_id : 0,
             confirm_pay:0,
-            buttonName:'未兑换成功点击视为违规行为，我确认已兑换成功',
+            buttonName:'未支付点击视为违规行为，我确认已支付',
             readOnlyFlag : false,
             buy_flag : 1,
             time_end : false,
@@ -194,112 +179,57 @@
             order_sn:'',
             lock_day:0,
             click_lock :false,
-            accid:''
+            accid:'',
+            coin_unit:'',
+             usdc_price:0,
+             reward:0,
+             fee_rate:0,
+             otc:{user:{}},
         }
     },
     mounted () {
-       //订单列表过来
-        if(!this.$route.params.id){
-            if(!this.$route.params.otc_order_id){
-                this.$router.push({path:'/deals/center'});
-            }else{
-                this.order_id = this.$route.params.otc_order_id;
-                const type = this.$route.params.type;
-                if(type==2){
-                    this.buy_flag=0;
-                }
-                this.pay_status = 1;
-                this.readOnlyFlag = true;
-                this.$http.post('/api/app.otc/order',{order_id:this.order_id,type:type})
-                    .then(res=>{
-                        let otc_order = res.data.order_list[0];
-                        this.sellerName = otc_order.buyersellername;
-                        this.amount =otc_order.vc_amount;
-                        this.vc_unit_price = otc_order.vc_uint_price;
-                        this.identity = otc_order.identity;
-                        this.order_sn = otc_order.order_sn;
-                        this.lock_day = otc_order.lock_day
-                        this.accid =otc_order.accid
-                        if(type==1){
-                            if(otc_order.status>0){
-                                this.confirm_pay = 1;
-                                this.buttonName = '已付款';
-                            }else{
-                                let end_time =  otc_order.create_time_stamp+this.$store.state.init.otc_order_overtime*60;
-                                let  timestamp = Date.parse(new Date())/1000;
-                                let diff_time = end_time - timestamp;
-                                if(diff_time<0){
-                                    this.$vux.toast.text('已超出付款时间');
-                                    this.time_end = true;
-//                                    this.$router.push({path:'/deals/center'});
-                                }else{
-                                    this.counttime(diff_time);
-                                }
-                            }
-                        }else if(type==2){
-                            let end_time = otc_order.pay_time_stamp+18000;
-                            let  timestamp = Date.parse(new Date())/1000;
-                            let diff_time = end_time - timestamp;
-                            if(diff_time<0){
-                                this.$vux.toast.text('已超出发GBL时间，如已收款，请在意见反馈里申请客服协助');
-                                this.time_end = true;
-//                                this.$router.push({path:'/deals/center'});
-                            }else{
-                                this.counttime(diff_time);
-                            }
-                        }
-                        this.chose_payment_info = JSON.parse(otc_order.payment_info);
-
-                        // if(otc_order.payment){
-                        //     for (let x in otc_order.payment){
-                        //         this.payment_info.push({key:x,value:otc_order.payment[x].payment_org});
-                        //     }
-                        //     this.payment = otc_order.payment;
-                        //     this.chose_payment = this.payment_info[0].key
-                        // }
-                    })
-                    .catch(error=>{
-                    })
-                return false;
-            }
-        }
+      this.$vux.loading.show({
+        text: ''
+      })
         let formData = {
-            otc_id: this.$route.params.id
+          token_otc_id: this.$route.params.token_otc_id
         }
-        //首页过来
-        this.$http.post('/api/app.otc/deals',formData).then(res => {
+        this.$http.post('/api/app.tokenotc/deals/getotcinfo',formData).then(res => {
             if(res.errcode==0){
-                let otc = res.data.otc_list[0];
+                let otc = res.data.token_otc_data;
+                this.otc=  res.data.token_otc_data
                 this.sellerName = otc.username;
                 this.vc_unit_price = otc.vc_unit_price;
                 this.vc_less_amount = otc.vc_less_amount
                 this.amount = otc.vc_less_amount;
+                this.usdc_price = res.data.usdc_price;
+                this.coin_unit = otc.coin_info.coin_unit;
+                this.reward = otc.reward;
+                this.fee_rate = otc.vc_fee_rate
+               this.$store.state.init.usdc_price= res.data.usdc_price;
                 if(otc.payment){
                     for (let x in otc.payment){
                         this.payment_info.push({key:x,value:otc.payment[x].payment_org});
                     }
-                  this.payment_info.sort(function (a,b) {
-                       if(a.key=='bankcard') {
-                          return -1;
-                       }else{
-                          return 1;
-                       }
-                  })
-                  console.log( this.payment_info)
+                      this.payment_info.sort(function (a,b) {
+                           if(a.key=='bankcard') {
+                              return -1;
+                           }else{
+                              return 1;
+                           }
+                      })
                     this.payment = otc.payment;
                     this.chose_payment = this.payment_info[0].key
                 }
-                this.lock_day = otc.lock_day;
             }else{
                 this.$vux.toast.text(res.message);
             }
+          this.$vux.loading.hide()
         }).catch(error => {
             if (error.errcode) {
                 this.$vux.toast.text(error.message);
             }
-            setTimeout(()=>{
-                this.$router.push({path:'/deals/center'});
-            },2000)
+          this.$vux.loading.hide()
         });
     },
     methods:{
@@ -332,7 +262,7 @@
                 let formData = {
                     order_id:this.order_id,
                 }
-                this.$http.post('/api/app.otc/deals/confirmpay',formData)
+                this.$http.post('/api/app.tokenotc/dealsbuy/confirmpay',formData)
                     .then(res=>{
                         this.is_open=true;
                         this.confirm_pay = 1;
@@ -354,110 +284,73 @@
             if(typeof (this.chose_payment)=="string")
             this.chose_payment_info = this.payment[this.chose_payment];
         },
-      buy(){
+        sell(){
+            if(this.chose_payment_info.payment_key=='asset')
+            {
+              this.showDeploy =true;
+              return;
+            }
+            this.tosell();
+
+        },
+       tosell(){
+        if(this.click_lock)
+        {
+          return false;
+        }
+        this.click_lock = true;
+        let formData = {
+          token_otc_id : this.$route.params.token_otc_id,
+          amount : this.amount,
+          payment_info:this.chose_payment_info,
+          security:this.security
+        }
+        var _this= this;
         if(this.chose_payment_info.payment_key=='asset')
         {
-          this.showDeploy =true;
-          return;
-        }
-            this.tobuy();
-         },
-          buy_fixed(){
-            this.tobuy();
-          },
-        tobuy(){
-            if(this.click_lock)
-            {
-                return false;
-            }
-            this.click_lock = true;
-            if(this.vc_less_amount<=this.$store.state.init.min_otc_sale && this.amount!=this.vc_less_amount){
-                this.amount = this.vc_less_amount;
-                this.$vux.toast.text('剩余数量只有'+this.vc_less_amount+'个,必须全部兑换');
-                return;
-            }
-            let formData = {
-                otc_id : this.$route.params.id,
-                amount : this.amount,
-                payment_info:this.chose_payment_info,
-                security: this.security
-            }
-          var _this= this;
-          if(this.chose_payment_info.payment_key=='asset')
-          {
-            this.$vux.confirm.show({
-              title: '使用USDG资产兑换,即时到账',
-              onCancel () {},
-              onConfirm () {
-                _this.$vux.loading.show({
-                  text: ''
-                })
-                _this.$http.post('/api/app.otc/deals/buy',formData).then( res=>{
-                  if(res.errcode==0){
-                    _this.$vux.loading.hide()
-                    _this.$vux.toast.text('兑换成功');
-                    _this.$router.push({path:'/deals/record'})
-                  }
-                }).catch(error=>{
-                  _this.click_lock = false;
-                  if (error.errcode) {
-                    _this.$vux.toast.text(error.message);
-                  }
+          this.$vux.confirm.show({
+            title: '使用USDG资产兑换,即时到账',
+            onCancel () {},
+            onConfirm () {
+              _this.$vux.loading.show({
+                text: ''
+              })
+              _this.$http.post('/api/app.tokenotc/dealsbuy/sell',formData).then( res=>{
+                if(res.errcode==0){
                   _this.$vux.loading.hide()
-                })
-              }
-            });
-          }else{
-            this.$http.post('/api/app.otc/deals/buy',formData).then( res=>{
-              if(res.errcode==0){
-                this.pay_status = 1;
-                this.order_id = res.data.order_id;
-                this.readOnlyFlag = true;
-                this.order_sn = res.data.order_sn;
-                this.accid = res.data.accid;
-              }
-              this.click_lock = false;
-              this.pay_status=1;
-              this.counttime(this.$store.state.init.otc_order_overtime*60);
-            }).catch(error=>{
-              this.click_lock = false;
-              if (error.errcode) {
-                this.$vux.toast.text(error.message);
-              }
-            })
-          }
-        },
-        deliver(){
-            let formData = {
-                order_id:this.order_id
-            }
-            const _this = this
-            this.$vux.confirm.show({
-                content: '是否确认发GBL',
-                onConfirm () {
-                    _this.$http.post('/api/app.otc/deals/confirmreceive',formData)
-                        .then(res=>{
-                            if(res.errcode==0){
-                                _this.$vux.toast.text('已确认发GBL');
-                                setTimeout(function () {
-                                    _this.$router.push({name:'dealsRecord',params:{type:2}});
-                                },2000)
-                            }else{
-                                _this.$vux.toast.text(res.message);
-                            }
-                        })
-                        .catch(error=>{
-                            if (error.errcode) {
-                                _this.$vux.toast.text(error.message);
-                            }
-                        })
+                  _this.$vux.toast.text('出让成功');
+                  _this.$router.push({path:'/token_otc/order'})
                 }
-            })
-        },
+              }).catch(error=>{
+                _this.click_lock = false;
+                if (error.errcode) {
+                  _this.$vux.toast.text(error.message);
+                }
+                _this.$vux.loading.hide()
+              })
+            }
+          });
+        }else{
+          this.$http.post('/api/app.tokenotc/dealsbuy/sell',formData).then( res=>{
+            if(res.errcode==0){
+              _this.$router.push({path:'/token_otc/order'})
+            }
+            this.click_lock = false;
+          }).catch(error=>{
+            this.click_lock = false;
+            if (error.errcode) {
+              this.$vux.toast.text(error.message);
+            }
+          })
+        }
+      },
+      buy_fixed(){
+          this.tosell();
+      },
         checkBuyNum:function(value){
             return {
                 valid: value > 0,
-                msg: '兑换数量必须大于0'
+                msg: '受让数量必须大于0'
             }
         },
         onCopy: function (e) {
@@ -475,6 +368,17 @@
     computed:{
         call_number (){
             return 'tel:'+this.chose_payment_info.connect
+        },
+        lock_raward(){
+          if(this.reward)
+          {
+            let r = (parseFloat(this.fee_rate) * parseFloat(this.amount) * parseFloat(this.$store.state.init.token_otc_reward_rate)).toFixed(5)
+            if(!isNaN(r))
+            {
+              return r;
+            }
+          }
+          return 0;
         }
     }
 }

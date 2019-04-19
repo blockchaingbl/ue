@@ -10,7 +10,7 @@
                         <div class="item-text" >转出人：{{order.from_user.username}}</div>
                     </div>
                     <div class="item-item flex-box">
-                        <div class="item-text flex-1">转入数额 {{order.receive}} {{$store.state.init.coin_uint}}</div>
+                        <div class="item-text flex-1">转入数额 {{order.receive}}</div>
                         <div class="item-text">手机：**********{{order.from_user.mobile.substr(-1,1)}}</div>
                     </div>
                     <!--<div class="item-item flex-box">-->

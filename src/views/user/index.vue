@@ -186,12 +186,17 @@ export default {
             _this.CutCallBack(base64Str)
         };
         window.js_qr_code_scan = function(qr_code){
-            const id = qr_code;
-            _this.$http.post('/api/app.user/transfer/userexrate',{id:id}).then(res => {
-                _this.$router.push({path: '/transfer/send/'+id})
-            }).catch(err => {
-                _this.$vux.toast.text('二维码内容错误');
-            });
+            if(qr_code.substr(0,4)=="http")
+            {
+                App.open_type('{"url":"'+qr_code+'"}');
+            }else{
+                const id = qr_code;
+                _this.$http.post('/api/app.user/transfer/userexrate',{id:id}).then(res => {
+                    _this.$router.push({path: '/transfer/send/'+id})
+                }).catch(err => {
+                    _this.$vux.toast.text('二维码内容错误');
+                });
+            }
         };
 
     },
@@ -218,6 +223,7 @@ export default {
                 this.b2c_url = res.data.account_info.b2c_url;
                 this.ban = res.data.account_info.ban;
                 this.$store.state.b2c_url_member =  res.data.account_info.b2c_url_member;
+                this.$store.state.self_wallet_auth = res.data.account_info.self_wallet_auth
                 cookie.setCookie('uid', res.data.account_info.accid)
                 cookie.setCookie('sdktoken',res.data.account_info.token)
             }).catch(err => {

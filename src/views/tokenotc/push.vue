@@ -76,7 +76,7 @@
         },
         methods: {
             getAccount(){
-                this.$http.post('/api/app.tokenotc/deals/get_open_coin',{}).then(res => {
+                this.$http.post('/api/app.tokenotc/deals/get_open_coin',{sell:1}).then(res => {
                     let data = res.data.lists;
                     for (let i=0; i<data.length;i++){
                         this.coin_info.push({key:i,value:data[i].coin_type.coin_unit})
@@ -109,16 +109,40 @@
                     return;
                 }else{
                     this.lock = true;
+                    var that = this;
                     let formData = {coin_type:this.show_coin.coin_type.id,amount:this.sale_amount,price:this.coin_price,min_buy_amount:this.min_buy_amount}
                     this.$http.post('/api/app.tokenotc/deals/push',formData).then(res => {
                         this.$vux.toast.text(res.message);
                         if(res.errcode==0)
                         {
-                            this.$router.push({path:'/token_otc'})
+                          this.$router.push({path:'/token_otc'})
                         }
                     }).catch(err=>{
-                        this.lock = false;
-                        this.$vux.toast.text(err.message);
+                          if(err.errcode=='90001')
+                          {
+                            this.$vux.confirm.show({
+                              title: err.message,
+                              onConfirm () {
+                                formData.confirm = 1;
+                                that.$http.post('/api/app.tokenotc/deals/push',formData).then(res => {
+                                  that.$vux.toast.text(res.message);
+                                  if(res.errcode==0)
+                                  {
+                                    that.$router.push({path:'/token_otc'})
+                                  }
+                                }).catch(err=>{
+                                  that.lock = false;
+                                  that.$vux.toast.text(err.message);
+                                })
+                              },
+                              onCancel(){
+                                that.lock =false;
+                              }
+                            })
+                          }else{
+                            this.lock = false;
+                            this.$vux.toast.text(err.message);
+                          }
                     })
                 }
 

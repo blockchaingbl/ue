@@ -128,7 +128,9 @@ export default {
                 })
         },
         onScrollBottom(){
+          setTimeout(()=>{
             this.loadOtcOrders();
+          },200)
         },
         switchType(type){
             if(type!=this.formData.type){
